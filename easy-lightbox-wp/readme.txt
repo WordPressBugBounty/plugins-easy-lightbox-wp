@@ -1,36 +1,31 @@
-=== Easy Lightbox - Best Image, Gallery and Video Lightbox for WordPress ===
+=== Easy Lightbox - Image, Gallery and Video Lightbox for WordPress ===
 Contributors: rubel_miah
 Tags: lightbox, jquery lightbox, video lightbox, popup, popup video
 Requires at least: 4.0
-Tested up to: 6.4.2
-Stable tag: 1.1.2
+Tested up to: 6.8
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Easy Lightbox is the Best Image, Gallery and Video Lightbox plugin for WordPress. This plugin will enable a smooth Lightbox in your WordPress website.
+Easy Lightbox is an Image, Gallery and Video Lightbox plugin for WordPress. This plugin will enable a smooth Lightbox in your WordPress website.
 
 
 == Description ==
 
-Easy Lightbox is the Best Image, Gallery and Video Lightbox plugin for WordPress. This plugin will enable a smooth Lightbox in your WordPress website.
+Easy Lightbox is an Image, Gallery and Video Lightbox plugin for WordPress. This plugin will enable a smooth Lightbox in your WordPress website.
 
 You can add Lightbox functionality in images, gallery, and videos very easily.
 
-**Features**
+= Features =
 
-<ul>
-	<li>100% Responsive.</li>
-	<li>Image, Gallery, and Video Lightbox.</li>
-	<li>Auto Lightbox for Gallery.</li>
-	<li>Touch-swipe Supported.</li>
-	<li>Minimalist & Lightweight.</li>
-	<li>All Major Browsers Supported.</li>
-	<li>Easy to Configure and Use.</li>
-	<li>Friendly Support.</li>
-</ul>
-
-
-If you like this plugin, please give us [__5 Star__](https://wordpress.org/support/plugin/easy-lightbox-wp/reviews/?filter=5#new-post) to encourage for future improvement.
+* 100% Responsive.
+* Image, Gallery, and Video Lightbox.
+* Auto Lightbox for Gallery.
+* Touch-swipe Supported.
+* Minimalist & Lightweight.
+* All Major Browsers Supported.
+* Easy to Configure and Use.
+* Friendly Support.
 
 
 == Installation ==
@@ -69,7 +64,11 @@ Contact with us if you are in trouble for adding Lightbox. We’ll be happy to h
 1. Image in Lightbox
 2. Video in Lightbox
 
+
 == Changelog ==
+
+= 1.1.3 - Sep 28, 2025 =
+* Tested: WordPress 6.8 compatibility.
 
 = 1.1.2 - Jan 25, 2024 =
 * Tested: WordPress 6.4.2 compatibility.

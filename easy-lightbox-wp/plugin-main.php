@@ -5,7 +5,7 @@
  * Description: This plugin will enable an awesome Lightbox in your WordPress site.
  * Author: ShapedPlugin
  * Author URI: https://shapedplugin.com
- * Version: 1.1.2
+ * Version: 1.1.3
  *
  * @package Easy_Lightbox
  *
@@ -28,7 +28,7 @@ add_action( 'init', 'lazy_p_wp_lightobx_free_jquery' );
 
 /*Some Set-up*/
 define( 'LAZY_P_WP_LIGBTBOX_FREE', plugin_dir_url( __FILE__ ) );
-define( 'EASY_LIGHTBOX_VERSION', '1.1.2' );
+define( 'EASY_LIGHTBOX_VERSION', '1.1.3' );
 
 /**
  * Include JavaScript and CSS files.
