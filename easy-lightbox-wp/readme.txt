@@ -2,8 +2,8 @@
 Contributors: rubel_miah
 Tags: lightbox, jquery lightbox, video lightbox, popup, popup video
 Requires at least: 4.0
-Tested up to: 6.8
-Stable tag: 1.1.3
+Tested up to: 7.1
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,6 @@ You can add Lightbox functionality in images, gallery, and videos very easily.
 * 100% Responsive.
 * Image, Gallery, and Video Lightbox.
 * Auto Lightbox for Gallery.
-* Touch-swipe Supported.
 * Minimalist & Lightweight.
 * All Major Browsers Supported.
 * Easy to Configure and Use.
@@ -66,6 +65,14 @@ Contact with us if you are in trouble for adding Lightbox. We’ll be happy to h
 
 
 == Changelog ==
+
+= 1.1.4 - Sep 29, 2025 =
+* Fix: Lightbox could open as an unclosable overlay when the clicked element had no image or media link.
+* Fix: YouTube videos failed to load because of a retired embed endpoint.
+* Fix: Vimeo videos were requested over HTTP and blocked on HTTPS sites.
+* Fix: Removed deprecated jQuery calls that relied on jQuery Migrate being present.
+* Fix: Keyboard handling no longer removes keyup handlers registered by other plugins or the theme.
+* Tested: WordPress 7.1.2 compatibility.
 
 = 1.1.3 - Sep 28, 2025 =
 * Tested: WordPress 6.8 compatibility.
