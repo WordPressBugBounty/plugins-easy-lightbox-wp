@@ -1,0 +1,25 @@
+/* InputControl — spacing + inline (flex) layout (editor-only). */
+
+.sp-shaped-gallery-input-control {
+	.sp-shaped-gallery-control__title {
+		display: block;
+		margin-bottom: 8px;
+	}
+
+	.components-base-control__help {
+		margin-top: 6px;
+		font-size: 12px;
+		line-height: 1.4;
+		color: #757575;
+	}
+
+	&.is-flex {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		.sp-shaped-gallery-control__title {
+			margin-bottom: 0;
+		}
+	}
+}

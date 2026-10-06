@@ -1,0 +1,152 @@
+/*
+ * BoxShadow — enable toggle, the shared "Shadow Type" header (reset + global /
+ * unit chip + Presets/Custom switch) and the six preset tiles. Geometry is Figma
+ * node 7:32511; the header row itself is the shared `.sp-shaped-gallery-control-head`
+ * chrome from shared.scss, so only the pieces unique to this control live here.
+ *
+ * Editor-only, every class `sp-shaped-gallery-`-prefixed (§2).
+ */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-accent-tint: $sp-shaped-gallery-brand-tint;
+$sp-shaped-gallery-muted: #8c8f94;
+$sp-shaped-gallery-ink: #2f2f2f;
+$sp-shaped-gallery-field-border: #ddd;
+
+.sp-shaped-gallery-box-shadow {
+	/*
+	 * The design's chip reads "Outset", not "outset": the shared unit switcher
+	 * lower-cases its labels because every other control it serves carries a
+	 * length unit (px / % / em), where lower case is correct. This is the one
+	 * control whose "unit" is a CSS keyword the design sets in sentence case, so
+	 * the transform is undone here rather than made conditional in `Units`.
+	 * 10px/38×20 is the chip's own spec, a step down from the length chips.
+	 */
+	.sp-shaped-gallery-units {
+		&__current {
+			min-width: 38px;
+			height: 20px;
+			padding: 0 4px;
+			font-size: 10px;
+			text-transform: capitalize;
+			border-radius: 2px;
+		}
+
+		&__menu .components-button {
+			font-size: 10px;
+			text-transform: capitalize;
+		}
+	}
+
+	/*
+	 * Presets / Custom switch. Off is a hairline box; on is the solid ink fill
+	 * the design uses for a pressed icon button, with the glyph knocked out in
+	 * white. The pressed state is carried by fill AND by `aria-pressed`, so it is
+	 * never colour alone (§14).
+	 */
+	&__mode {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		color: $sp-shaped-gallery-ink;
+		background: #fff;
+		border: 1px solid $sp-shaped-gallery-muted;
+		border-radius: 2px;
+		cursor: pointer;
+		transition: color 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+
+		svg {
+			display: block;
+		}
+
+		&:hover:not( [aria-pressed="true"] ) {
+			color: $sp-shaped-gallery-accent;
+			background: $sp-shaped-gallery-accent-tint;
+			border-color: $sp-shaped-gallery-accent;
+		}
+
+		&:focus-visible {
+			outline: 1px solid $sp-shaped-gallery-accent;
+			outline-offset: 1px;
+		}
+
+		&[aria-pressed="true"] {
+			color: #fff;
+			background: $sp-shaped-gallery-ink;
+			border-color: $sp-shaped-gallery-ink;
+		}
+	}
+
+	/*
+	 * Preset tiles — six 30px squares spread across the row. `space-between` with
+	 * a 6px right inset reproduces the design's own distribution (tiles at
+	 * 0 / 42.4 / 84.8 / … within a 242px track) without pinning a gap that would
+	 * break the moment the sidebar is resized.
+	 */
+	&__presets {
+		display: flex;
+		justify-content: space-between;
+		padding: 4px 6px 8px 0;
+		margin-bottom: 16px;
+	}
+
+	&__preset {
+		position: relative;
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 30px;
+		height: 30px;
+		padding: 0;
+		background: #fff;
+		/*
+		 * A half-pixel hairline, as drawn: a full 1px frame at this size competes
+		 * with the shadow the tile exists to preview.
+		 */
+		border: 0.5px solid $sp-shaped-gallery-field-border;
+		border-radius: 2px;
+		cursor: pointer;
+		transition: border-color 0.12s ease;
+
+		&:hover {
+			border-color: $sp-shaped-gallery-muted;
+		}
+
+		&:focus-visible {
+			outline: 1px solid $sp-shaped-gallery-accent;
+			outline-offset: 2px;
+		}
+
+		/*
+		 * Selection is the badge alone — the design keeps the selected tile's
+		 * hairline identical to its neighbours', and it is right to: the tile
+		 * exists to show a shadow, and an accent frame around it reads as part of
+		 * the sample. The badge is a shape, not a tint, so this is still not
+		 * colour alone (§14), and `aria-pressed` carries it to a screen reader.
+		 */
+	}
+
+	/*
+	 * Selected badge — centred in the tile rather than pinned to a corner, so it
+	 * never clips the shadow the tile is previewing. The glyph is the shared
+	 * disc-with-tick-knocked-out, which lets the tile's own white read through
+	 * the tick.
+	 */
+	&__check {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: $sp-shaped-gallery-accent;
+
+		svg {
+			display: block;
+		}
+	}
+}

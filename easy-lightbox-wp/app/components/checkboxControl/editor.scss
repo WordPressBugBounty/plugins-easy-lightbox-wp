@@ -1,0 +1,52 @@
+/* CheckboxControl — inline label + accent checked state (editor-only). */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+
+.sp-shaped-gallery-checkbox-control {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	/*
+	 * Core's label is kept in the DOM and hidden here rather than dropped: it is what
+	 * names the box for a screen reader, and every layout this control appears in
+	 * already shows the same words — the wrapper's own title span, or the settings row
+	 * heading beside it. Clipped rather than `display: none`, which would take it out
+	 * of the accessibility tree along with the visual flow.
+	 */
+	.components-checkbox-control__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		border: 0;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+
+	.components-checkbox-control {
+		--checkbox-input-margin: 0;
+		--checkbox-input-size: 20px;
+
+		.components-base-control__field {
+			margin-bottom: 0;
+		}
+
+		&__input[type="checkbox"] {
+			border-color: #757575;
+
+			&:focus {
+				box-shadow: 0 0 0 2px #fff, 0 0 0 4px $sp-shaped-gallery-accent;
+			}
+
+			&:checked {
+				background-color: $sp-shaped-gallery-accent;
+				border-color: $sp-shaped-gallery-accent;
+			}
+		}
+	}
+}

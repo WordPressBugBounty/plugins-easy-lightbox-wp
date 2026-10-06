@@ -1,0 +1,123 @@
+/**
+ * Easy Lightbox chrome — the close and nav controls drawn as 1.x drew them.
+ *
+ * DEPRECATED BY DESIGN (§25).
+ *
+ * ## It applies to a LEGACY SESSION, not to the element
+ *
+ * The overlay is a single page-level `<dialog>` shared by the gallery block and
+ * by legacy markup, so scoping this to the element itself would repaint the
+ * block's lightbox too — and the block's lightbox is 1.2.0's own product
+ * surface, which this layer exists to leave alone. What identifies the two is
+ * not the element but the OPEN: `openItems()` puts `is-legacy` on the overlay
+ * when the compatibility layer opened it and takes it off when anything else
+ * did, so the class is re-decided on every open and a page carrying both kinds
+ * of content shows each click the chrome belonging to it.
+ *
+ * It lives here, not in `app/frontend/lightbox.scss`, because it goes when the
+ * compatibility layer goes. It reaches the bundle through `./litebox.js`, which
+ * `app/frontend/lightbox.js` already imports unconditionally — so deleting this
+ * folder removes the override with no second reference to unpick, and every
+ * lightbox on every site falls back to the viewer's own chrome.
+ *
+ * ## What 1.x actually drew
+ *
+ * Measured from `wp-content/repos/easy-lightbox-wp` — `css/litebox.min.css` and
+ * the three PNGs in `imgs/`:
+ *
+ * | Control    | 1.x                                                      |
+ * | ---------- | -------------------------------------------------------- |
+ * | Close      | 40×40, white X inside a thin white ring, top/right 20px   |
+ * | Prev/Next  | 60×60, white chevron on a SOLID BLACK disc, inset 20px    |
+ * | Resting    | close `opacity: .7`, nav `opacity: .2`                     |
+ * | Hover      | close `1`, nav `.5`, both `all .2s ease-in-out`            |
+ *
+ * The ring and the disc were baked into the PNGs. They are rebuilt here in CSS
+ * over the viewer's own SVG glyphs rather than by reintroducing three image
+ * files: same appearance, no extra requests, and it recolours with the palette
+ * tokens instead of being fixed at whatever the PNGs were exported as.
+ *
+ * ## What is deliberately NOT restored
+ *
+ * `litebox.min.css` hid the close button entirely under 479px
+ * (`@media only screen and (max-width:479px){ .litebox-close{display:none} }`),
+ * which left a modal with no visible dismiss on a phone. The readme lists that as
+ * a deliberate exception and it stays fixed — the button keeps its 1.x look at
+ * every width, it just does not disappear.
+ *
+ * ## Why the selectors are doubled up inside the scope
+ *
+ * `lightbox.scss` sets `background` on `__tool` and its `:hover` with
+ * `!important` (it has to beat theme button styles), and `!important` against
+ * `!important` is settled on specificity. The `is-legacy` ancestor already wins
+ * that, but the modifier is still compounded onto `__tool` so each rule beats its
+ * base on weight alone — never on the order webpack happens to concatenate two
+ * stylesheets in.
+ */
+
+.sp-shaped-gallery-lightbox.is-legacy {
+	/* ---- Close: the ring is the part that reads as "Easy Lightbox" ---- */
+	.sp-shaped-gallery-lightbox__tool.sp-shaped-gallery-lightbox__tool--close {
+		/* Out of the top bar and onto the overlay, where 1.x put it. The bar keeps
+		 * the counter; the dialog itself is `position: fixed`, so this anchors to the
+		 * viewport exactly as the old absolute positioning did. */
+		position: absolute;
+		top: 20px;
+		right: 20px;
+		z-index: 2;
+		width: 40px;
+		height: 40px;
+		border: 2px solid currentcolor;
+		border-radius: 50%;
+		opacity: 0.7;
+		transition: opacity 0.2s ease-in-out;
+
+		&:hover:not(:disabled) {
+			opacity: 1;
+			/* 1.x brightened the glyph and drew no plate behind it. */
+			background: transparent !important;
+		}
+	}
+
+	/* ---- Prev / next: the solid black disc ---- */
+	.sp-shaped-gallery-lightbox__tool.sp-shaped-gallery-lightbox__nav {
+		width: 60px;
+		height: 60px;
+		border-radius: 50%;
+		/* Pure black, as the PNGs were — not the surface token, which is the 96%
+		 * zinc scrim and would leave the disc barely separated from its backdrop. */
+		background: #000 !important;
+		opacity: 0.2;
+		transition: opacity 0.2s ease-in-out;
+
+		&:hover:not(:disabled) {
+			opacity: 0.5;
+			background: #000 !important;
+		}
+
+		&.sp-shaped-gallery-lightbox__tool--prev {
+			left: 20px;
+		}
+
+		&.sp-shaped-gallery-lightbox__tool--next {
+			right: 20px;
+		}
+	}
+
+	/* The stage reserves room for the controls; 60px discs at a 20px inset need
+	 * more of it than the 44px buttons did, or the photo sits under them. */
+	.sp-shaped-gallery-lightbox__body {
+		padding: 0 88px;
+	}
+}
+
+@media (max-width: 782px) {
+	/* 1.x kept the discs at 60px on every width and let them overlay the image,
+	 * so the narrow-screen shrink in `lightbox.scss` is overridden rather than
+	 * inherited — the control is the same size the visitor has been tapping. */
+	.sp-shaped-gallery-lightbox.is-legacy
+		.sp-shaped-gallery-lightbox__tool.sp-shaped-gallery-lightbox__nav {
+		width: 60px;
+		height: 60px;
+	}
+}

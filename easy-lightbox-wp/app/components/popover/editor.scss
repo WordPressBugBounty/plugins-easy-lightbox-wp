@@ -1,0 +1,64 @@
+/* SpPopover — toggle row + floating panel chrome (editor-only). */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-muted: #8c8f94;
+
+.sp-shaped-gallery-popover {
+	&__toggle-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	&__toggle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 26px;
+		height: 26px;
+		padding: 1px;
+		color: $sp-shaped-gallery-muted;
+		background: transparent;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+
+		&:hover,
+		&.is-active {
+			color: $sp-shaped-gallery-accent;
+		}
+	}
+}
+
+.components-popover__content:has(.sp-shaped-gallery-popover__content-visible) {
+	.sp-shaped-gallery-popover__content-visible {
+		width: 320px;
+		box-shadow: 4px 4px 12px 2px rgba(0, 0, 0, 0.1);
+
+		&-inner {
+			overflow-y: hidden;
+			padding: 16px 20px;
+		}
+	}
+}
+
+.sp-shaped-gallery-popover__header {
+	position: sticky;
+	top: 0;
+	z-index: 999;
+	padding: 12px 20px;
+	margin: -16px -20px 12px;
+	background: #fff;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+
+	h4 {
+		padding: 0;
+		margin: 0;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		color: #2f2f2f;
+	}
+}

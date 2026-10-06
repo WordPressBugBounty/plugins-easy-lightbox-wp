@@ -1,0 +1,382 @@
+/* Typography popover — Figma node 7-26246 (editor-only). */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-border: #ddd;
+$sp-shaped-gallery-muted: #8c8f94;
+$sp-shaped-gallery-label: #2f2f2f;
+$sp-shaped-gallery-value: #1e1e1e;
+$sp-shaped-gallery-icon: #757575;
+
+/*
+ * Vertical rhythm, declared once so every row in the panel obeys the same two
+ * numbers: a label sits TIGHT to the control it names (4px, so the pair reads as
+ * one field), and one field group is separated from the next by a full 16px — the
+ * same gap the inspector panel puts between its own controls. Every input is
+ * $field-height tall, so the Font Family dropdown, the Font Style dropdown, the
+ * two range number boxes and the Letter / Word Spacing boxes line up.
+ */
+$sp-shaped-gallery-label-gap: 4px;
+$sp-shaped-gallery-section-gap: 16px;
+$sp-shaped-gallery-field-height: 32px;
+$sp-shaped-gallery-field-font: 13px;
+
+/*
+ * No width override — this popover is the same 320px as every other one in the
+ * library (see popover/editor.scss).
+ *
+ * The Figma frame draws it at 360px, but the inspector sidebar it belongs to is
+ * 280px: at 360 the panel stood 80px wider than its own sidebar and hung out over
+ * the canvas, which is what made it read as oversized. 320 is the width the
+ * sibling popovers already use, so the family/weight row is sized below to fit
+ * the longest font name at that width instead.
+ */
+
+.sp-shaped-gallery-typography {
+	/* Grey title bar — bleeds to the panel edges over the 16/20 inner padding. */
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		height: 44px;
+		padding: 12px 20px;
+		margin: -16px -20px $sp-shaped-gallery-section-gap;
+		background: #f2f2f2;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+	}
+
+	&__header-title {
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		color: $sp-shaped-gallery-label;
+	}
+
+	/* Label → control, everywhere in the panel (control-head is the shared row). */
+	.sp-shaped-gallery-control-head {
+		margin-bottom: $sp-shaped-gallery-label-gap;
+	}
+
+	/*
+	 * Font Family + Font Style — two dropdowns on one row, sharing the field height.
+	 *
+	 * Split 1.15 / 1 rather than evenly: the two carry different content. The
+	 * longest family name ("Playfair Display") is ~112px of 13px type where the
+	 * longest weight ("Extra Light 200") is ~93px, so at this panel's 320px an even
+	 * split clips the family name while leaving slack under the weight. Measured in
+	 * the editor, not eyeballed — see the values in the review notes.
+	 */
+	&__families {
+		display: flex;
+		gap: 8px;
+		margin-bottom: $sp-shaped-gallery-section-gap;
+
+		.sp-shaped-gallery-typography__family {
+			flex: 1.15;
+			min-width: 0;
+		}
+
+		.sp-shaped-gallery-select-field {
+			flex: 1;
+			min-width: 0;
+			margin-bottom: 0;
+		}
+
+		/*
+		 * No label margin here: BOTH labels in this row are control-head rows now,
+		 * and the head already carries the label gap. The margin this rule used to
+		 * add landed on the span INSIDE Font Style's head — 4px on top of the head's
+		 * own 4px — which pushed that column's dropdown 4px below Font Family's.
+		 */
+
+		.components-input-control__backdrop {
+			border-color: $sp-shaped-gallery-border !important;
+			border-radius: 2px;
+		}
+
+		.components-select-control__input {
+			font-size: $sp-shaped-gallery-field-font;
+			color: $sp-shaped-gallery-label;
+		}
+	}
+
+	/*
+	 * Font Size + Line Height are ONE section (they share the single device
+	 * switcher printed on Font Size), so the two rangers sit a label-gap apart
+	 * inside the group and the group as a whole closes with the section gap —
+	 * overriding the 16px `sp-shaped-gallery-cmp-mb` each ranger carries by default.
+	 */
+	&__sizes {
+		margin-bottom: $sp-shaped-gallery-section-gap;
+
+		.sp-shaped-gallery-range-control {
+			margin-bottom: 8px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
+	/* PX badge on Font Size reads uppercase (the shared unit badge is lowercase). */
+	.sp-shaped-gallery-range-control__unit {
+		text-transform: uppercase;
+	}
+
+	/* Letter / Word Spacing — two-column numeric measurement inputs (no slider). */
+	&__spacing {
+		display: flex;
+		gap: 16px;
+		margin-bottom: $sp-shaped-gallery-section-gap;
+
+		.sp-shaped-gallery-typography__num {
+			flex: 1;
+			min-width: 0;
+		}
+	}
+
+	/* Static PX badge beside a numeric field (Figma: muted, uppercase). */
+	&__unit {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 22px;
+		height: 20px;
+		padding: 0 5px;
+		font-size: 10px;
+		text-transform: uppercase;
+		color: $sp-shaped-gallery-muted;
+		border: 1px solid $sp-shaped-gallery-muted;
+		border-radius: 2px;
+	}
+
+	/* Measurement box — shared field height, centered value, spin buttons right. */
+	&__num-input {
+		.components-input-control__container {
+			border-radius: 2px;
+		}
+
+		.components-input-control__backdrop {
+			border-color: $sp-shaped-gallery-border !important;
+		}
+
+		input.components-input-control__input {
+			font-size: $sp-shaped-gallery-field-font;
+			text-align: center;
+			color: $sp-shaped-gallery-value;
+		}
+	}
+
+	/*
+	 * Text Format — segmented control with a divider between every segment.
+	 * Last section in the panel, so it adds no trailing gap of its own; the
+	 * 40px frame around 32px segments is the same geometry the inspector's
+	 * ButtonGroup uses (see shared.scss), which is what keeps the popover
+	 * looking like the panel it opened from.
+	 */
+	&__format {
+		.sp-shaped-gallery-control__title {
+			display: block;
+			margin-bottom: $sp-shaped-gallery-label-gap;
+		}
+	}
+
+	&__format-buttons {
+		display: flex;
+		align-items: center;
+		height: 40px;
+		padding: 4px;
+		overflow: hidden;
+		border: 1px solid $sp-shaped-gallery-border;
+		border-radius: 2px;
+	}
+
+	&__format-divider {
+		flex: none;
+		width: 1px;
+		height: 16px;
+		background: $sp-shaped-gallery-border;
+		border-radius: 2px;
+	}
+
+	&__format-btn.components-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 1;
+		min-width: 0;
+		height: $sp-shaped-gallery-field-height;
+		padding: 6px;
+		font-size: 12px;
+		color: $sp-shaped-gallery-icon;
+		background: #fff;
+		border: none;
+		border-radius: 2px;
+		cursor: pointer;
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+
+		&:hover {
+			color: $sp-shaped-gallery-accent;
+		}
+
+		&.is-active {
+			color: #fff;
+			background-color: $sp-shaped-gallery-accent;
+		}
+	}
+
+	/*
+	 * Field box — ONE height for every input in the panel.
+	 *
+	 * Kept in its own scoped block, and deliberately one class deeper than the rules
+	 * above, because both libraries in play inject their CSS at runtime: core sizes
+	 * `__next40pxDefaultSize` from an emotion rule of two-class weight and react-select
+	 * sizes its control from a one-class emotion rule, and emotion's <style> lands
+	 * AFTER this stylesheet's <link> — so an equal-weight selector loses the tie on
+	 * source order alone and the boxes render 40px / 38px. Measured in the editor, not
+	 * assumed. shared.scss reaches the range number field exactly the same way.
+	 */
+	.sp-shaped-gallery-typography__families,
+	.sp-shaped-gallery-typography__num-input {
+		.components-input-control__container {
+			min-height: $sp-shaped-gallery-field-height;
+			height: $sp-shaped-gallery-field-height;
+		}
+
+		select.components-select-control__input,
+		input.components-input-control__input {
+			min-height: $sp-shaped-gallery-field-height;
+			height: $sp-shaped-gallery-field-height;
+		}
+
+		/*
+		 * Core insets the select 12px / 30px, sized for its own 40px box. In this
+		 * 32px one that right inset costs more than the chevron needs, and it
+		 * clipped the longest weight ("Extra Light 200", ~93px of 13px type, in a
+		 * 126px column). 8 / 24 still clears the chevron — which core draws from a
+		 * ZERO-width suffix pinned to the field's right edge, so this padding is the
+		 * only thing holding the text off it — and matches the 8px inset on the
+		 * react-select beside it.
+		 *
+		 * `!important` for the same reason as the backdrop colour below: core writes
+		 * this padding from an emotion rule that outranks anything this stylesheet
+		 * can say at a sane depth, so a plain declaration here reads 12/30 in the
+		 * browser no matter how it is nested. Verified by measuring, twice.
+		 */
+		select.components-select-control__input {
+			padding: 0 24px 0 8px !important;
+		}
+	}
+
+	/*
+	 * react-select's own control: height pinned (not just `min-height`, which its
+	 * value container's line box would otherwise outgrow) and the inner boxes
+	 * flattened to it, so the Font Family dropdown matches the native Font Style
+	 * select beside it to the pixel.
+	 */
+	.sp-shaped-gallery-font-family-select__control {
+		min-height: $sp-shaped-gallery-field-height;
+		height: $sp-shaped-gallery-field-height;
+		border-color: $sp-shaped-gallery-border;
+		border-radius: 2px;
+		box-shadow: none;
+		cursor: pointer;
+
+		/*
+		 * Focus reads as a darker hairline, never react-select's blue.
+		 * `--is-focused` paints `border-color: #2684ff` AND a 1px blue box-shadow
+		 * ring, so both have to be answered — silencing only the border leaves the
+		 * ring behind, which is the blue outline this field used to show. The
+		 * darkened border is still a visible focus affordance, and it is the same
+		 * neutral the rest of this panel's chrome uses.
+		 */
+		&:hover,
+		&.sp-shaped-gallery-font-family-select__control--is-focused {
+			border-color: #949494;
+			box-shadow: none;
+		}
+	}
+
+	.sp-shaped-gallery-font-family-select__value-container {
+		height: 100%;
+		padding: 0 8px;
+	}
+
+	/*
+	 * The search input react-select stacks UNDER the value, in the same grid cell.
+	 *
+	 * wp-admin styles bare inputs at 40px, and this one is a bare input, so the
+	 * cell grew to 40px inside a 30px container: the row's centre fell 5px below
+	 * the field's, which pushed the selected family name (and its caret) visibly
+	 * low against the Font Style select beside it. Collapsing the input to its own
+	 * line box lets the container's `align-items: center` centre the text properly.
+	 */
+	.sp-shaped-gallery-font-family-select__input-container,
+	.sp-shaped-gallery-font-family-select__input-container input {
+		height: auto;
+		min-height: 0;
+		margin: 0;
+		padding: 0;
+		line-height: normal;
+	}
+
+	/* No second focus ring stacked inside the control's own. */
+	.sp-shaped-gallery-font-family-select__input-container input:focus {
+		outline: none;
+		box-shadow: none;
+	}
+
+	.sp-shaped-gallery-font-family-select__single-value {
+		font-size: $sp-shaped-gallery-field-font;
+		color: $sp-shaped-gallery-label;
+	}
+
+	.sp-shaped-gallery-font-family-select__indicators {
+		height: 100%;
+	}
+
+	/*
+	 * Dropdown caret — react-select paints it Gray 300 behind its own separator
+	 * bar, while the native Font Style select next to it draws a bare #1e1e1e
+	 * chevron. Two dropdowns side by side have to end the same way, so the
+	 * separator goes and the caret takes core's colour.
+	 */
+	.sp-shaped-gallery-font-family-select__indicator-separator {
+		display: none;
+	}
+
+	.sp-shaped-gallery-font-family-select__indicator {
+		padding: 4px;
+		color: $sp-shaped-gallery-value;
+
+		&:hover {
+			color: $sp-shaped-gallery-value;
+		}
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	.sp-shaped-gallery-font-family-select__menu {
+		z-index: 999;
+		font-size: $sp-shaped-gallery-field-font;
+	}
+
+	.sp-shaped-gallery-font-family-select__option {
+		cursor: pointer;
+
+		&:hover,
+		&.sp-shaped-gallery-font-family-select__option--is-selected {
+			color: #fff;
+			background-color: $sp-shaped-gallery-accent;
+		}
+	}
+}

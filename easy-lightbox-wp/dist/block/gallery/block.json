@@ -1,0 +1,26 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "shaped-gallery/gallery",
+    "title": "ShapedGallery",
+    "category": "shaped-gallery",
+    "description": "Showcase your Images, Videos beautifully and keep visitors engaged.",
+    "keywords": [
+        "gallery",
+        "images",
+        "photos",
+        "masonry",
+        "justified"
+    ],
+    "textdomain": "easy-lightbox-wp",
+    "supports": {
+        "align": [
+            "wide",
+            "full"
+        ],
+        "anchor": false,
+        "customClassName": false,
+        "html": false,
+        "__experimentalDisableBlockOverlay": true
+    }
+}

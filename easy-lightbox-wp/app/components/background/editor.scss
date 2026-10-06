@@ -1,0 +1,61 @@
+/**
+ * Background / Overlay type-select chrome. Editor-only, `sp-shaped-gallery-`-prefixed, not
+ * nested under a theme selector. Accent tracks the brand ($sp-shaped-gallery-accent).
+ * Ported + de-branded from the sibling ShapedPlugin Background control.
+ */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-field-border: #ddd;
+
+.sp-shaped-gallery-background {
+	&__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 8px;
+	}
+
+	&__types {
+		display: flex;
+		gap: 2px;
+
+		.components-button {
+			position: relative;
+			width: 26px;
+			height: 0;
+			min-width: 26px;
+			border: 1px solid transparent;
+			border-radius: 2px;
+			box-shadow: none;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 11px;
+			background: transparent !important;
+
+			svg {
+				display: inline-flex;
+			}
+
+			&.is-active {
+				border-color: $sp-shaped-gallery-accent;
+			}
+
+			&:focus:not(:disabled) {
+				outline: none;
+				box-shadow: none;
+			}
+		}
+	}
+
+	/* Trim the core GradientPicker to the compact inspector footprint. */
+	.components-custom-gradient-picker__gradient-bar.has-gradient {
+		height: 32px;
+	}
+
+	legend {
+		display: none;
+	}
+}

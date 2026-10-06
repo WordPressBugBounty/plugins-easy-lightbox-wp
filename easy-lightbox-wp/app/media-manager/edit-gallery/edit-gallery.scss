@@ -1,0 +1,778 @@
+/**
+ * Edit Gallery modal styles.
+ *
+ * Scoped entirely under `.sp-shaped-gallery-edit-gallery(__overlay)`. Measurements/colors are
+ * lifted from the Figma "Edit Gallery" frame; shared design tokens
+ * ($sp-shaped-gallery-*) come from chrome.scss, which @imports this partial (so the tokens are
+ * in scope and this ships in every bundle that ships the chrome).
+ *
+ * Extra one-off colors from the frame that have no shared token yet:
+ *   #f0f0f0 row fill, #ddd card border,
+ *   #646970 meta text, #b32d2e delete, #dcdcde / #f6f7f7 read-only file URL.
+ *
+ * This partial is imported directly by EditGalleryModal.jsx (its own compilation
+ * root), so it re-declares the shared design tokens it needs — mirror any change
+ * to these in chrome.scss. The brand ramp is the exception: it comes from
+ * styles/_brand.scss, the one place it is declared (§18).
+ */
+@import "../../styles/brand";
+
+$sp-shaped-gallery-primary: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-primary-50: $sp-shaped-gallery-brand-tint;
+$sp-shaped-gallery-black: #1e1e1e;
+$sp-shaped-gallery-text: #111827;
+$sp-shaped-gallery-blue: #007cba;
+$sp-shaped-gallery-blueberry: #3858e9;
+$sp-shaped-gallery-gray-800: #2f2f2f;
+$sp-shaped-gallery-gray-700: #757575;
+$sp-shaped-gallery-gray-600: #6b7280;
+$sp-shaped-gallery-gray-500: #949494;
+/* Neutral badge/border for a selected-but-inactive tile (mirrors the library grid). */
+$sp-shaped-gallery-check-grey: #b4b4b4;
+$sp-shaped-gallery-border: #e5e7eb;
+$sp-shaped-gallery-surface: #f9fafb;
+$sp-shaped-gallery-white: #fff;
+
+/* ---------- Modal frame (mirrors the media-modal frame overrides) ---------- */
+.sp-shaped-gallery-edit-gallery__overlay {
+	.components-modal__frame {
+		width: min(1536px, 96vw);
+		height: min(1082px, 94vh);
+		max-width: 96vw;
+		max-height: 94vh;
+		border-radius: 6px;
+	}
+	.components-modal__content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		border-radius: 6px;
+	}
+	/* Make WP's wrapper the flex column so the footer stays pinned + visible. */
+	.components-modal__children-container {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-height: 0;
+		height: 100%;
+		overflow: hidden;
+	}
+}
+
+.sp-shaped-gallery-edit-gallery {
+	/* Row: sidebar | content | details. Footer is a full-width sibling below. */
+	&__layout {
+		display: flex;
+		flex: 1 1 auto;
+		min-height: 0;
+	}
+
+	&__footer {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: flex-end;
+		height: 96px;
+		padding: 0 36px;
+		background: $sp-shaped-gallery-white;
+		border-top: 1.5px solid $sp-shaped-gallery-border;
+	}
+}
+
+/* ---------- Left: gallery actions ---------- */
+.sp-shaped-gallery-eg-sidebar {
+	display: flex;
+	flex: 0 0 250px;
+	flex-direction: column;
+	padding-top: 12px;
+	overflow-y: auto;
+	background: $sp-shaped-gallery-surface;
+	border-right: 1.5px solid $sp-shaped-gallery-border;
+
+	&__section {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 16px 30px;
+
+		&--links {
+			gap: 12px;
+		}
+	}
+
+	&__title {
+		margin: 0;
+		padding: 0;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: normal;
+		text-transform: uppercase;
+		color: $sp-shaped-gallery-gray-600;
+	}
+
+	&__back {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		padding: 0;
+		font-size: 15px;
+		font-weight: 500;
+		color: $sp-shaped-gallery-primary;
+		background: none;
+		border: 0;
+		cursor: pointer;
+
+		svg {
+			fill: $sp-shaped-gallery-primary;
+		}
+		span {
+			text-align: left;
+		}
+		&:hover span {
+			text-decoration: underline;
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 2px;
+		}
+	}
+
+	&__divider {
+		height: 1.5px;
+		margin: 0 25px;
+		background: $sp-shaped-gallery-border;
+	}
+
+	&__current {
+		margin: 0;
+		font-size: 14px;
+		font-weight: 700;
+		color: $sp-shaped-gallery-black;
+	}
+
+	&__link {
+		padding: 0;
+		font-size: 15px;
+		font-weight: 500;
+		text-align: left;
+		color: $sp-shaped-gallery-primary;
+		background: none;
+		border: 0;
+		cursor: pointer;
+
+		&:hover {
+			text-decoration: underline;
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 2px;
+		}
+	}
+}
+
+/* ---------- Center: title + workspace ---------- */
+.sp-shaped-gallery-eg-content {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	min-width: 0;
+	background: $sp-shaped-gallery-white;
+
+	&__header {
+		display: flex;
+		flex: none;
+		align-items: center;
+		height: 88px;
+		padding: 24px;
+		border-bottom: 1.5px solid $sp-shaped-gallery-border;
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 32px;
+		font-weight: 600;
+		line-height: 1.1;
+		color: $sp-shaped-gallery-text;
+	}
+}
+
+.sp-shaped-gallery-eg-workspace {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 24px;
+	min-height: 0;
+	padding: 24px;
+	overflow-y: auto;
+}
+
+/* Contextual bulk-actions bar (parent renders it only while tiles are selected). */
+.sp-shaped-gallery-eg-actionbar {
+	display: flex;
+	flex: none;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	min-height: 52px;
+	padding: 12px 24px;
+	background: $sp-shaped-gallery-primary-50;
+	border: 1px solid $sp-shaped-gallery-brand-28;
+	border-radius: 6px;
+
+	&__text {
+		margin: 0;
+		font-size: 16px;
+		line-height: 1.4;
+		color: $sp-shaped-gallery-black;
+	}
+
+	&__buttons {
+		display: flex;
+		flex: none;
+		align-items: center;
+		gap: 12px;
+	}
+}
+
+/* Default-view reorder instructions (neutral grey; mirrors the action-bar frame). */
+.sp-shaped-gallery-eg-hintbar {
+	display: flex;
+	flex: none;
+	align-items: center;
+	gap: 16px;
+	min-height: 52px;
+	padding: 12px 24px;
+	background: #f0f0f0;
+	border: 1px solid $sp-shaped-gallery-border;
+	border-radius: 6px;
+
+	&__text {
+		margin: 0;
+		font-size: 16px;
+		line-height: 1.4;
+		color: $sp-shaped-gallery-gray-800;
+	}
+
+	/* Push the Reverse Order action to the far right of the bar. */
+	.sp-shaped-gallery-eg-btn {
+		margin-left: auto;
+	}
+}
+
+/* ---------- Buttons ---------- */
+.sp-shaped-gallery-eg-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 15px 24px;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1;
+	white-space: nowrap;
+	border: 1px solid transparent;
+	border-radius: 6px;
+	cursor: pointer;
+
+	&--sm {
+		padding: 8px 12px;
+		font-size: 12px;
+		border-radius: 4px;
+	}
+
+	/*
+	 * A white label, so the fill has to clear the 4.5:1 contrast floor: Primary/500
+	 * is 3.58:1 and never goes behind text. Rest is Primary/600 (5.03:1) and hover
+	 * Primary/700 (6.95:1) — the same pair every other accent button in the plugin
+	 * uses. The BORDER stays Primary/500, which is a boundary and not text.
+	 */
+	&--primary {
+		color: $sp-shaped-gallery-white;
+		background: $sp-shaped-gallery-brand-strong;
+		border-color: $sp-shaped-gallery-primary;
+
+		&:hover {
+			background: $sp-shaped-gallery-brand-deep;
+		}
+	}
+
+	&--ghost {
+		color: $sp-shaped-gallery-primary;
+		background: $sp-shaped-gallery-white;
+		border-color: $sp-shaped-gallery-primary;
+
+		svg {
+			fill: $sp-shaped-gallery-primary;
+		}
+
+		&:hover {
+			background: $sp-shaped-gallery-primary-50;
+		}
+	}
+
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-blue;
+		outline-offset: 2px;
+	}
+}
+
+/* ---------- Media grid + cards ---------- */
+.sp-shaped-gallery-eg-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+	gap: 20px 19px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	/* Keep Shift-click range selection from highlighting tile text. */
+	user-select: none;
+
+	&__cell {
+		min-width: 0;
+
+		&[draggable="true"] {
+			cursor: grab;
+		}
+
+		&.is-dragging {
+			cursor: grabbing;
+			opacity: 0.5;
+		}
+	}
+
+	&__empty {
+		margin: 0;
+		padding: 40px 0;
+		text-align: center;
+		color: $sp-shaped-gallery-gray-700;
+	}
+}
+
+.sp-shaped-gallery-eg-card {
+	position: relative;
+	display: flex;
+	box-sizing: border-box;
+	flex-direction: column;
+	margin: 0;
+	padding: 4px;
+	background: $sp-shaped-gallery-white;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+
+	/* Bulk-selected (default "All" view) → neutral grey border, matching the
+	 * media-library grid. The reduced padding keeps the tile's outer size constant
+	 * against the 1px resting border, so selecting never shifts layout. */
+	&.is-selected {
+		padding: 3px;
+		border: 2px solid $sp-shaped-gallery-check-grey;
+	}
+
+	/* The tile whose details fill the right panel → brand color. A border (not the
+	 * old ring) mirrors the media-library active tile; source order lets it win over
+	 * the grey selected border when a tile is both active and bulk-selected. */
+	&.is-active {
+		padding: 3px;
+		border: 2px solid $sp-shaped-gallery-primary;
+	}
+
+	&__thumb {
+		position: relative;
+		display: block;
+		width: 100%;
+		padding: 0;
+		overflow: hidden;
+		background: none;
+		border: 0;
+		border-radius: 2px;
+		cursor: pointer;
+		aspect-ratio: 112 / 82;
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-primary;
+			outline-offset: 2px;
+		}
+	}
+
+	&__img {
+		position: absolute;
+		inset: 0;
+		background-color: #d9d9d9;
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		border-radius: 2px;
+	}
+
+	&__scrim {
+		position: absolute;
+		inset: 0;
+		background: transparent;
+		border-radius: 2px;
+		transition: background 0.15s ease;
+	}
+
+	&:hover:not(.is-video) .sp-shaped-gallery-eg-card__scrim {
+		background: rgba(0, 0, 0, 0.1);
+	}
+	&.is-video .sp-shaped-gallery-eg-card__scrim {
+		background: rgba(0, 0, 0, 0.4);
+	}
+
+	&__play {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 24px;
+		height: 24px;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+	}
+
+	/* Remove-from-gallery button — top-right, always visible (the corner is
+	 * free: nothing else is drawn over the thumbnail). Same red disc as the
+	 * external pane's staged-tile remove (`.sp-shaped-gallery-external__remove`
+	 * in chrome.scss) so "remove" reads the same everywhere in the manager. */
+	&__remove {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		z-index: 3;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		color: $sp-shaped-gallery-white;
+		background: #e02d2d;
+		border: 0;
+		border-radius: 50%;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		cursor: pointer;
+
+		svg {
+			width: 20px;
+			height: 20px;
+			fill: currentcolor;
+		}
+
+		&:hover {
+			background: #c41f1f;
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 2px;
+		}
+	}
+
+	&__caption {
+		display: -webkit-box;
+		padding: 6px 4px 4px;
+		overflow: hidden;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 1.2;
+		color: $sp-shaped-gallery-black;
+		text-align: center;
+		word-break: break-word;
+		overflow-wrap: anywhere;
+		opacity: 0.85;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		-webkit-box-orient: vertical;
+	}
+}
+
+/* ---------- Right: attachment details ---------- */
+.sp-shaped-gallery-eg-rightcol {
+	display: flex;
+	flex: 0 0 283px;
+	flex-direction: column;
+	min-height: 0;
+	background: $sp-shaped-gallery-surface;
+	border-left: 1px solid $sp-shaped-gallery-border;
+
+	&__header {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: flex-end;
+		height: 88px;
+		padding: 24px;
+		border-bottom: 1.5px solid $sp-shaped-gallery-border;
+	}
+}
+
+.sp-shaped-gallery-eg-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	box-sizing: border-box;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	color: $sp-shaped-gallery-black;
+	background: transparent;
+	border: 1.5px solid $sp-shaped-gallery-gray-500;
+	border-radius: 50%;
+	cursor: pointer;
+
+	&:hover {
+		background: rgba(0, 0, 0, 0.05);
+	}
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-blue;
+		outline-offset: 2px;
+	}
+}
+
+.sp-shaped-gallery-eg-details {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 16px;
+	min-height: 0;
+	padding: 16px;
+	overflow-y: auto;
+
+	&__title {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: normal;
+		text-transform: uppercase;
+		color: $sp-shaped-gallery-gray-600;
+	}
+
+	&__preview {
+		float: left;
+		margin-bottom: 5px;
+		margin-right: 10px;
+		margin-top: 5px;
+		max-height: 120px;
+		max-width: 120px;
+		position: relative;
+
+		img,
+		video {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&__meta {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	&__filename {
+		margin: 0;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 1.2;
+		color: $sp-shaped-gallery-black;
+		word-break: break-word;
+	}
+
+	&__metaline {
+		margin: 0;
+		font-size: 13px;
+		line-height: 1.3;
+		color: #646970;
+		word-break: break-word;
+	}
+
+	&__links {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		align-items: flex-start;
+		padding-top: 4px;
+	}
+
+	&__rule {
+		width: 100%;
+		height: 0;
+		margin: 0;
+		border: 0;
+		border-top: 1px solid $sp-shaped-gallery-border;
+	}
+
+	&__none {
+		margin: 0;
+		font-size: 13px;
+		color: #646970;
+	}
+}
+
+.sp-shaped-gallery-eg-link {
+	padding: 0;
+	font-size: 13px;
+	color: $sp-shaped-gallery-blueberry;
+	text-align: left;
+	background: none;
+	border: 0;
+	text-decoration: none;
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+	&--danger {
+		color: #b32d2e;
+	}
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-blue;
+		outline-offset: 2px;
+	}
+}
+
+/* Inline links (original image, learn-how) stay underlined per the design. */
+.sp-shaped-gallery-eg-details__metaline .sp-shaped-gallery-eg-link,
+.sp-shaped-gallery-eg-field__help .sp-shaped-gallery-eg-link {
+	text-decoration: underline;
+}
+
+.sp-shaped-gallery-eg-field {
+	display: flex;
+	gap: 12px;
+	align-items: flex-start;
+	width: 100%;
+
+	&__label {
+		flex: 0 0 70px;
+		box-sizing: border-box;
+		width: 70px;
+		padding-top: 7px;
+		font-size: 13px;
+		text-align: right;
+		color: #646970;
+	}
+
+	&__control {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+	}
+
+	&__help {
+		margin: 0;
+		font-size: 12px;
+		line-height: 1.4;
+		color: #646970;
+	}
+}
+
+.sp-shaped-gallery-eg-input {
+	box-sizing: border-box;
+	width: 100%;
+	height: 32px;
+	padding: 0 8px;
+	font-size: 13px;
+	color: $sp-shaped-gallery-black;
+	background: $sp-shaped-gallery-white;
+	border: 0.5px solid $sp-shaped-gallery-gray-800;
+	border-radius: 3px;
+
+	&--area {
+		height: auto;
+		padding: 8px;
+		line-height: 1.4;
+		resize: vertical;
+	}
+
+	&--readonly {
+		color: $sp-shaped-gallery-gray-700;
+		background: #f6f7f7;
+		border-color: #dcdcde;
+	}
+
+	&:focus {
+		border-color: $sp-shaped-gallery-blue;
+		outline: none;
+		box-shadow: 0 0 0 1px $sp-shaped-gallery-blue;
+	}
+	&:disabled {
+		color: $sp-shaped-gallery-gray-500;
+		background: #f6f7f7;
+		cursor: not-allowed;
+	}
+}
+
+.sp-shaped-gallery-eg-copybtn {
+	align-self: flex-start;
+	padding: 6px 12px;
+	font-size: 12px;
+	font-weight: 500;
+	color: $sp-shaped-gallery-blueberry;
+	background: #f6f7f7;
+	border: 1px solid $sp-shaped-gallery-blueberry;
+	border-radius: 3px;
+	cursor: pointer;
+
+	&:hover:not(:disabled) {
+		background: #eef1fe;
+	}
+	&:disabled {
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-blue;
+		outline-offset: 2px;
+	}
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1200px) {
+	.sp-shaped-gallery-eg-sidebar {
+		flex-basis: 220px;
+	}
+	.sp-shaped-gallery-eg-rightcol {
+		flex-basis: 260px;
+	}
+}
+
+@media (max-width: 900px) {
+	.sp-shaped-gallery-edit-gallery__layout {
+		flex-direction: column;
+		overflow-y: auto;
+	}
+	.sp-shaped-gallery-eg-sidebar {
+		flex: none;
+		border-right: 0;
+		border-bottom: 1.5px solid $sp-shaped-gallery-border;
+	}
+	.sp-shaped-gallery-eg-content {
+		flex: none;
+	}
+	.sp-shaped-gallery-eg-workspace {
+		overflow: visible;
+	}
+	.sp-shaped-gallery-eg-rightcol {
+		flex: none;
+		border-top: 1.5px solid $sp-shaped-gallery-border;
+		border-left: 0;
+	}
+	.sp-shaped-gallery-eg-rightcol__header {
+		height: auto;
+		padding: 12px 16px;
+	}
+	.sp-shaped-gallery-eg-details {
+		overflow: visible;
+	}
+}

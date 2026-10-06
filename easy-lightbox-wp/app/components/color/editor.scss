@@ -1,0 +1,44 @@
+/* ColorPicker — swatch toggle + dropdown panel (editor-only). */
+
+.sp-shaped-gallery-color-picker {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	&__right {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+
+		button.components-button {
+			height: 24px;
+			padding: 0;
+			line-height: 1;
+
+			&:focus:not(:disabled) {
+				box-shadow: none;
+				outline: none;
+			}
+
+			.component-color-indicator {
+				width: 24px;
+				height: 24px;
+			}
+		}
+	}
+}
+
+.components-popover__content:has(.sp-shaped-gallery-color-picker__panel) {
+	width: 280px;
+	padding: 16px;
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	.react-colorful,
+	.components-color-picker,
+	.react-colorful__hue,
+	.react-colorful__alpha {
+		width: 100%;
+	}
+}

@@ -1,0 +1,51 @@
+/* PositionPicker — visual 3×3 position selector (editor-only). */
+
+@import "../../styles/brand";
+
+.sp-shaped-gallery-position-picker {
+	&__label {
+		display: block;
+		margin-bottom: 20px;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 24px;
+		color: #2f2f2f;
+	}
+
+	/* Simple, transparent grid stage to align the 9 nodes. */
+	&__stage {
+		display: grid;
+		gap: 20px;
+		grid-template-columns: repeat(3, 24px);
+		grid-template-rows: repeat(3, 20px);
+		width: max-content;
+	}
+
+	/* Each node is a flat square button. */
+	&__node {
+		display: block;
+		width: 8px;
+		height: 8px;
+		margin: 0;
+		padding: 0;
+		background: #d9d9d9;
+		border: 0;
+		cursor: pointer;
+		transition: background 0.12s ease, transform 0.12s ease;
+
+		&:hover {
+			background: $sp-shaped-gallery-brand-soft;
+			transform: scale(1.2);
+		}
+
+		&.is-selected {
+			transform: scale(1.2);
+			background: $sp-shaped-gallery-brand;
+		}
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-brand;
+			outline-offset: 2px;
+		}
+	}
+}

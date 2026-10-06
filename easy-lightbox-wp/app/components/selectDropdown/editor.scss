@@ -1,0 +1,57 @@
+/* SelectDropdown — icon option list inside a popover (editor-only). */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-accent-tint: $sp-shaped-gallery-brand-tint;
+
+.sp-shaped-gallery-select-dropdown {
+	display: flex;
+	flex-direction: column;
+	max-height: 400px;
+	margin: 0;
+	padding: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	box-sizing: border-box;
+
+	&__option {
+		flex-shrink: 0;
+		margin: 0;
+
+		button {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			height: 42px;
+			padding: 0 13px;
+			color: inherit;
+			background: transparent;
+			border: none;
+			border-bottom: 1px solid $sp-shaped-gallery-accent-tint;
+			cursor: pointer;
+
+			> span {
+				display: flex;
+				align-items: center;
+				font-size: 13px;
+			}
+
+			&:hover {
+				background-color: $sp-shaped-gallery-accent-tint;
+			}
+
+			&.is-active {
+				color: #fff;
+				background-color: $sp-shaped-gallery-accent;
+			}
+		}
+	}
+}
+
+.sp-shaped-gallery-popover__content-visible:has(.sp-shaped-gallery-select-dropdown) {
+	.sp-shaped-gallery-popover__content-visible-inner {
+		padding: 0;
+	}
+}

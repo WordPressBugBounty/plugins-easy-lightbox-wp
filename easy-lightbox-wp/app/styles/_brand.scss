@@ -1,0 +1,118 @@
+/**
+ * Brand ramp — THE single source of truth for the ShapedGallery accent (§18).
+ *
+ * Variables only, so this partial can be `@import`ed by every stylesheet that
+ * needs the accent without emitting a duplicate rule. Nothing else in `app/` may
+ * write a brand hex literal: change `$sp-shaped-gallery-brand` here and the
+ * block-editor chrome, the dashboard SPA, the media manager, the Ready Patterns
+ * modal and the shared control library all follow.
+ *
+ * Three consumers re-export these under their own historical names rather than
+ * renaming ~200 call sites: `styles/chrome.scss` as `$sp-shaped-gallery-primary*`,
+ * `components/shared.scss` as `$sp-shaped-gallery-accent*`, `ready-patterns/editor.scss`
+ * as `$rp-accent*`. `admin/admin.scss` interpolates them into the
+ * `--sp-shaped-gallery-dash-accent*` custom properties the dashboard reads at
+ * runtime (§16). The JS twin — a stylesheet cannot reach a `fill` baked into
+ * inline SVG — is the `BRAND_*` block at the top of `app/icons/index.js`; the two
+ * must agree.
+ *
+ * ---------- Where the values come from ----------
+ *
+ * Figma "Smart Gallery V2", node 39-11651. Two steps are design tokens read off
+ * that file rather than invented: `primary/base` #078ddd is the brand, and `50`
+ * #f0f6ff is the selected-surface tint. That frame paints the brand directly onto
+ * toolbar icons, slider thumbs, active segment borders and selected layout-card
+ * borders. Body links stay Gutenberg Blue #007cba and the inspector's own tab
+ * underline stays core's Blueberry, so neither is part of this ramp.
+ *
+ * The other two steps are DERIVED, by measurement rather than by a fixed lightness
+ * offset: the previous brand was a pink at hsl(324, 86%, 50%) and this one is a
+ * blue at hsl(202, 94%, 45%), and equal lightness in the two hues does not buy
+ * equal contrast. Each step holds the ratio its pink predecessor measured, so no
+ * accent surface regressed in the rebrand:
+ *
+ *   role                    was        is         on white      on --tint
+ *   Primary/50   tint       #fef1f9    #f0f6ff    1.10 -> 1.09  --
+ *   Primary/400  soft       #f35eb7    #089ef7    2.96 -> 2.90  2.70 -> 2.67
+ *   Primary/500  BRAND      #ed1495    #078ddd    4.09 -> 3.58  --
+ *   Primary/600  strong     #d11083    #0674b5    5.11 -> 5.03  4.66 -> 4.63
+ *   Primary/700  deep       --         #055e92    6.95          --
+ *
+ * Primary/600 is the accent TEXT colour and the hover fill under white labels —
+ * the step that has to clear §14's 4.5:1, and it does at 5.03:1. Figma paints
+ * active segment LABELS in the brand itself; this ramp deliberately does not, for
+ * the same reason the pink build didn't: the brand is 3.58:1 on white and would
+ * fail §14. Primary/500 stays for borders, icons, thumbs and fills.
+ *
+ * Primary/500 does NOT clear 4.5:1, so it is never a background under text. The
+ * pink build put it under the white labels of the dashboard's five accent buttons
+ * at 4.09:1 — already short of AA, and the rebrand would have taken that to
+ * 3.58:1 — so those buttons now rest on Primary/600 (5.03:1) and hover to
+ * Primary/700 (6.95:1). Both states clear §14 and the rest/hover step is the same
+ * size the pink ramp used (-6 lightness), so the button still reads as one shade
+ * darkening under the pointer. Primary/500 keeps every non-text job: borders,
+ * icons, slider thumbs, the nav underline, checkbox fills, tints.
+
+ * Primary/700 doubles as the label colour on the promo artwork, the one artwork
+ * tint rated to carry text.
+ *
+ * Primary/400 is the softer step: the 1px active-segment hairline, which always
+ * sits beside a Primary/600 label (reinforcement, not a sole state indicator,
+ * §14), and the Position Picker's dot hover, which pairs it with a scale
+ * transform. It stays lighter than the brand so hover and selected stay apart.
+ */
+
+/* Primary/500 — the brand. Figma `primary/base`. THE hex; everything else derives. */
+$sp-shaped-gallery-brand: #078ddd;
+/* Primary/50 — selected-surface / active-row tint. Figma `50`. */
+$sp-shaped-gallery-brand-tint: #f0f6ff;
+/* Primary/400 — softer step: active-segment hairline, dot hover. */
+$sp-shaped-gallery-brand-soft: #089ef7;
+/* Primary/600 — accent TEXT, and the RESTING fill of any button with a white
+ * label: 5.03:1, so both roles clear §14. */
+$sp-shaped-gallery-brand-strong: #0674b5;
+/* Primary/700 — the hover/active fill under those same white labels (6.95:1), and
+ * label text on the promo artwork below (4.64:1 on --art-mid). */
+$sp-shaped-gallery-brand-deep: #055e92;
+
+/*
+ * The brand at low alpha — every wash the design draws over white. Deriving these
+ * instead of pasting six more hexes is what keeps this file the only place the
+ * colour is spelled out, and each reproduces the opaque hex the pink build
+ * hand-picked (those were themselves the accent over white at exactly these steps,
+ * which is how the percentages were recovered):
+ *
+ *   02  shortcode-field fill                      was #fffbfd
+ *   04  list zebra stripe                         was #fff6fc
+ *   08  patterns header wash / list header + card edge   was #fdecf7 / #ffebf7
+ *   12  active-facet fill                         was #fde3f2
+ *   22  header rule / marker band                 was #fbcbe8 / #ffd1fa
+ *   28  soft brand hairline                       was #fabde1
+ *
+ * Every surface that uses them sits on white, so the alpha form renders identically
+ * to those hexes. Do not reuse them over a tinted ground without re-measuring.
+ */
+$sp-shaped-gallery-brand-02: rgba($sp-shaped-gallery-brand, 0.02);
+$sp-shaped-gallery-brand-04: rgba($sp-shaped-gallery-brand, 0.04);
+$sp-shaped-gallery-brand-08: rgba($sp-shaped-gallery-brand, 0.08);
+$sp-shaped-gallery-brand-12: rgba($sp-shaped-gallery-brand, 0.12);
+$sp-shaped-gallery-brand-22: rgba($sp-shaped-gallery-brand, 0.22);
+$sp-shaped-gallery-brand-28: rgba($sp-shaped-gallery-brand, 0.28);
+
+/*
+ * Artwork only: the brand-mark gradient — the block icon's own stops, which the
+ * picker lockup runs too. Decorative: never a control's state, and never behind
+ * text. The "Ready Patterns Library" button used to run it behind a white label;
+ * it no longer does, but it is a separate, deliberate exception (see
+ * ready-patterns/editor.scss) that DOES rest its white label straight on
+ * Primary/500 despite the 3.58:1 shortfall.
+ */
+$sp-shaped-gallery-brand-grad-light: #19baff;
+$sp-shaped-gallery-brand-grad-dark: #0056a1;
+
+/*
+ * Artwork only: the wordmark's navy (Figma Logos, node 1830:388). Mirrored by
+ * `BRAND_INK` in `app/icons/index.js`, which is where it is actually painted — the
+ * lockup is inline SVG.
+ */
+$sp-shaped-gallery-brand-ink: #0a223c;

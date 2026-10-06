@@ -1,0 +1,414 @@
+/*
+ * Manage Galleries page. Imported by admin.scss — never from JS (see the header
+ * comment there). Classes carry the full `sp-shaped-gallery-manage-` / `__` prefix,
+ * matching the convention in app/components/shared.scss.
+ *
+ * The table is intrinsic: `auto` columns with a fixed-width shortcode / date /
+ * actions trio, so a long gallery title takes the slack instead of overflowing the
+ * card. The tinted even rows are the design's zebra striping and carry no meaning.
+ *
+ * Metrics come straight from the Figma frame (Save Templates / Template / Content
+ * Container): a 48px header row over 64px body rows, the four columns at
+ * auto / 320 / 240 / 128, and two washes of the accent — the brand at 8% for the
+ * header and the card border, at 4% for the zebra. They come off the brand ramp
+ * (§18) rather than the dashboard's custom properties because they exist nowhere
+ * else on the dashboard; the accent, border and radius values that DO recur still
+ * come from the tokens.
+ */
+
+.sp-shaped-gallery-manage {
+	/* --- toolbar -------------------------------------------------------------- */
+
+	/*
+	 * Only the toolbar card takes the design's tighter padding; the list card below
+	 * keeps its own, which a blanket `.sp-shaped-gallery-dash-card` override used to
+	 * break.
+	 */
+	&__bar.sp-shaped-gallery-dash-card {
+		padding: 18px 18px 18px 22px;
+	}
+
+	&__toolbar {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+	}
+
+	&__toolbar-start {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__select,
+	&__search {
+		height: 40px;
+		max-width: 100%;
+		margin: 0;
+		border-radius: var(--sp-shaped-gallery-dash-radius-sm);
+		background: var(--sp-shaped-gallery-dash-surface);
+		color: #2f2f2f;
+		font-size: 14px;
+		line-height: 20px;
+		box-shadow: none;
+	}
+
+	&__select {
+		min-width: 138px;
+		/* Right side is tighter than the left: the design leaves 12px for the chevron. */
+		padding: 0 12px 0 16px;
+		border: 1px solid var(--sp-shaped-gallery-dash-border-soft);
+		font-weight: 500;
+	}
+
+	&__search {
+		width: 260px;
+		padding: 0 16px;
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+
+		&::placeholder {
+			color: var(--sp-shaped-gallery-dash-muted);
+			opacity: 1;
+		}
+	}
+
+	&__apply {
+		height: 40px;
+		padding: 0 16px;
+		border: 1px solid var(--sp-shaped-gallery-dash-accent);
+		border-radius: var(--sp-shaped-gallery-dash-radius-sm);
+		background: var(--sp-shaped-gallery-dash-surface);
+		/* Accent TEXT, not the accent itself — the brand is 3.6:1 on white (§14). */
+		color: var(--sp-shaped-gallery-dash-accent-strong);
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 20px;
+		cursor: pointer;
+
+		&:hover:not(:disabled) {
+			background: var(--sp-shaped-gallery-dash-accent-tint);
+		}
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+	}
+
+	/* --- table ---------------------------------------------------------------- */
+
+	&__list.sp-shaped-gallery-dash-card {
+		padding: 0;
+		/* The design tints the card edge with the header pink, not the neutral border. */
+		border-color: $sp-shaped-gallery-brand-08;
+		overflow: hidden;
+	}
+
+	&__table {
+		width: 100%;
+		border-collapse: collapse;
+		table-layout: auto;
+
+		th,
+		td {
+			padding: 0 16px;
+			text-align: left;
+			vertical-align: middle;
+		}
+
+		thead th {
+			height: 48px;
+			background: $sp-shaped-gallery-brand-08;
+			color: #2f2f2f;
+			font-size: 16px;
+			font-weight: 500;
+			line-height: 20px;
+			white-space: nowrap;
+		}
+
+		tbody tr {
+			height: 64px;
+		}
+
+		tbody tr:nth-child(even) {
+			background: $sp-shaped-gallery-brand-04;
+		}
+
+		/*
+		 * 20px, rounded, accent when checked — the design's checkbox, not wp-admin's
+		 * 16px square in the user's admin colour. Core draws the tick as a 21px
+		 * `content:` SVG offset for a 16px box, so both the size and the offset have
+		 * to move together or the tick lands off-centre.
+		 */
+		input[type='checkbox'] {
+			width: 20px;
+			min-width: 20px;
+			height: 20px;
+			margin: 0;
+			border: 1px solid #b8b8b8;
+			border-radius: 5px;
+
+			&:checked {
+				background: var(--sp-shaped-gallery-dash-accent);
+				border-color: var(--sp-shaped-gallery-dash-accent);
+			}
+
+			&:checked::before {
+				width: 22px;
+				height: 22px;
+				margin: -2px 0 0 -2px;
+			}
+		}
+
+		/*
+		 * Column widths live here, nested, so each selector carries two classes and
+		 * outranks the `th, td` padding above (one class + one element) — the reason
+		 * the check cell can drop its right padding without `!important`.
+		 *
+		 * The checkbox is its own cell for the header/row relationship a screen reader
+		 * needs, but the design draws it inside the title group: 24px in from the card
+		 * edge, 16px before the title — this cell's padding plus the title cell's, so
+		 * the title text lands at 60px either way.
+		 */
+		.sp-shaped-gallery-manage__cell--check {
+			width: 44px;
+			padding-right: 0;
+			padding-left: 24px;
+		}
+
+		/*
+		 * The shortcode chip is the shared ShortcodeField, sized up for this table:
+		 * the design sets it at 14px/24 with 4px/12px padding, where the block sidebar
+		 * keeps the component's tighter 12px default. Overridden here rather than
+		 * changed in the component, so the sidebar is untouched (§6.7 — extend, don't
+		 * fork), and at three classes because the component's own rule is two: a tie
+		 * would hand the decision to whichever stylesheet webpack emitted last.
+		 */
+		.sp-shaped-gallery-manage__cell--shortcode {
+			width: 320px;
+
+			.sp-shaped-gallery-shortcode-field__box {
+				/*
+				 * No width override needed: the shared rule's `size`-driven input
+				 * already sizes the box to the value, at whatever font this row
+				 * sets below. Just a taller floor than the shared 140px, since a
+				 * short id at this larger 14px type still wants some presence.
+				 */
+				min-width: 160px;
+				border-color: #b2c5cd;
+			}
+
+			.sp-shaped-gallery-shortcode-field__input {
+				padding: 4px 12px;
+				font-size: 14px;
+				line-height: 24px;
+			}
+		}
+
+		.sp-shaped-gallery-manage__cell--date {
+			width: 240px;
+		}
+
+		.sp-shaped-gallery-manage__cell--actions {
+			width: 128px;
+			white-space: nowrap;
+		}
+	}
+
+	&__title {
+		display: block;
+		color: var(--sp-shaped-gallery-dash-accent-strong);
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 16px;
+		text-decoration: none;
+
+		&:hover,
+		&:focus {
+			outline: 0;
+			box-shadow: none;
+			text-decoration: underline;
+		}
+	}
+
+	&__meta {
+		display: block;
+		margin-top: 4px;
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 12px;
+		line-height: 16px;
+	}
+
+	/* Status over date, 4px apart — one stacked pair, both in the design's body colour. */
+	&__status,
+	&__date {
+		display: block;
+		color: #2f2f2f;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	&__status {
+		margin-bottom: 4px;
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		/* 24px targets on a 32px pitch: the design's 16px glyphs, 16px apart. */
+		gap: 8px;
+	}
+
+	&__action {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--sp-shaped-gallery-dash-muted);
+		cursor: pointer;
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+
+		&:hover:not(:disabled) {
+			color: var(--sp-shaped-gallery-dash-accent);
+		}
+
+		&--danger:hover:not(:disabled) {
+			color: #d63638;
+		}
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+	}
+
+	/* --- states + pager ------------------------------------------------------- */
+
+	&__state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 6px;
+		padding: 48px 24px;
+		color: var(--sp-shaped-gallery-dash-muted);
+		text-align: center;
+	}
+
+	&__state--error {
+		color: #d63638;
+	}
+
+	&__pager {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 12px;
+		padding: 14px 16px;
+		border-top: 1px solid var(--sp-shaped-gallery-dash-border-soft);
+	}
+
+	&__page {
+		height: 32px;
+		padding: 0 12px;
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		background: var(--sp-shaped-gallery-dash-surface);
+		color: var(--sp-shaped-gallery-dash-body);
+		cursor: pointer;
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+	}
+
+	&__page-count {
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 13px;
+	}
+}
+
+/* --- confirm dialog ---------------------------------------------------------- */
+
+.sp-shaped-gallery-manage-confirm {
+	max-width: 440px;
+
+	&__title {
+		margin-bottom: 8px;
+		font-size: 18px;
+		font-weight: 600;
+	}
+
+	&__text {
+		margin-bottom: 20px;
+		color: var(--sp-shaped-gallery-dash-body);
+		line-height: 22px;
+	}
+
+	&__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 12px;
+	}
+
+	&__cancel,
+	&__confirm {
+		height: 38px;
+		padding: 0 18px;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		font-size: 14px;
+		font-weight: 500;
+		cursor: pointer;
+	}
+
+	&__cancel {
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		background: var(--sp-shaped-gallery-dash-surface);
+		color: var(--sp-shaped-gallery-dash-body);
+	}
+
+	&__confirm {
+		border: 1px solid #d63638;
+		background: #d63638;
+		color: #fff;
+
+		&:hover {
+			background: #b32d2e;
+		}
+	}
+}
+
+@media screen and (max-width: 1024px) {
+	.sp-shaped-gallery-manage {
+		&__search {
+			width: 100%;
+		}
+
+		/*
+		 * The table keeps five columns but stops reserving fixed widths, so the
+		 * shortcode field and the date can compress instead of forcing a horizontal
+		 * scrollbar on the card.
+		 *
+		 * Nested under `&__table` to match the specificity of the widths it undoes —
+		 * as a bare cell class it would be one class against two and lose.
+		 */
+		&__table {
+			.sp-shaped-gallery-manage__cell--shortcode,
+			.sp-shaped-gallery-manage__cell--date,
+			.sp-shaped-gallery-manage__cell--actions {
+				width: auto;
+			}
+		}
+	}
+}

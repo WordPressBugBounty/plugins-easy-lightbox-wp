@@ -1,0 +1,40 @@
+/* Modal — centred overlay + dimmed backdrop. Shared by the editor and the admin
+   dashboard; the panel renders inline (position: fixed), not in a portal, so
+   wrapper-scoped overrides still reach it. */
+
+.sp-shaped-gallery-modal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 9999999;
+	width: 100%;
+	max-width: 540px;
+	max-height: 80%;
+	padding: 20px;
+	overflow-y: auto;
+	color: #000;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+	transform: translate(-50%, -50%);
+
+	&__backdrop {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 9999998;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	&__close.components-button {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 1;
+		min-width: 28px;
+		height: 28px;
+		padding: 0;
+	}
+}

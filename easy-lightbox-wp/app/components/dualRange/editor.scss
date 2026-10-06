@@ -1,0 +1,106 @@
+/* DualRange — two-thumb range on one track (editor-only). */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-rail: #ddd;
+$sp-shaped-gallery-muted: #8c8f94;
+$sp-shaped-gallery-field-border: #ddd;
+$sp-shaped-gallery-text: #1e1e1e;
+
+.sp-shaped-gallery-dual-range {
+	&__body {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	/* Current-value badge at each end (e.g. "0%", "100%"). */
+	&__value {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 32px;
+		padding: 4px;
+		font-size: 13px;
+		color: $sp-shaped-gallery-text;
+		background: #fff;
+		border: 1px solid $sp-shaped-gallery-field-border;
+		border-radius: 2px;
+	}
+
+	&__track-col {
+		flex: 1;
+		min-width: 0;
+	}
+
+	&__track {
+		position: relative;
+		height: 20px;
+		cursor: pointer;
+	}
+
+	&__rail {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		left: 0;
+		height: 4px;
+		background: $sp-shaped-gallery-rail;
+		border-radius: 2px;
+		transform: translateY(-50%);
+	}
+
+	&__fill {
+		position: absolute;
+		top: 50%;
+		height: 4px;
+		background: $sp-shaped-gallery-accent;
+		border-radius: 2px;
+		transform: translateY(-50%);
+	}
+
+	/* Midpoint marker. */
+	&__tick {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 1px;
+		height: 13px;
+		background: $sp-shaped-gallery-muted;
+		transform: translate(-50%, -50%);
+	}
+
+	&__thumb {
+		position: absolute;
+		top: 50%;
+		width: 14px;
+		height: 14px;
+		padding: 0;
+		background: $sp-shaped-gallery-accent;
+		border: 2px solid #fff;
+		border-radius: 50%;
+		box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+		transform: translate(-50%, -50%);
+		cursor: grab;
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-accent;
+			outline-offset: 2px;
+		}
+
+		&:active {
+			cursor: grabbing;
+		}
+	}
+
+	&__captions {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 2px;
+		font-size: 11px;
+		color: $sp-shaped-gallery-muted;
+	}
+}

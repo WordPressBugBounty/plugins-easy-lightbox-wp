@@ -1,0 +1,850 @@
+/**
+ * Gallery rendering styles — loaded on the frontend AND in the editor preview.
+ *
+ * Grid is pure CSS Grid. Justified & Masonry get a sensible no-JS fallback here;
+ * the frontend script overwrites the geometry with pixel-accurate values once it
+ * runs.
+ */
+
+.sp-shaped-gallery {
+	--sp-shaped-gallery-cols: 4;
+	--sp-shaped-gallery-cols-t: 3;
+	--sp-shaped-gallery-cols-m: 2;
+	--sp-shaped-gallery-gh: 15px;
+	--sp-shaped-gallery-gh-t: 15px;
+	--sp-shaped-gallery-gh-m: 15px;
+	--sp-shaped-gallery-gv: 15px;
+	--sp-shaped-gallery-gv-t: 15px;
+	--sp-shaped-gallery-gv-m: 15px;
+	--sp-shaped-gallery-row: 280px;
+
+	background: var(--sp-shaped-gallery-wrap-bg, transparent);
+	padding: var(--sp-shaped-gallery-wrap-pad, 0);
+	margin: var(--sp-shaped-gallery-wrap-mg, 0);
+
+	/* ---- Item box (Image & Video Settings → Style) ----
+	 * Margin / border / corner radius / box shadow come from the ImageVideoStyle
+	 * contributor's --sp-shaped-gallery-iv-* custom properties, each with the
+	 * previous hardcoded value as its fallback so an unstyled gallery is unchanged.
+	 * The `-hover` slots fall back to the normal value, so a Hover state left
+	 * untouched simply inherits. Only Margin is responsive (see the media queries). */
+	.sp-shaped-gallery__item {
+		position: relative;
+		box-sizing: border-box;
+		margin: var(--sp-shaped-gallery-iv-mg, 0);
+		overflow: hidden;
+		background: transparent;
+		border-style: var(--sp-shaped-gallery-iv-bd-style, none);
+		border-color: var(--sp-shaped-gallery-iv-bd-color, transparent);
+		border-width: var(--sp-shaped-gallery-iv-bd-width, 0);
+		border-radius: var(--sp-shaped-gallery-iv-radius, 4px);
+		box-shadow: var(--sp-shaped-gallery-iv-shadow, none);
+		transition: box-shadow 400ms ease, border-color 400ms ease, border-width 400ms ease,
+			border-radius 400ms ease;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.sp-shaped-gallery__item:hover,
+	.sp-shaped-gallery__item:focus-within {
+		/* Style is part of the chain too: a border configured ONLY in the Hover state
+		 * needs it, or the normal state's `none` would suppress the whole border. */
+		border-style: var(--sp-shaped-gallery-iv-bd-style-hover, var(--sp-shaped-gallery-iv-bd-style, none));
+		border-color: var(--sp-shaped-gallery-iv-bd-color-hover, var(--sp-shaped-gallery-iv-bd-color, transparent));
+		border-width: var(--sp-shaped-gallery-iv-bd-width-hover, var(--sp-shaped-gallery-iv-bd-width, 0));
+		border-radius: var(--sp-shaped-gallery-iv-radius-hover, var(--sp-shaped-gallery-iv-radius, 4px));
+		box-shadow: var(--sp-shaped-gallery-iv-shadow-hover, var(--sp-shaped-gallery-iv-shadow, none));
+	}
+
+	/* ---- Media frame ----
+	 * The box the LAYOUT sizes — justified writes the row band here, masonry the
+	 * aspect-scaled column height, grid the 1:1 ratio. The figure above stays auto
+	 * height, so it comes out as `frame + Classic content`.
+	 *
+	 * Splitting the two is what makes Classic safe. The figure used to be both the
+	 * geometry box and the flow container for the title / description, and a box
+	 * only has one height: whatever the layout pinned it to was the IMAGE's height,
+	 * so the content block had to take its space from the media (`flex: 1 1 0%`,
+	 * which collapses towards nothing as the text grows) and the remainder was cut
+	 * off by `overflow: hidden`. Large titles therefore erased the image and lost
+	 * their own text at the same time.
+	 *
+	 * `flex: 0 0 auto` is the other half of the guarantee — the frame is never the
+	 * flex item that gets shrunk to make room for a long caption.
+	 *
+	 * It keeps the flex column the figure used to be, so every media rule below
+	 * (`flex: 1 1 0%` + `min-height: 0` to fill the band) is unchanged, and its own
+	 * `overflow: hidden` keeps the image's hover `scale()` inside the media band
+	 * instead of over the content block. `position: relative` makes it the
+	 * containing block for the play badge and the preloader shimmer, which both mean
+	 * "over the media" and would otherwise cover the caption too. */
+	.sp-shaped-gallery__frame {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		flex: 0 0 auto;
+		width: 100%;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	/* ---- Media element (image / video) ----
+	 * Keyed on the element rather than `.sp-shaped-gallery__img` so the editor's
+	 * `core/image` inner blocks — which carry core's own classes — get the identical
+	 * treatment from this one rule instead of a mirrored copy in editor.scss.
+	 *
+	 * `filter` carries the per-item duotone (set inline by the renderer). The
+	 * fallback is EMPTY, so with nothing set the declaration is invalid at
+	 * computed-value time and `filter` stays `none` — no compositing layer is
+	 * forced on galleries that use no duotone. */
+	.sp-shaped-gallery__item img,
+	.sp-shaped-gallery__item video {
+		filter: var(--sp-shaped-gallery-iv-dt, );
+	}
+
+	.sp-shaped-gallery__img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		flex: 1 1 0%;
+		min-height: 0;
+		transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), filter 0.4s ease;
+	}
+
+	.sp-shaped-gallery__item:hover .sp-shaped-gallery__img {
+		transform: scale(1.03);
+	}
+
+	/* An inline embed player (built by the runtime when a click-to-play tile is
+	 * activated) fills the same media slot as the poster it replaced. */
+	iframe.sp-shaped-gallery__img {
+		border: 0;
+	}
+
+	/* The lightbox trigger: the anchor wraps the <img> and fills the tile. */
+	.sp-shaped-gallery__link {
+		display: block;
+		width: 100%;
+		height: 100%;
+		flex: 1 1 0%;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	/* Click-to-play trigger for an inline video — a real button filling the tile. */
+	.sp-shaped-gallery__play {
+		display: block;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+		flex: 1 1 0%;
+		min-height: 0;
+		overflow: hidden;
+
+		&:focus-visible {
+			outline: 2px solid #fff;
+			outline-offset: -4px;
+		}
+	}
+
+	.sp-shaped-gallery__caption {
+		position: absolute;
+		inset: auto 0 0 0;
+		padding: 8px 10px;
+		font-size: 12px;
+		color: #fff;
+		background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+	}
+
+	/* ---- Content (image title / description) ----
+	 * Rendered as the figure's <figcaption>.
+	 * - Classic: flows naturally above (position: top) or below (position: bottom) the media.
+	 * - Overlay: rich gradient scrim absolutely positioned inside the figure over the media.
+	 * Every value comes from the ContentStyle contributor's --sp-shaped-gallery-ct-* custom
+	 * properties. */
+	.sp-shaped-gallery__content {
+		box-sizing: border-box;
+		width: 100%;
+		padding: var(--sp-shaped-gallery-ct-pad, 12px 14px);
+		text-align: var(--sp-shaped-gallery-ct-align, left);
+		border-style: var(--sp-shaped-gallery-ct-bd-style, none);
+		border-color: var(--sp-shaped-gallery-ct-bd-color, transparent);
+		border-width: var(--sp-shaped-gallery-ct-bd-width, 0);
+		border-radius: var(--sp-shaped-gallery-ct-radius, 0);
+
+		&.is-overlay {
+			position: absolute;
+			inset: auto 0 0 0;
+			z-index: 3;
+			color: #fff;
+			padding: var(--sp-shaped-gallery-ct-pad, 24px 16px 14px 16px);
+			background: var(
+				--sp-shaped-gallery-ct-bg,
+				linear-gradient(to top, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.15) 80%, transparent 100%)
+			);
+			transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
+
+			&.sp-shaped-gallery__content--top {
+				inset: 0 0 auto 0;
+				padding: var(--sp-shaped-gallery-ct-pad, 14px 16px 24px 16px);
+				background: var(
+					--sp-shaped-gallery-ct-bg,
+					linear-gradient(to bottom, rgba(0, 0, 0, 0.82) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0.15) 80%, transparent 100%)
+				);
+			}
+
+			.sp-shaped-gallery__title {
+				color: var(--sp-shaped-gallery-ct-ttl-color, #fff);
+				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
+			}
+
+			.sp-shaped-gallery__desc {
+				color: var(--sp-shaped-gallery-ct-desc-color, rgba(255, 255, 255, 0.95));
+				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+			}
+		}
+
+		&.is-classic {
+			position: relative;
+			inset: auto;
+			z-index: 1;
+			/* Takes the flow height it needs, and absorbs whatever the tile is
+			 * stretched by beyond it. Tiles in a justified row (a flex line) and in a
+			 * grid row are equalised to the tallest, so without the grow a tile with a
+			 * one-line title left a strip of bare figure below its content bar while
+			 * its neighbour's bar ran the full depth. `flex-shrink: 0` is the same
+			 * promise the frame makes from the other side: text is never squeezed to
+			 * make the tile fit a height the geometry chose for the image. */
+			flex: 1 0 auto;
+			background: var(--sp-shaped-gallery-ct-bg, transparent);
+			color: var(--sp-shaped-gallery-ct-ttl-color, #1e1e1e);
+			padding: var(--sp-shaped-gallery-ct-pad, 10px 12px);
+
+			&.sp-shaped-gallery__content--top {
+				order: -1;
+			}
+
+			&.sp-shaped-gallery__content--bottom {
+				order: 1;
+			}
+
+			.sp-shaped-gallery__title {
+				color: var(--sp-shaped-gallery-ct-ttl-color, #1e1e1e);
+			}
+
+			.sp-shaped-gallery__desc {
+				color: var(--sp-shaped-gallery-ct-desc-color, #50575e);
+			}
+		}
+	}
+
+	.sp-shaped-gallery__title {
+		margin: 0;
+		font-family: var(--sp-shaped-gallery-ct-ttl-ff, inherit);
+		font-size: var(--sp-shaped-gallery-ct-ttl-fs, 16px);
+		font-weight: var(--sp-shaped-gallery-ct-ttl-fw, 600);
+		font-style: var(--sp-shaped-gallery-ct-ttl-fst, normal);
+		line-height: var(--sp-shaped-gallery-ct-ttl-lh, 1.3);
+		letter-spacing: var(--sp-shaped-gallery-ct-ttl-ls, normal);
+		word-spacing: var(--sp-shaped-gallery-ct-ttl-ws, normal);
+		text-transform: var(--sp-shaped-gallery-ct-ttl-tt, none);
+		text-decoration: var(--sp-shaped-gallery-ct-ttl-td, none);
+		color: var(--sp-shaped-gallery-ct-ttl-color, #fff);
+	}
+
+	.sp-shaped-gallery__desc {
+		margin: var(--sp-shaped-gallery-ct-gap, 6px) 0 0;
+		font-family: var(--sp-shaped-gallery-ct-desc-ff, inherit);
+		font-size: var(--sp-shaped-gallery-ct-desc-fs, 13px);
+		font-weight: var(--sp-shaped-gallery-ct-desc-fw, 400);
+		font-style: var(--sp-shaped-gallery-ct-desc-fst, normal);
+		line-height: var(--sp-shaped-gallery-ct-desc-lh, 1.4);
+		letter-spacing: var(--sp-shaped-gallery-ct-desc-ls, normal);
+		word-spacing: var(--sp-shaped-gallery-ct-desc-ws, normal);
+		text-transform: var(--sp-shaped-gallery-ct-desc-tt, none);
+		text-decoration: var(--sp-shaped-gallery-ct-desc-td, none);
+		color: var(--sp-shaped-gallery-ct-desc-color, #fff);
+
+		/* Line clamp only bites when the limit unit is "lines" (contributor sets
+		 * --sp-shaped-gallery-ct-desc-clamp); otherwise the large fallback is effectively no clamp. */
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: var(--sp-shaped-gallery-ct-desc-clamp, 100);
+		line-clamp: var(--sp-shaped-gallery-ct-desc-clamp, 100);
+		overflow: hidden;
+	}
+
+	/* ---- Video play badge ----
+	 * A centred circle whose diameter is the panel's Play Icon Size; the glyph is a
+	 * CSS triangle derived from that same size so the badge scales as one piece.
+	 * Never rendered for an autoplaying inline video (it is already playing). */
+	.sp-shaped-gallery__item--video .sp-shaped-gallery__playicon {
+		position: absolute;
+		inset: 0;
+		z-index: 3;
+		margin: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: var(--sp-shaped-gallery-iv-play, 48px);
+		height: var(--sp-shaped-gallery-iv-play, 48px);
+		border-radius: 50%;
+		background: rgba(0, 0, 0, 0.45);
+		transition: opacity 400ms ease, background 400ms ease;
+
+		&::before {
+			content: "";
+			width: 0;
+			height: 0;
+			margin-left: calc(var(--sp-shaped-gallery-iv-play, 48px) / 12);
+			border-style: solid;
+			border-width: calc(var(--sp-shaped-gallery-iv-play, 48px) / 6) 0
+				calc(var(--sp-shaped-gallery-iv-play, 48px) / 6)
+				calc(var(--sp-shaped-gallery-iv-play, 48px) / 3.6);
+			border-color: transparent transparent transparent #fff;
+		}
+	}
+
+	/* Shape/Style variations picked from the native core/image toolbar. Core only
+	 * ships "rounded"; the class is emitted per item by the renderer so the
+	 * frontend matches the editor without loading core block styles. */
+	.sp-shaped-gallery__item.is-style-rounded .sp-shaped-gallery__img {
+		border-radius: 9999px;
+	}
+}
+
+/* ---- Display Icon on Hover ----
+ * Gallery-wide container modifier: the play badge is hidden until the tile is
+ * hovered or holds focus (so it is reachable by keyboard, not mouse-only). */
+.sp-shaped-gallery--play-hover .sp-shaped-gallery__playicon {
+	opacity: 0;
+}
+.sp-shaped-gallery--play-hover .sp-shaped-gallery__item:hover .sp-shaped-gallery__playicon,
+.sp-shaped-gallery--play-hover .sp-shaped-gallery__item:focus-within .sp-shaped-gallery__playicon {
+	opacity: 1;
+}
+
+/* ---- Image Preloader ----
+ * A shimmering placeholder over each tile until its media fires `load`, at which
+ * point the frontend runtime adds `.is-loaded` to the figure. Only emitted when
+ * lazy loading is on (GalleryOptions::preloader_active), since an eager image is
+ * already decoded before first paint. The pseudo-element is scoped to
+ * `:not(.is-loaded)` so the animation stops — rather than running invisibly
+ * behind every loaded image for the life of the page.
+ *
+ * `.is-js` is added by the runtime, so without JS the images are simply visible
+ * instead of being hidden behind a placeholder nothing would ever clear. */
+.sp-shaped-gallery--preloader.is-js .sp-shaped-gallery__item:not(.is-loaded) {
+	/* On the FRAME, not the figure: `inset: 0` means "over the media", and over the
+	 * figure it would also cover a Classic content block that has not got a
+	 * placeholder to wait for. */
+	.sp-shaped-gallery__frame::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 2;
+		/* Never swallow a click meant for the tile's link / play button. */
+		pointer-events: none;
+		background: linear-gradient(90deg, #f0f0f1 25%, #e4e4e7 37%, #f0f0f1 63%);
+		background-size: 400% 100%;
+		animation: sp-shaped-gallery-shimmer 1.4s ease-in-out infinite;
+	}
+
+	img,
+	video {
+		opacity: 0;
+	}
+}
+
+@keyframes sp-shaped-gallery-shimmer {
+	0% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0 50%;
+	}
+}
+
+/* ---- Ajax Pagination bar (Load More) ----
+ * A SIBLING of the .sp-shaped-gallery grid (inside the block wrapper), so it never becomes a
+ * grid / flex / absolutely-positioned masonry child. The button's appearance
+ * comes from the AjaxStyle contributor's --sp-shaped-gallery-ap-* custom properties, emitted
+ * inline on the bar element itself (siblings don't inherit .sp-shaped-gallery's vars), with
+ * sensible fallbacks so an enabled-but-unstyled button still reads. Alignment is
+ * a bar modifier class; responsive font-size / padding / margin overrides live in
+ * the media queries below. */
+.sp-shaped-gallery__pagination {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin-top: 16px;
+
+	/* The runtime hides this bar with the `hidden` ATTRIBUTE (a nav for a single
+	 * page of results is noise). `[hidden]`'s `display: none` comes from the UA
+	 * stylesheet, and an author `display` beats the UA sheet whatever the
+	 * specificity — so declaring `display: flex` above silently made every
+	 * `el.hidden = true` in pagination.js a no-op. Any rule in this file that sets
+	 * `display` on an element the runtime toggles needs this companion. */
+	&[hidden] {
+		display: none;
+	}
+
+	&--left {
+		justify-content: flex-start;
+	}
+	&--center {
+		justify-content: center;
+	}
+	&--right {
+		justify-content: flex-end;
+	}
+
+	/* Visually-hidden polite live region announcing load progress. */
+	.sp-shaped-gallery__pg-status {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0 0 0 0);
+		clip-path: inset(50%);
+		white-space: nowrap;
+		border: 0;
+	}
+}
+
+.sp-shaped-gallery__load-more {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	cursor: pointer;
+	font-family: var(--sp-shaped-gallery-ap-ff, inherit);
+	font-size: var(--sp-shaped-gallery-ap-fs, 15px);
+	font-weight: var(--sp-shaped-gallery-ap-fw, 500);
+	font-style: var(--sp-shaped-gallery-ap-fst, normal);
+	line-height: var(--sp-shaped-gallery-ap-lh, 1.4);
+	letter-spacing: var(--sp-shaped-gallery-ap-ls, normal);
+	word-spacing: var(--sp-shaped-gallery-ap-ws, normal);
+	text-transform: var(--sp-shaped-gallery-ap-tt, none);
+	text-decoration: var(--sp-shaped-gallery-ap-td, none);
+	color: var(--sp-shaped-gallery-ap-color, #fff);
+	background: var(--sp-shaped-gallery-ap-bg, #1e1e1e);
+	border-style: var(--sp-shaped-gallery-ap-bd-style, solid);
+	border-color: var(--sp-shaped-gallery-ap-bd-color, transparent);
+	border-width: var(--sp-shaped-gallery-ap-bd-width, 0);
+	border-radius: var(--sp-shaped-gallery-ap-radius, 4px);
+	padding: var(--sp-shaped-gallery-ap-pad, 10px 24px);
+	margin: var(--sp-shaped-gallery-ap-mg, 0);
+	transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease,
+		border-color 0.2s ease;
+
+	&:hover {
+		color: var(--sp-shaped-gallery-ap-color-hover, var(--sp-shaped-gallery-ap-color, #fff));
+		background: var(--sp-shaped-gallery-ap-bg-hover, var(--sp-shaped-gallery-ap-bg, #1e1e1e));
+		/* Style + width as well as colour: the panel's Hover state carries a whole
+		 * Border control, so reading only the colour made a hover-only border
+		 * (Normal "None", Hover "Solid 2px") do nothing at all. */
+		border-style: var(--sp-shaped-gallery-ap-bd-style-hover, var(--sp-shaped-gallery-ap-bd-style, solid));
+		border-color: var(--sp-shaped-gallery-ap-bd-color-hover, var(--sp-shaped-gallery-ap-bd-color, transparent));
+		border-width: var(--sp-shaped-gallery-ap-bd-width-hover, var(--sp-shaped-gallery-ap-bd-width, 0));
+	}
+	&:focus-visible {
+		outline: 2px solid currentcolor;
+		outline-offset: 2px;
+	}
+	&[disabled],
+	&.is-loading {
+		opacity: 0.6;
+		cursor: default;
+	}
+
+	/* Inline spinner — shown only while a request is in flight. */
+	.sp-shaped-gallery__spinner {
+		display: none;
+		width: 1em;
+		height: 1em;
+		border: 2px solid currentcolor;
+		border-right-color: transparent;
+		border-radius: 50%;
+		animation: sp-shaped-gallery-spin 0.6s linear infinite;
+	}
+	&.is-loading .sp-shaped-gallery__spinner {
+		display: inline-block;
+	}
+
+	/* `initLoadMore`'s finish() sets `button.hidden = true` once the set is
+	 * exhausted, so the "No more images available" message stands alone. That did
+	 * nothing while `display: inline-flex` above was the only thing the cascade
+	 * saw: the author declaration wins over the UA sheet's `[hidden]` rule, so the
+	 * button stayed on screen doing nothing next to the end-of-list message. (The
+	 * message itself declares no `display`, which is why IT hid correctly and the
+	 * two disagreed.) */
+	&[hidden] {
+		display: none;
+	}
+}
+
+/* End-of-list message (Load More, non-infinity). */
+.sp-shaped-gallery__end {
+	width: 100%;
+	margin: 0;
+	text-align: center;
+	font-size: var(--sp-shaped-gallery-ap-fs, 14px);
+	color: var(--sp-shaped-gallery-ap-color, inherit);
+	opacity: 0.75;
+}
+
+/* Static loader ring — the editor infinity-mode preview (no animation, since the
+ * scroll-triggered runtime is frontend-only). */
+.sp-shaped-gallery__spinner.is-static {
+	display: inline-block;
+	width: 1.25em;
+	height: 1.25em;
+	border: 2px solid currentcolor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	opacity: 0.5;
+}
+
+@keyframes sp-shaped-gallery-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+/* Responsive Load More button: typography, inner padding and outer margin are all
+ * per-device controls, so each falls back through tablet to the desktop value. */
+@media (max-width: 1024px) {
+	.sp-shaped-gallery__load-more {
+		font-size: var(--sp-shaped-gallery-ap-fs-t, var(--sp-shaped-gallery-ap-fs, 15px));
+		padding: var(--sp-shaped-gallery-ap-pad-t, var(--sp-shaped-gallery-ap-pad, 10px 24px));
+		margin: var(--sp-shaped-gallery-ap-mg-t, var(--sp-shaped-gallery-ap-mg, 0));
+	}
+}
+
+@media (max-width: 600px) {
+	.sp-shaped-gallery__load-more {
+		font-size: var(--sp-shaped-gallery-ap-fs-m, var(--sp-shaped-gallery-ap-fs-t, var(--sp-shaped-gallery-ap-fs, 15px)));
+		padding: var(--sp-shaped-gallery-ap-pad-m, var(--sp-shaped-gallery-ap-pad-t, var(--sp-shaped-gallery-ap-pad, 10px 24px)));
+		margin: var(--sp-shaped-gallery-ap-mg-m, var(--sp-shaped-gallery-ap-mg-t, var(--sp-shaped-gallery-ap-mg, 0)));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-shaped-gallery__load-more .sp-shaped-gallery__spinner {
+		animation-duration: 1.6s;
+	}
+
+	/* Keep the colour feedback, drop the motion. The preloader shimmer becomes a
+	 * flat placeholder rather than a pulsing one. */
+	.sp-shaped-gallery__item,
+	.sp-shaped-gallery__playicon {
+		transition-duration: 1ms;
+	}
+	.sp-shaped-gallery--preloader.is-js .sp-shaped-gallery__item:not(.is-loaded)::after {
+		animation: none;
+	}
+}
+
+/* ---- Grid ---- */
+.sp-shaped-gallery--grid {
+	display: grid;
+	grid-template-columns: repeat(var(--sp-shaped-gallery-cols), 1fr);
+	gap: var(--sp-shaped-gallery-gv) var(--sp-shaped-gallery-gh);
+}
+
+/* The square belongs to the MEDIA, not to the tile. On the tile it was the whole
+ * of the tile's height, so a Classic content block had to come out of the image's
+ * square and was then clipped; on the frame the square is preserved exactly and the
+ * tile grows by however tall the title / description turn out to be. Grid rows are
+ * `auto` and grid items stretch, so every tile in a row still ends level with its
+ * neighbours — the row simply takes its height from the tallest caption in it. */
+.sp-shaped-gallery--grid .sp-shaped-gallery__frame {
+	aspect-ratio: 1 / 1;
+}
+
+/* ---- Justified (no-JS fallback: flex rows; JS overrides sizes) ----
+ *
+ * Classic is compatible with justified by construction, and this is why: the
+ * layout's contract is about WIDTHS — a row's scaled widths plus its gaps come to
+ * exactly the container — and a content block below the media changes no width at
+ * all. Height is free, so the tile is left auto and the flex line's own cross-size
+ * stretch equalises the row: every tile in it ends level with the tallest caption,
+ * which is what keeps the next row starting on a straight edge.
+ *
+ * That only works while nothing pins the tile's height, hence `height` moving to
+ * the frame. The row-height variable stays as the no-JS fallback and is scoped to
+ * the un-measured state, the same way masonry's fallback margin is — once the
+ * runtime has measured, it writes an exact pixel band on the frame. */
+.sp-shaped-gallery--justified {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-shaped-gallery-gv) var(--sp-shaped-gallery-gh);
+	/* The default already, but stated: it is load-bearing here, not incidental. */
+	align-items: stretch;
+
+	.sp-shaped-gallery__item {
+		flex: 1 1 auto;
+	}
+	.sp-shaped-gallery__img {
+		width: 100%;
+	}
+
+	&:not(.is-measured) .sp-shaped-gallery__frame {
+		height: var(--sp-shaped-gallery-row);
+	}
+}
+
+/* ---- Masonry (no-JS fallback: CSS columns; JS overrides to absolute) ---- */
+.sp-shaped-gallery--masonry {
+	column-count: var(--sp-shaped-gallery-cols);
+	column-gap: var(--sp-shaped-gallery-gh);
+
+	/* No `display: inline-block`. `break-inside: avoid` is what keeps a tile whole
+	 * across a column break, and it applies to a block-level flex container just as
+	 * it does to an inline-block — while inline-block ALSO overrode the tile's
+	 * `display: flex`, which is the only thing that gives the Classic content block
+	 * its `order: -1` for the Top position. Top-positioned content therefore rendered
+	 * below the image on masonry, on the front end and in the canvas alike. */
+	.sp-shaped-gallery__item {
+		break-inside: avoid;
+		width: 100%;
+	}
+
+	/* Un-measured only: with no JS the frame has no pixel height, so the image sizes
+	 * itself. Once measured the frame carries the band and the image fills it. */
+	&:not(.is-measured) .sp-shaped-gallery__frame .sp-shaped-gallery__img {
+		height: auto;
+	}
+}
+
+/* CSS multi-column has no row-gap, so the no-JS fallback spaces its stacked tiles
+ * with a bottom margin — but ONLY while the runtime has not taken over.
+ *
+ * This used to be an unscoped `margin-bottom: var(--sp-shaped-gallery-gv)` longhand,
+ * which overrode the bottom component of the item box's own
+ * `margin: var(--sp-shaped-gallery-iv-mg, 0)` shorthand and silently threw away the
+ * bottom side of the Margin control. Scoping it to the un-measured state hands the
+ * measured layout back to the base rule (user margin, or nothing), which is what
+ * `layoutMasonry()` subtracts from each tile's box — see `itemMargin()`. The
+ * fallback keeps the user's margin when there is one, since a tile with a margin
+ * and no gap still needs to not touch its neighbour. */
+.sp-shaped-gallery--masonry:not(.is-measured) .sp-shaped-gallery__item {
+	margin: var(--sp-shaped-gallery-iv-mg, 0 0 var(--sp-shaped-gallery-gv));
+}
+
+/* ---- Responsive (tablet / mobile) ---- */
+@media (max-width: 1024px) {
+	.sp-shaped-gallery {
+		padding: var(--sp-shaped-gallery-wrap-pad-t, var(--sp-shaped-gallery-wrap-pad, 0));
+		margin: var(--sp-shaped-gallery-wrap-mg-t, var(--sp-shaped-gallery-wrap-mg, 0));
+	}
+	.sp-shaped-gallery--grid {
+		grid-template-columns: repeat(var(--sp-shaped-gallery-cols-t), 1fr);
+		gap: var(--sp-shaped-gallery-gv-t) var(--sp-shaped-gallery-gh-t);
+	}
+	.sp-shaped-gallery--masonry {
+		column-count: var(--sp-shaped-gallery-cols-t);
+		column-gap: var(--sp-shaped-gallery-gh-t);
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__content {
+		padding: var(--sp-shaped-gallery-ct-pad-t, var(--sp-shaped-gallery-ct-pad, 12px 14px));
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__title {
+		font-size: var(--sp-shaped-gallery-ct-ttl-fs-t, var(--sp-shaped-gallery-ct-ttl-fs, 16px));
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__desc {
+		font-size: var(--sp-shaped-gallery-ct-desc-fs-t, var(--sp-shaped-gallery-ct-desc-fs, 13px));
+		margin-top: var(--sp-shaped-gallery-ct-gap-t, var(--sp-shaped-gallery-ct-gap, 6px));
+		-webkit-line-clamp: var(--sp-shaped-gallery-ct-desc-clamp-t, var(--sp-shaped-gallery-ct-desc-clamp, 100));
+		line-clamp: var(--sp-shaped-gallery-ct-desc-clamp-t, var(--sp-shaped-gallery-ct-desc-clamp, 100));
+	}
+	/* Image & Video: the one per-device control (item Margin). */
+	.sp-shaped-gallery .sp-shaped-gallery__item {
+		margin: var(--sp-shaped-gallery-iv-mg-t, var(--sp-shaped-gallery-iv-mg, 0));
+	}
+}
+
+@media (max-width: 600px) {
+	.sp-shaped-gallery {
+		padding: var(--sp-shaped-gallery-wrap-pad-m, var(--sp-shaped-gallery-wrap-pad-t, var(--sp-shaped-gallery-wrap-pad, 0)));
+		margin: var(--sp-shaped-gallery-wrap-mg-m, var(--sp-shaped-gallery-wrap-mg-t, var(--sp-shaped-gallery-wrap-mg, 0)));
+	}
+	.sp-shaped-gallery--grid {
+		grid-template-columns: repeat(var(--sp-shaped-gallery-cols-m), 1fr);
+		gap: var(--sp-shaped-gallery-gv-m) var(--sp-shaped-gallery-gh-m);
+	}
+	.sp-shaped-gallery--masonry {
+		column-count: var(--sp-shaped-gallery-cols-m);
+		column-gap: var(--sp-shaped-gallery-gh-m);
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__content {
+		padding: var(--sp-shaped-gallery-ct-pad-m, var(--sp-shaped-gallery-ct-pad-t, var(--sp-shaped-gallery-ct-pad, 12px 14px)));
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__title {
+		font-size: var(--sp-shaped-gallery-ct-ttl-fs-m, var(--sp-shaped-gallery-ct-ttl-fs-t, var(--sp-shaped-gallery-ct-ttl-fs, 16px)));
+	}
+	.sp-shaped-gallery .sp-shaped-gallery__desc {
+		font-size: var(--sp-shaped-gallery-ct-desc-fs-m, var(--sp-shaped-gallery-ct-desc-fs-t, var(--sp-shaped-gallery-ct-desc-fs, 13px)));
+		margin-top: var(--sp-shaped-gallery-ct-gap-m, var(--sp-shaped-gallery-ct-gap-t, var(--sp-shaped-gallery-ct-gap, 6px)));
+		-webkit-line-clamp: var(
+			--sp-shaped-gallery-ct-desc-clamp-m,
+			var(--sp-shaped-gallery-ct-desc-clamp-t, var(--sp-shaped-gallery-ct-desc-clamp, 100))
+		);
+		line-clamp: var(
+			--sp-shaped-gallery-ct-desc-clamp-m,
+			var(--sp-shaped-gallery-ct-desc-clamp-t, var(--sp-shaped-gallery-ct-desc-clamp, 100))
+		);
+	}
+	/* Image & Video: the one per-device control (item Margin). */
+	.sp-shaped-gallery .sp-shaped-gallery__item {
+		margin: var(--sp-shaped-gallery-iv-mg-m, var(--sp-shaped-gallery-iv-mg-t, var(--sp-shaped-gallery-iv-mg, 0)));
+	}
+}
+
+/* ---- Lightbox viewer ----
+ * Deliberately NOT here. The viewer's chrome ships with the viewer's own
+ * conditional bundle — `app/frontend/lightbox.scss` → `dist/frontend/lightbox.css`
+ * — so a page whose galleries never open a lightbox downloads none of it. */
+
+/* ---- Password challenge ----
+ * Drawn INSTEAD of the gallery when Advanced → Visibility is "Password" and the
+ * visitor holds no unlock cookie (see `Frontend\GalleryPassword`). It is a sibling
+ * root rather than a `.sp-shaped-gallery` descendant on purpose: there is no gallery
+ * on the page to nest inside, and none of the grid's custom properties apply.
+ *
+ * Neutral, theme-deferential colours — `currentColor` and transparency rather than
+ * a palette — because this stands in for content on somebody else's design and has
+ * no settings of its own to be styled with. */
+.sp-shaped-gallery-password {
+	max-width: 32rem;
+	margin: 0 auto;
+	padding: 1.5rem;
+	border: 1px solid rgb(0 0 0 / 12%);
+	border-radius: 6px;
+	text-align: center;
+
+	&__text {
+		margin: 0 0 1rem;
+	}
+
+	&__error {
+		margin: 0 0 1rem;
+		color: #d63638;
+	}
+
+	&__form {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		align-items: center;
+		justify-content: center;
+	}
+
+	/* The text and the error are full-width rows above the field + button pair. */
+	&__text,
+	&__error {
+		flex: 1 0 100%;
+	}
+
+	/* Visible to screen readers only: the field's own purpose is obvious from the
+	 * sentence above it, but an input still needs a real label (§14). */
+	&__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	&__field {
+		flex: 0 1 16rem;
+		min-width: 0;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid rgb(0 0 0 / 25%);
+		border-radius: 4px;
+		font: inherit;
+		color: inherit;
+		background: transparent;
+	}
+
+	&__submit {
+		padding: 0.5rem 1.25rem;
+		border: 1px solid currentcolor;
+		border-radius: 4px;
+		font: inherit;
+		color: inherit;
+		background: transparent;
+		cursor: pointer;
+	}
+}
+
+/* ---- Responsive Hiding Utilities (Advanced → Visibility) ----
+ *
+ * Four options, so the four viewport bands they name have to PARTITION the plane:
+ * every viewport lands in exactly one, or an author cannot predict what a switch
+ * does. Width alone cannot draw them, which is how the first version got two of
+ * them wrong:
+ *
+ * - Tablet was `601px–1024px` with no other condition, so it also matched every
+ *   phone held sideways (844×390, 932×430 …). "Hide on Tablet" hid the gallery on
+ *   phones as well, which is not what the label promises.
+ * - Mobile Landscape was `max-width: 900px`, and the biggest phones are WIDER than
+ *   that in landscape — an iPhone Pro Max is 932px, and several Androids are
+ *   915–932px. The option silently did nothing on exactly the devices most likely
+ *   to need it, and Tablet hid them instead.
+ *
+ * The discriminator is HEIGHT. A phone in landscape is wide but short; a tablet in
+ * landscape is wide and tall. `max-height: 600px` separates them (932×430 vs
+ * 1024×768) and, as a bonus, stops a desktop window merely narrowed to 800px from
+ * counting as a phone — it is still tall.
+ *
+ * The bands, in full:
+ *   desktop          w ≥ 1025
+ *   tablet           601 ≤ w ≤ 1024, h ≥ 601        (portrait AND landscape tablets)
+ *   mobile portrait  w ≤ 600, portrait
+ *   mobile landscape w ≤ 1024, h ≤ 600, landscape
+ *
+ * Exhaustive because a portrait viewport ≤ 600 wide is the first mobile case; a
+ * landscape viewport ≤ 1024 wide is at most 1024 tall and, when short, the second;
+ * everything between is a tablet, and everything wider is desktop.
+ *
+ * `tests/php/verify-visibility.php` pins these four queries verbatim, and
+ * `tests/js/unit/visibility.test.js` walks a grid of real device viewports to prove
+ * the partition still holds. Change a number here and both fail.
+ */
+@media (min-width: 1025px) {
+	.sp-shaped-gallery-hide-desktop {
+		display: none !important;
+	}
+}
+
+@media (min-width: 601px) and (max-width: 1024px) and (min-height: 601px) {
+	.sp-shaped-gallery-hide-tablet {
+		display: none !important;
+	}
+}
+
+@media (max-width: 600px) and (orientation: portrait) {
+	.sp-shaped-gallery-hide-mobile-portrait {
+		display: none !important;
+	}
+}
+
+@media (max-width: 1024px) and (max-height: 600px) and (orientation: landscape) {
+	.sp-shaped-gallery-hide-mobile-landscape {
+		display: none !important;
+	}
+}

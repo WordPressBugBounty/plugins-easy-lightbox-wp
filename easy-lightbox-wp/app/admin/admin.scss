@@ -1,0 +1,393 @@
+/*
+ * Admin dashboard — the ONLY stylesheet the admin entry imports.
+ *
+ * JS must never import a page or component stylesheet directly: add it to the
+ * @import list below instead (components first, so a page rule wins a specificity
+ * tie against the shared card rules it overrides). `@wordpress/scripts` routes a
+ * JS import of a file literally named `style.(s)css` into a separate
+ * `style-*.css` chunk that nothing enqueues, so a page stylesheet reached from
+ * JSX would silently vanish.
+ *
+ * Scoping follows the convention in `app/components/shared.scss`: every class is
+ * `sp-shaped-gallery-`-prefixed and deliberately NOT nested under a parent selector,
+ * which keeps specificity flat while still confining the rules to this plugin.
+ * Runtime design tokens are custom properties on `.sp-shaped-gallery-dash` (not
+ * `:root`, per §16) so they inherit to everything below — including the modal,
+ * which renders inside this tree rather than in a portal — and can be re-tuned
+ * inside one media query.
+ *
+ * Breakpoints are the two values in `app/lib/responsive.js` (1024 / 600) and
+ * nothing else; every grid on this screen is intrinsic (auto-fill / auto-fit /
+ * flex-wrap), so those two are all it needs.
+ */
+
+@import "../styles/brand";
+@import "components/components";
+@import "pages/ManageGalleries/style";
+@import "pages/AboutUs/style";
+@import "pages/Settings/style";
+@import "pages/Settings/modulePanels/style";
+
+/*
+ * Element reset for headings and paragraphs.
+ *
+ * `:where()` is load-bearing, not cosmetic. WordPress core sets `p { margin: 1em 0 }`
+ * and `h2, h3 { margin: 1em 0 }` as BARE element selectors (specificity 0,0,1). A
+ * reset written as `.sp-shaped-gallery-dash p` is 0,1,1 — which beats core, but ALSO
+ * beats every `.sp-shaped-gallery-dash-*__title { margin-bottom: … }` in the component
+ * sheets (0,1,0), silently collapsing the whole screen's vertical rhythm. That was a
+ * real bug: every margin in the hero and the rail cards was dead.
+ *
+ * Wrapping the scope in `:where()` drops this to 0,0,1 — equal to core (and this
+ * stylesheet is enqueued later, so it still wins there) but below any single class,
+ * so component margins apply. Source order is deliberately irrelevant now: the
+ * specificity gap decides, which is why the reset can sit after the imports where
+ * `@import` ordering rules require it.
+ *
+ * Font size and line height are reset for the same reason — core's bare `p` rule also
+ * sets `font-size: 13px; line-height: 1.5`, which would otherwise beat the inherited
+ * 14px on any paragraph a component has not sized explicitly.
+ */
+:where(.sp-shaped-gallery-dash) h1,
+:where(.sp-shaped-gallery-dash) h2,
+:where(.sp-shaped-gallery-dash) h3,
+:where(.sp-shaped-gallery-dash) h4 {
+	margin: 0;
+	color: var(--sp-shaped-gallery-dash-text);
+}
+
+:where(.sp-shaped-gallery-dash) p {
+	margin: 0;
+	font-size: inherit;
+	line-height: inherit;
+}
+
+/*
+ * Pointer cursor on everything that behaves like a control.
+ *
+ * Only links get a pointer from the UA stylesheet — `<button>` is `cursor: default`
+ * in every browser — so each new control has to remember its own `cursor: pointer`,
+ * and several did not: the footer's social marks, the gallery row actions and the
+ * pagination arrows all rendered with an arrow.
+ *
+ * Written with `:where()` for the same reason the resets above are: it contributes
+ * ZERO specificity, so a control that wants a different cursor still wins with a
+ * single class regardless of source order — `--empty` on the video poster, and every
+ * `:disabled` button that sets `cursor: default`. An author rule of any specificity
+ * beats the UA stylesheet, so nothing more is needed to override it.
+ */
+:where(.sp-shaped-gallery-dash)
+	:where(
+		a[href],
+		button,
+		summary,
+		select,
+		label[for],
+		[role='button'],
+		[role='tab'],
+		input[type='checkbox'],
+		input[type='radio']
+	) {
+	cursor: pointer;
+}
+
+/*
+ * Tooltips — the one rule on this screen that is NOT scoped under
+ * `.sp-shaped-gallery-dash`, and cannot be.
+ *
+ * Core's `Tooltip` renders its bubble through a Popover, which portals to a slot at
+ * the end of <body> — outside this screen's tree — so a descendant selector never
+ * reaches it and there is no `className` prop to hang one on. What keeps the rule from
+ * leaking is the enqueue, not the selector: `Assets::enqueue_admin()` loads this
+ * stylesheet on the four dashboard slugs only (§10), so no other admin screen and
+ * none of the block editor sees it.
+ *
+ * Core ships 12px/1.4 in #f0f0f0 on black, 2px radius, 4px 8px padding. The design's
+ * bubble is the greyer Gray 800 at full white, roomier, and on the same 4px radius
+ * every other control here uses. No `!important` is needed: core's rule is a single
+ * class too, and this stylesheet declares `wp-components` as a dependency, so it is
+ * always printed after it.
+ *
+ * The radius is a literal, not the token: a portaled node is outside
+ * `.sp-shaped-gallery-dash`, where the custom properties are declared.
+ */
+.components-tooltip {
+	max-width: 240px;
+	padding: 6px 10px;
+	background: #2f2f2f;
+	border-radius: 4px;
+	color: #fff;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 16px;
+}
+
+.sp-shaped-gallery-dash {
+	/* Brand ramp — declared once in styles/_brand.scss (§18) and interpolated
+	 * here into the custom properties the dashboard reads at runtime (§16). */
+	--sp-shaped-gallery-dash-accent: #{$sp-shaped-gallery-brand};
+	--sp-shaped-gallery-dash-accent-strong: #{$sp-shaped-gallery-brand-strong}; /* accent TEXT + button rest: 5.0:1 on white. */
+	--sp-shaped-gallery-dash-accent-deep: #{$sp-shaped-gallery-brand-deep}; /* button hover: 7.0:1 on white. */
+	--sp-shaped-gallery-dash-accent-tint: #{$sp-shaped-gallery-brand-tint};
+	--sp-shaped-gallery-dash-surface: #fff;
+	--sp-shaped-gallery-dash-bg: #fafafa;
+	--sp-shaped-gallery-dash-border: #ddd;
+	--sp-shaped-gallery-dash-border-soft: #e2e2e2;
+	--sp-shaped-gallery-dash-text: #1e1e1e;
+	--sp-shaped-gallery-dash-body: #3c434a;
+	--sp-shaped-gallery-dash-muted: #757575; /* 4.6:1 — not #8c8f94, which is 3.4:1. */
+
+	/*
+	 * Two link blues, both intentional — confirmed against the sibling plugin's
+	 * stylesheet, where a section action is #1a74e4 and hovers to #3858e9. Body links
+	 * (Important Links, footer, stars) use #3858e9 outright. #1a74e4 measures exactly
+	 * 4.50:1 on white, so it clears §14 but has no headroom: keep it on 16px section
+	 * actions only, never on body copy.
+	 */
+	--sp-shaped-gallery-dash-link: #3858e9;
+	--sp-shaped-gallery-dash-link-hover: #2140c9;
+	--sp-shaped-gallery-dash-link-section: #1a74e4;
+
+	/*
+	 * Status trios. Each is a fill for an icon disc, a surface tint, a hairline, and
+	 * — for green only — a darkened TEXT colour: the spec's #11a10c measures 3.2:1 on
+	 * its own tint, so the label takes the same treatment --accent-strong gives accent
+	 * text (§14) while the disc and the border keep the spec's colour exactly. Red
+	 * needs no nudge — #cc1818 is 5.2:1 on its own tint.
+	 */
+	--sp-shaped-gallery-dash-ok: #11a10c;
+	--sp-shaped-gallery-dash-ok-text: #0a7d08; /* 4.9:1 on --ok-tint. */
+	--sp-shaped-gallery-dash-ok-tint: #e5fbee;
+	--sp-shaped-gallery-dash-ok-line: #bee3cd;
+	--sp-shaped-gallery-dash-alert: #cc1818;
+	--sp-shaped-gallery-dash-alert-hover: #a31313;
+	--sp-shaped-gallery-dash-alert-tint: #fff1f1;
+	--sp-shaped-gallery-dash-alert-line: #ffd8d8;
+
+	/*
+	 * Banner ramp — the cool neutrals the redesigned Dashboard / Saved Galleries
+	 * banner is drawn in, and ONLY that banner.
+	 *
+	 * Held apart from the six neutrals above rather than replacing them, because
+	 * those are read by Settings and About Us too and this change is not theirs: the
+	 * banner is a slate-grey card (#334155 heading over #64748b body on a #e2e8f0
+	 * hairline) where the rest of the screen is WordPress grey (#1e1e1e over #757575
+	 * on #ddd). Retuning the shared tokens would have restyled all four routes.
+	 *
+	 * Contrast on the banner's white surface: --banner-ink 9.0:1, --banner-body
+	 * 4.8:1, both clear §14 as body text. The two rules are hairlines, never text.
+	 */
+	--sp-shaped-gallery-dash-banner-ink: #334155;
+	--sp-shaped-gallery-dash-banner-body: #64748b;
+	--sp-shaped-gallery-dash-banner-rule: #e2e8f0;
+	--sp-shaped-gallery-dash-banner-radius: 14px;
+
+	--sp-shaped-gallery-dash-chat: #3771ed;
+	--sp-shaped-gallery-dash-radius-card: 12px;
+	--sp-shaped-gallery-dash-radius-md: 8px;
+	--sp-shaped-gallery-dash-radius-sm: 6px;
+	--sp-shaped-gallery-dash-radius-xs: 4px;
+	--sp-shaped-gallery-dash-radius-pill: 999px;
+	--sp-shaped-gallery-dash-gap: 24px;
+	--sp-shaped-gallery-dash-card-pad: 32px;
+	--sp-shaped-gallery-dash-max: 1400px;
+	--sp-shaped-gallery-dash-pad-x: 32px;
+
+	/*
+	 * Cancels #wpcontent's padding so the header bar runs edge to edge. The PHP
+	 * render callback prints the mount node bare (no .wrap) for the same reason.
+	 */
+	margin: 0 0 0 -20px;
+	min-height: calc(100vh - 32px);
+	color: var(--sp-shaped-gallery-dash-text);
+	background: var(--sp-shaped-gallery-dash-bg);
+	font-size: 14px;
+
+	/*
+	 * A column, not plain block flow: on a short screen (Settings' Modules tab, an
+	 * empty-state banner) the footer used to sit right under the content, stranding
+	 * whatever's left of `min-height` as bare page background beneath it. `&__body`
+	 * grows to soak up that space instead, so the footer's own bottom edge stays
+	 * pinned to the container's.
+	 */
+	display: flex;
+	flex-direction: column;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	a,
+	button,
+	[tabindex] {
+		&:focus-visible {
+			outline: 2px solid var(--sp-shaped-gallery-dash-accent);
+			outline-offset: 2px;
+			box-shadow: none;
+		}
+	}
+
+	/* --- shell --------------------------------------------------------------- */
+
+	&__header {
+		background: var(--sp-shaped-gallery-dash-surface);
+		border-bottom: 1px solid var(--sp-shaped-gallery-dash-border);
+	}
+
+	/*
+	 * No `gap` here: the nav's own margin sets the brand-to-nav distance (see
+	 * .sp-shaped-gallery-dash-nav), and the help menu pushes itself flush right with
+	 * its own `margin-inline-start: auto` — a shared gap would only add an unwanted
+	 * second offset on top of either.
+	 */
+	&__header-inner {
+		display: flex;
+		align-items: center;
+		max-width: var(--sp-shaped-gallery-dash-max);
+		min-height: 64px;
+		margin: 0 auto;
+		padding-inline: var(--sp-shaped-gallery-dash-pad-x);
+	}
+
+	&__brand {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		gap: 10px;
+	}
+
+	&__logo {
+		display: flex;
+	}
+
+	&__version {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 4px 10px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 14px;
+		border: 1px solid var(--sp-shaped-gallery-dash-border-soft);
+		border-radius: var(--sp-shaped-gallery-dash-radius-pill);
+	}
+
+	&__header-end {
+		flex: 0 0 auto;
+		margin-inline-start: auto;
+	}
+
+	&__body {
+		/*
+		 * `width: 100%` is load-bearing now that this is a flex item: a flex item
+		 * with auto inline margins skips cross-axis stretch entirely (the spec has
+		 * the auto margins absorb the free space instead), so without an explicit
+		 * width it shrinks to its own content's width — the routed page, not the
+		 * 1400px measure — before `max-width` and `margin: auto` ever get a chance
+		 * to run. Block layout gave this for free; flex does not.
+		 */
+		flex: 1 0 auto;
+		width: 100%;
+		max-width: var(--sp-shaped-gallery-dash-max);
+		margin: 0 auto;
+		padding: 20px var(--sp-shaped-gallery-dash-pad-x) 40px;
+
+		/* Focused programmatically on route change to announce the new screen. */
+		&:focus {
+			outline: none;
+		}
+	}
+
+	&__footer {
+		/* Same reason as &__body's `width: 100%` above. */
+		width: 100%;
+		max-width: var(--sp-shaped-gallery-dash-max);
+		margin: 0 auto;
+		padding: 0 var(--sp-shaped-gallery-dash-pad-x) 32px;
+	}
+
+	@media (max-width: 1024px) {
+		--sp-shaped-gallery-dash-pad-x: 24px;
+	}
+
+	@media (max-width: 600px) {
+		/* Re-tuning the tokens re-flows every card at once. */
+		--sp-shaped-gallery-dash-pad-x: 16px;
+		--sp-shaped-gallery-dash-card-pad: 20px;
+		--sp-shaped-gallery-dash-gap: 16px;
+
+		/*
+		 * Stacked rows need the row gap back that the desktop rule deliberately
+		 * drops — here it is the only thing separating brand/nav/help once they wrap.
+		 */
+		&__header-inner {
+			flex-wrap: wrap;
+			gap: var(--sp-shaped-gallery-dash-gap);
+			padding-block: 12px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			transition: none !important;
+			animation: none !important;
+		}
+	}
+}
+
+/*
+ * Screen-reader-only text. Mirrors core's .screen-reader-text rather than reusing
+ * it, so the dashboard does not depend on a WP admin class it does not control.
+ */
+.sp-shaped-gallery-dash-sr {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	border: 0;
+	white-space: nowrap;
+}
+
+/*
+ * The mount node is printed without WordPress's `.wrap`, so any admin notice that
+ * survives the dashboard's own suppression would sit flush against the viewport
+ * edge. Safe as a bare selector: this stylesheet is enqueued on the dashboard
+ * screen only — see Assets::enqueue_admin().
+ */
+#wpbody-content > .notice,
+#wpbody-content > .updated,
+#wpbody-content > .error {
+	margin: 12px 20px 0;
+}
+
+/*
+ * WordPress's own admin footer is replaced by the SPA's FooterBar on this screen, so
+ * it is hidden rather than left to print a second, narrower footer underneath ours.
+ * Same scoping argument as the notices above: dashboard-only stylesheet.
+ */
+#wpfooter {
+	display: none;
+}
+
+/*
+ * The toggle-save toast (§ toast-only sections: Modules, Integrations). Sits above
+ * everything on the screen, including the header — same z-index and top offset the
+ * sibling dashboard (styble-pro) uses for its own "has been enabled" toast, kept
+ * identical here so the two behave the same.
+ */
+.sp-shaped-gallery-dash-toaster,
+.sp-shaped-gallery-dash-toast {
+	margin-top: 20px;
+}
+
+.sp-shaped-gallery-dash-toaster {
+	z-index: 100000;
+}

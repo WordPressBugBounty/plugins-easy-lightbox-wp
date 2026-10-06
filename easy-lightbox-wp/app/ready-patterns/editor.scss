@@ -1,0 +1,1184 @@
+/**
+ * Ready Patterns — the library modal, its facets, grid and preview drawer.
+ *
+ * Every dimension below is the reference library's
+ * (`testimonial-pro/app/ready-patterns/editor.scss`), which is the source of
+ * truth for this modal's design; only the class names and the accent are ours.
+ * Where the reference tints its brand colour with `color-mix()`, the tint is
+ * derived from the shared brand variable instead, so the accent is spelled out in
+ * exactly one place across the plugin (§18).
+ *
+ * The one part that is NOT the reference's is the preview header, which follows
+ * the Figma TopBar spec instead: a 72px bar of Back + title + pager on the left,
+ * bottom-flush width tabs centred, and Insert + close on the right. Where the
+ * spec's colour would fail §14 the reason is noted at the rule.
+ *
+ * Everything is scoped under `.sp-shaped-patterns`, the class handed to the shared
+ * `Modal` panel, except the two mount-point rules at the end (the editor-header
+ * button and the body lock), which by definition live outside it.
+ */
+
+@import "../styles/brand";
+
+/* Brand ramp: one declaration, in styles/_brand.scss (§18), re-exported under the
+   names this modal uses. The 8% / 12% / 22% steps are the reference's header wash,
+   its active-facet fill and its header rule — derived from the brand rather than
+   written out, since every one of those surfaces sits on white. */
+$rp-accent: $sp-shaped-gallery-brand;
+$rp-accent-hover: $sp-shaped-gallery-brand-strong;
+$rp-accent-08: $sp-shaped-gallery-brand-08;
+$rp-accent-12: $sp-shaped-gallery-brand-12;
+$rp-accent-22: $sp-shaped-gallery-brand-22;
+/*
+ * The locked CTA reads as a different KIND of action from Insert, so it does not
+ * share the accent — a second accent button beside the first would look like the
+ * primary path.
+ */
+$rp-locked: #1e1e1e;
+$rp-line: #e2e8f0;
+$rp-field: #e0e0e0;
+$rp-ink: #1e293b;
+$rp-ink-soft: #334155;
+$rp-muted: #64748b;
+
+/* ===================== Modal shell ===================== */
+
+/*
+ * The shared `Modal` centres its panel with a transform. That is replaced here
+ * with a plain inset, and the reason is structural rather than cosmetic: a
+ * transformed element becomes the containing block for every `position: fixed`
+ * descendant, which would pin the preview drawer to this panel instead of to the
+ * viewport. Insetting by the reference's 32px backdrop padding produces the same
+ * box AND leaves the drawer free to cover the whole screen, as the reference's
+ * does.
+ */
+.sp-shaped-gallery-modal.sp-shaped-patterns {
+	position: fixed;
+	top: 32px;
+	right: 32px;
+	bottom: 32px;
+	left: 32px;
+	display: flex;
+	flex-direction: column;
+	width: auto;
+	max-width: 1840px;
+	height: auto;
+	max-height: none;
+	margin: 0 auto;
+	padding: 0;
+	overflow: hidden;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+	transform: none;
+	font-family: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen-sans, ubuntu, cantarell,
+		"Helvetica Neue", sans-serif;
+
+	* {
+		box-sizing: border-box;
+	}
+}
+
+/* The dimmed sheet behind this modal only — a sibling of the panel, so it is
+   reached by adjacency rather than by nesting. */
+.sp-shaped-gallery-modal__backdrop:has(+ .sp-shaped-patterns) {
+	background-color: rgba(0, 0, 0, 0.6);
+	backdrop-filter: blur(20px);
+}
+
+.sp-shaped-patterns {
+
+	/* The Modal's own close button, parked in the header's right-hand slot: 36px
+	   square, vertically centred against the 70px header row (21 + 28 + 21). */
+	> .sp-shaped-gallery-modal__close.components-button {
+		top: 17px;
+		right: 24px;
+		width: 36px;
+		min-width: 36px;
+		height: 36px;
+		border-radius: 6px;
+		background: transparent;
+		color: $rp-ink-soft;
+
+		&:hover:not(:disabled) {
+			background: $sp-shaped-gallery-brand-12;
+			color: $rp-ink;
+		}
+	}
+
+	&__header {
+		display: flex;
+		align-items: stretch;
+		justify-content: space-between;
+		flex: 0 0 auto;
+		padding: 0 24px;
+		background: $rp-accent-08;
+		border-bottom: 1px solid $rp-accent-22;
+	}
+
+	&__brand {
+		display: flex;
+		flex: 1 0 0;
+		align-items: center;
+		gap: 10px;
+		padding: 21px 0;
+
+		svg {
+			width: 28px;
+			height: 28px;
+		}
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: #2f2f2f;
+	}
+
+	&__header-actions {
+		display: flex;
+		flex: 1 0 0;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	/*
+	 * The one accent-adjacent trio in this file that is deliberately NOT on the brand
+	 * ramp (§18): this bar reports a failed fetch, so it stays in the red family even
+	 * though the brand no longer is. It read as brand-tinted only while the brand was
+	 * pink — recolouring it with the ramp would make a failure look informational.
+	 */
+	&__error {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: 0 0 auto;
+		gap: 16px;
+		margin: 0;
+		padding: 10px 24px;
+		background: #fcf0f5;
+		border-bottom: 1px solid #f5c2da;
+		color: #8a1d52;
+		font-size: 13px;
+
+		button {
+			padding: 0;
+			border: 0;
+			background: none;
+			color: inherit;
+			font-size: 12px;
+			text-decoration: underline;
+			cursor: pointer;
+		}
+	}
+
+	/* ===================== Body / sidebar / main ===================== */
+
+	&__body {
+		display: flex;
+		flex: 1;
+		/* Lets the two columns scroll instead of the modal growing. */
+		min-height: 0;
+	}
+
+	&__sidebar {
+		width: 260px;
+		flex-shrink: 0;
+		padding: 20px 16px;
+		border-right: 1px solid $rp-line;
+		overflow-y: auto;
+	}
+
+	&__sidebar-heading {
+		margin: 0 0 10px;
+		font-size: 14px;
+		font-weight: 700;
+		color: $rp-ink;
+	}
+
+	&__tier {
+		display: flex;
+		gap: 4px;
+		padding: 5px;
+		margin-bottom: 16px;
+		background: #fff;
+		border: 1px solid $rp-line;
+		border-radius: 10px;
+		box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+	}
+
+	&__tier-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 1;
+		gap: 4px;
+		padding: 8px 6px;
+		border: 0;
+		border-radius: 7px;
+		background: transparent;
+		font-size: 12px;
+		font-weight: 600;
+		color: $rp-muted;
+		cursor: pointer;
+
+		&.is-active {
+			background: $rp-accent;
+			color: #fff;
+
+			.sp-shaped-patterns__tier-count {
+				color: rgba(255, 255, 255, 0.85);
+			}
+		}
+	}
+
+	&__tier-count {
+		font-size: 11px;
+		font-weight: 500;
+		color: #94a3b8;
+
+		&::before {
+			content: "(";
+		}
+
+		&::after {
+			content: ")";
+		}
+	}
+
+	&__search {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 8px 12px;
+		margin-bottom: 16px;
+		border: 1px solid $rp-line;
+		border-radius: 8px;
+		color: #94a3b8;
+
+		.dashicons {
+			width: 18px;
+			height: 18px;
+			font-size: 18px;
+		}
+
+		.sp-shaped-patterns__search-input {
+			min-height: 36px;
+			padding: 0;
+			border: none;
+
+			&:focus {
+				outline: none;
+				box-shadow: none;
+			}
+		}
+	}
+
+	&__search-input {
+		flex: 1;
+		border: 0;
+		outline: none;
+		background: transparent;
+		font-size: 13px;
+		color: $rp-ink;
+	}
+
+	&__facets {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		margin-bottom: 20px;
+	}
+
+	&__facet {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: 100%;
+		padding: 9px 12px;
+		border: 0;
+		border-radius: 8px;
+		background: transparent;
+		font-size: 13px;
+		color: $rp-ink-soft;
+		text-align: left;
+		cursor: pointer;
+
+		&.is-active {
+			background: $rp-accent-12;
+			color: $rp-accent;
+			font-weight: 600;
+		}
+	}
+
+	&__facet-label {
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__badge {
+		min-width: 22px;
+		margin-left: auto;
+		padding: 0 6px;
+		border-radius: 999px;
+		background: #f1f5f9;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 20px;
+		color: $rp-muted;
+		text-align: center;
+
+		.is-active & {
+			background: $rp-accent;
+			color: #fff;
+		}
+	}
+
+	&__main {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		min-width: 0;
+		padding: 20px 24px;
+		overflow-y: auto;
+	}
+
+	/* ===================== Toolbar ===================== */
+
+	&__toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 20px;
+	}
+
+	&__toolbar-left {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	&__sort {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 16px;
+		height: 36px;
+		padding: 6px 8px 6px 12px;
+		box-sizing: border-box;
+		border: 1px solid $rp-field;
+		border-radius: 3px;
+		background: #fff;
+
+		&:hover {
+			border-color: #c6c6c6;
+		}
+	}
+
+	&__sort-label {
+		font-size: 14px;
+		font-weight: 500;
+		color: #2f2f2f;
+	}
+
+	&__sort-chevron {
+		display: inline-flex;
+		width: 16px;
+		height: 16px;
+		font-size: 16px;
+		color: #2f2f2f;
+	}
+
+	/* The real control, laid transparently over the pill: the browser keeps its
+	   dropdown, its keyboard handling and its accessibility tree. */
+	&__sort-select {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		opacity: 0;
+		cursor: pointer;
+	}
+
+	&__count {
+		margin: 0;
+		font-size: 13px;
+		color: $rp-muted;
+	}
+
+	&__toolbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__density {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__density-btn,
+	&__favorites-btn,
+	&__refresh-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		padding: 0;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #fff;
+		color: #757575;
+		cursor: pointer;
+
+		svg,
+		.dashicons {
+			width: 18px;
+			height: 18px;
+			font-size: 18px;
+		}
+
+		&:hover {
+			border-color: $rp-accent;
+			color: $rp-accent;
+		}
+	}
+
+	&__density-btn.is-active {
+		border-color: transparent;
+		background: $rp-accent;
+		color: #fff;
+
+		&:hover {
+			border-color: transparent;
+			background: $rp-accent;
+			color: #fff;
+		}
+	}
+
+	&__favorites-btn {
+		position: relative;
+		overflow: visible;
+
+		&.is-active {
+			border-color: $rp-accent;
+			color: $rp-accent;
+		}
+	}
+
+	&__favorites-count {
+		position: absolute;
+		top: -6px;
+		right: -6px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 16px;
+		height: 16px;
+		padding: 0 3px;
+		border-radius: 16px;
+		background: $rp-accent;
+		color: #fff;
+		font-size: 10px;
+		font-weight: 600;
+		line-height: 1;
+	}
+
+	&__refresh-btn {
+
+		&:disabled {
+			cursor: default;
+		}
+
+		&.is-refreshing .dashicons {
+			animation: sp-shaped-patterns-spin 1s linear infinite;
+		}
+	}
+
+	/* ===================== Grid + card ===================== */
+
+	&__grid {
+		display: grid;
+		gap: 24px;
+		align-content: start;
+
+		&.is-cols-2 {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		&.is-cols-3 {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	&__card {
+		overflow: hidden;
+		background: #fff;
+	}
+
+	&__card-thumb {
+		position: relative;
+		/* Fixed 3:2 box so a card owns its final height before the image decodes. */
+		aspect-ratio: 3 / 2;
+		padding: 20px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background: #f8fafc;
+		overflow: hidden;
+
+		img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			border-radius: 4px;
+			object-fit: cover;
+		}
+
+		&::after {
+			content: "";
+			position: absolute;
+			inset: 0;
+			margin: 20px;
+			border-radius: 4px;
+			background: rgba(15, 23, 42, 0.55);
+			opacity: 0;
+			transition: opacity 0.2s ease;
+			pointer-events: none;
+		}
+
+		&:hover::after,
+		&:focus-within::after {
+			opacity: 1;
+		}
+
+		&:hover .sp-shaped-patterns__preview-link,
+		.sp-shaped-patterns__preview-link:focus-visible {
+			opacity: 1;
+		}
+	}
+
+	&__card-thumb-placeholder {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		border-radius: 4px;
+		background: #eef4f4;
+	}
+
+	/* Sits inside the thumbnail's 20px frame, above the hover scrim — the
+	   reference ships no free tier, so this badge has no counterpart there. */
+	&__badge-pro {
+		position: absolute;
+		top: 28px;
+		left: 28px;
+		z-index: 2;
+		padding: 2px 8px;
+		border-radius: 999px;
+		background: $rp-accent;
+		color: #fff;
+		font-size: 10px;
+		font-weight: 600;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+	}
+
+	&__preview-link {
+		position: absolute;
+		inset: 20px;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		border: 0;
+		background: transparent;
+		color: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+		opacity: 0;
+		cursor: pointer;
+
+		.dashicons {
+			width: 18px;
+			height: 18px;
+			font-size: 18px;
+		}
+
+		&:hover,
+		&:focus {
+			color: #fff;
+		}
+	}
+
+	&__card-body {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		padding: 14px 0 0;
+	}
+
+	&__card-title {
+		flex: 1 1 auto;
+		min-width: 0;
+		margin: 0;
+		font-size: 16px;
+		font-weight: 600;
+		color: #2f2f2f;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__favorite-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		border: 1px solid #f0f0f0;
+		border-radius: 50%;
+		background: #fff;
+		box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+		color: #757575;
+		cursor: pointer;
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+
+		&:hover {
+			border-color: $rp-accent;
+			color: $rp-accent;
+		}
+
+		&.is-favorite {
+			color: $rp-accent;
+		}
+	}
+
+	&__insert-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		gap: 6px;
+		height: 32px;
+		padding: 4px 12px;
+		border: 0;
+		border-radius: 4px;
+		background: $rp-accent;
+		color: #fff;
+		font-size: 15px;
+		font-weight: 500;
+		cursor: pointer;
+
+		.dashicons,
+		svg {
+			width: 16px;
+			height: 16px;
+			font-size: 16px;
+			color: #fff;
+		}
+
+		&:hover:not(:disabled) {
+			background: $rp-accent-hover;
+		}
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+
+		&.is-busy {
+			opacity: 0.8;
+
+			.dashicons {
+				animation: sp-shaped-patterns-spin 1s linear infinite;
+			}
+		}
+
+		/*
+		 * The locked variant is an <a>, not a <button> (a dimmed button leaves the
+		 * user nowhere to go), so it needs the anchor resets the button never did:
+		 * no underline, and the colours restated on :hover/:focus because the
+		 * admin's own link styling would otherwise win them back.
+		 */
+		&.is-locked {
+			background: $rp-locked;
+			color: #fff;
+			text-decoration: none;
+
+			&:hover,
+			&:hover:not(:disabled),
+			&:focus {
+				background: $rp-locked;
+				color: #fff;
+				text-decoration: none;
+			}
+		}
+	}
+
+	/* ===================== Skeleton + states ===================== */
+
+	&__card.is-skeleton {
+		pointer-events: none;
+
+		.sp-shaped-patterns__card-thumb {
+			border: 1px solid $rp-line;
+			background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+			background-size: 200% 100%;
+			animation: sp-shaped-patterns-shimmer 1.2s infinite;
+		}
+	}
+
+	&__skeleton-line {
+		flex: 2;
+		height: 14px;
+		border-radius: 4px;
+		background: $rp-line;
+	}
+
+	&__skeleton-btn {
+		flex: 1;
+		height: 32px;
+		border-radius: 6px;
+		background: $rp-line;
+	}
+
+	&__state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		min-height: 240px;
+		color: $rp-muted;
+		text-align: center;
+	}
+
+	&__state-title {
+		margin: 0;
+		font-size: 14px;
+		font-weight: 600;
+		color: $rp-ink;
+	}
+
+	&__state-body {
+		margin: 0;
+		font-size: 13px;
+		color: $rp-muted;
+	}
+
+	/* ===================== Preview drawer ===================== */
+
+	&__drawer-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: 100001;
+		display: flex;
+		align-items: stretch;
+		justify-content: flex-end;
+		background: rgba(15, 23, 42, 0.45);
+	}
+
+	&__drawer {
+		display: flex;
+		flex-direction: column;
+		width: min(1320px, 100%);
+		background: #fff;
+		box-shadow: -12px 0 32px rgba(0, 0, 0, 0.18);
+	}
+
+	/*
+	 * Header: the Figma spec's 72px TopBar. Three groups — position on the left,
+	 * the width tabs centred, the actions on the right — and the middle one is
+	 * ABSOLUTE rather than a third flex child, because centring it between two
+	 * groups of unequal width (a title that ellipsises against a fixed Insert)
+	 * would drift the tabs off centre as the title changed.
+	 */
+	&__drawer-header {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex: 0 0 auto;
+		gap: 16px;
+		height: 72px;
+		padding: 0 32px;
+		background: $rp-accent-08;
+		border-bottom: 1px solid $rp-accent-22;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+	}
+
+	&__drawer-header-left {
+		display: flex;
+		align-items: center;
+		/* Only the title may shrink; Back and the pager keep their size. */
+		min-width: 0;
+		gap: 12px;
+	}
+
+	/* Back leaves the PREVIEW. The X in the right-hand group leaves the LIBRARY —
+	   two destinations, so two controls (see PreviewDrawer.jsx). */
+	&__drawer-back {
+		display: inline-flex;
+		align-items: center;
+		flex-shrink: 0;
+		gap: 4px;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: $rp-muted;
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 20px;
+		cursor: pointer;
+		transition: color 0.15s ease;
+
+		&:hover {
+			color: $rp-accent-hover;
+		}
+	}
+
+	&__drawer-title {
+		min-width: 0;
+		margin: 0;
+		font-size: 18px;
+		font-weight: 600;
+		line-height: 20px;
+		color: #2f2f2f;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__drawer-nav {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+		gap: 8px;
+	}
+
+	/* One 64x32 pager drawn as two buttons: the shared edge belongs to the first,
+	   so the second drops its left border rather than doubling it. */
+	&__drawer-nav-group {
+		display: flex;
+	}
+
+	&__drawer-nav-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		padding: 0;
+		border: 1px solid #c9c7c7;
+		background: #fff;
+		color: $rp-muted;
+		cursor: pointer;
+		transition: color 0.15s ease, background 0.15s ease;
+
+		&:first-child {
+			border-radius: 4px 0 0 4px;
+		}
+
+		&:last-child {
+			border-left: 0;
+			border-radius: 0 4px 4px 0;
+		}
+
+		&:hover {
+			background: $rp-accent-08;
+			color: $rp-accent-hover;
+		}
+
+		svg {
+			display: block;
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	/* The spec's #aeadad is 2.3:1 against this wash — under the 4.5:1 floor for
+	   text (§14), and this string is the only thing that says where you are. The
+	   muted ink is the same weight and size at 4.8:1. */
+	&__drawer-nav-count {
+		flex-shrink: 0;
+		font-size: 14px;
+		font-weight: 500;
+		color: $rp-muted;
+	}
+
+	/* Icon-only width switcher, bottom-flush: the selected width is the only
+	   outlined chip, and it opens downward into the stage. */
+	&__drawer-devices {
+		position: absolute;
+		bottom: -1px;
+		left: 50%;
+		display: flex;
+		transform: translateX(-50%);
+	}
+
+	&__drawer-device {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		box-sizing: border-box;
+		width: 56px;
+		height: 48px;
+		border: 1px solid transparent;
+		border-radius: 4px 4px 0 0;
+		background: transparent;
+		color: $rp-muted;
+		cursor: pointer;
+		transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+
+		&:hover {
+			background: rgba(255, 255, 255, 0.6);
+			color: $rp-ink-soft;
+		}
+
+		/* Active reads as a tab: white, outlined on three sides, and its bottom
+		   edge painted white over the header's own rule so the tab and the stage
+		   below it read as one surface. */
+		&.is-active {
+			border-color: $rp-accent;
+			border-bottom-color: #fff;
+			background: #fff;
+			color: $rp-accent;
+		}
+	}
+
+	&__drawer-header-right {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+		/* The spec's spacing: Insert is the primary action and the X is destructive
+		   of the whole session, so they are deliberately not neighbours. */
+		gap: 40px;
+
+		/* Insert (and the locked CTA that replaces it) is the header's own size —
+		   taller and heavier than the same button on a card. */
+		.sp-shaped-patterns__insert-btn {
+			height: 44px;
+			padding: 0 38px;
+			border-radius: 4px;
+			font-size: 15px;
+			font-weight: 600;
+		}
+	}
+
+	&__drawer-close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 40px;
+		height: 40px;
+		padding: 0;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		background: #fff;
+		color: #2f2f2f;
+		cursor: pointer;
+		transition: background 0.15s ease, border-color 0.15s ease;
+
+		&:hover {
+			background: #f1f5f9;
+			border-color: #c3ccd8;
+		}
+	}
+
+	&__drawer-body {
+		display: flex;
+		flex: 1;
+		min-height: 0;
+		padding: 24px;
+		background: #fff;
+	}
+
+	&__drawer-stage {
+		position: relative;
+		flex: 1;
+		min-width: 0;
+		height: 560px;
+		padding: 30px 0 30px 13px;
+		border: 1px solid $rp-line;
+		border-radius: 8px;
+		background: #fff;
+		overflow: hidden;
+	}
+
+	&__drawer-frame {
+		display: block;
+		margin: auto;
+		border: 0;
+		/* Scaling is a pure CSS transform on a fixed-width frame — no measurement pass. */
+		transform-origin: top left;
+		opacity: 1;
+		transition: opacity 0.2s ease;
+
+		/* Dimmed while the framed demo page is still loading. */
+		&.is-loading {
+			opacity: 0.7;
+		}
+	}
+
+	/* Preloader shown over the stage until the preview iframe fires `load`. */
+	&__drawer-loader {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		background: rgba(255, 255, 255, 0.7);
+		pointer-events: none;
+	}
+
+	&__drawer-loader-spinner {
+		width: 32px;
+		height: 32px;
+		border: 3px solid $rp-line;
+		border-top-color: $rp-accent;
+		border-radius: 50%;
+		animation: sp-shaped-patterns-spin 0.8s linear infinite;
+	}
+
+	&__drawer-loader-text {
+		font-size: 13px;
+		color: $rp-muted;
+	}
+
+	&__drawer-thumb {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+		padding: 20px;
+		color: $rp-muted;
+
+		img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+	}
+
+	/* The dashicons spinner shares the icon-button keyframes. */
+	&__spin {
+		animation: sp-shaped-patterns-spin 1s linear infinite;
+	}
+
+	/* Keyboard focus is visible on every control in the library. */
+	button:focus-visible,
+	a:focus-visible,
+	select:focus-visible,
+	input:focus-visible {
+		outline: 2px solid $rp-accent;
+		outline-offset: 1px;
+	}
+}
+
+/* ---- Mount points (outside the modal panel) ------------------------------- */
+
+.sp-shaped-patterns-toolbar-button {
+	display: inline-flex;
+	align-items: center;
+}
+
+.sp-shaped-patterns__launch {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	gap: 8px;
+	margin: 0 6px;
+	padding: 12px;
+	border: 0;
+	border-radius: 2px;
+
+	/* Deliberate exception to the ramp's own AA rule: `$sp-shaped-gallery-brand`
+	 * (Primary/500, #078ddd) is 3.58:1 under this white label and fails the
+	 * 4.5:1 floor every other accent button holds to — this control is the one
+	 * place that is accepted instead of moving to Primary/600. Hover still
+	 * steps one shade darker, onto the AA-safe Primary/600.
+	 *
+	 * Replaces a one-off Figma gradient (3011:54384) built from
+	 * `$sp-shaped-gallery-brand-grad-*`, which _brand.scss scopes to ARTWORK and
+	 * says is "never behind text" — this button was the one place breaking that.
+	 * Those tokens stay declared: their JS twins still draw the block icon's own
+	 * stops. */
+	background: $sp-shaped-gallery-brand;
+	color: #fff;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 14px;
+	text-decoration: none;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: all 0.3s ease-in-out;
+
+	svg {
+		width: 18px;
+		height: 18px;
+	}
+
+	/* A real token swap, now that there is a solid to swap. The old
+	 * `filter: brightness()` existed only because a gradient has no darker step
+	 * to move to; deriving a hover state by dimming is what the ramp exists to
+	 * make unnecessary. One step down the ramp from the brand rest fill, onto
+	 * Primary/600. */
+	&:hover {
+		background: $sp-shaped-gallery-brand-strong;
+	}
+}
+
+@keyframes sp-shaped-patterns-spin {
+
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes sp-shaped-patterns-shimmer {
+
+	0% {
+		background-position: 200% 0;
+	}
+
+	100% {
+		background-position: -200% 0;
+	}
+}
+
+/*
+ * Reduced motion: the spinners and the skeleton shimmer are decoration, and the
+ * states they mark are all announced in text as well.
+ */
+@media (prefers-reduced-motion: reduce) {
+
+	.sp-shaped-patterns__drawer-loader-spinner,
+	.sp-shaped-patterns__spin,
+	.sp-shaped-patterns__card.is-skeleton .sp-shaped-patterns__card-thumb,
+	.sp-shaped-patterns__refresh-btn.is-refreshing .dashicons,
+	.sp-shaped-patterns__insert-btn.is-busy .dashicons {
+		animation: none;
+	}
+}

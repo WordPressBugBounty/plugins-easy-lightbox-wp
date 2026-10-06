@@ -1,0 +1,698 @@
+/*
+ * Module settings panel (Figma node 1274:103585). Imported by admin.scss — never
+ * from JS (see the header there).
+ *
+ * The drawer is the shared `Modal` panel with a second class on it, so everything
+ * here is a geometry override of `components/modal/editor.scss`: right-edge instead
+ * of centred, full height instead of 80%, and no padding of its own because the
+ * title bar, the scrolling body and the footer each own theirs. Two classes on one
+ * element, so it wins those single-class rules without `!important`.
+ *
+ * Rows are the design's two 1fr columns with a 24px gutter: the option's name on the
+ * left, its control on the right. The controls themselves are the shared
+ * `@shaped-gallery/components` library's — the design draws this panel with the same
+ * 13px labels, 40px fields and segmented controls as the block inspector — so what
+ * is styled below is the panel's chrome and the few places a control has to lose its
+ * own stacking margin to a layout that owns its spacing.
+ */
+
+.sp-shaped-gallery-modal.sp-shaped-gallery-module-panel {
+	/* Below the admin bar, which is fixed and would otherwise cover the title. */
+	top: var(--wp-admin--admin-bar--height, 32px);
+	right: 0;
+	left: auto;
+	display: flex;
+	flex-direction: column;
+	width: 548px;
+	max-width: 100%;
+	height: auto;
+	max-height: none;
+	padding: 0;
+	overflow: hidden;
+	border-radius: 4px 0 0 4px;
+	transform: none;
+
+	/* The panel is fixed, so `bottom` is what makes it full height. */
+	bottom: 0;
+}
+
+.sp-shaped-gallery-module-panel {
+	/* Modal's own close button, moved into the title bar rather than duplicated. */
+	.sp-shaped-gallery-modal__close.components-button {
+		top: 15px;
+		right: 24px;
+		width: 24px;
+		height: 24px;
+		color: #2c2d2f;
+	}
+
+	/* --- title bar -------------------------------------------------------- */
+
+	&__head {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		gap: 8px;
+		/* 24px inline, and room at the end for the close button above. */
+		padding: 12px 60px 12px 24px;
+		background: #f0f0f0;
+		border-bottom: 1px solid var(--sp-shaped-gallery-dash-border, #ddd);
+	}
+
+	&__mark {
+		display: flex;
+		flex: 0 0 24px;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		color: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+	}
+
+	&__title {
+		min-width: 0;
+		color: #2c2d2f;
+		font-size: 18px;
+		font-weight: 600;
+		line-height: 28px;
+	}
+
+	/* --- scrolling options ------------------------------------------------ */
+
+	&__body {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-height: 0;
+		padding: 24px;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+
+	&__group-title {
+		padding: 16px 0;
+		color: #1e1e1e;
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 16px;
+	}
+
+	&__divider {
+		display: block;
+		height: 1px;
+		margin: 8px 0;
+		background: #e0e0e0;
+	}
+
+	/* --- one option row --------------------------------------------------- */
+
+	&__row {
+		display: flex;
+		align-items: center;
+		gap: 24px;
+		padding-bottom: 16px;
+	}
+
+	&__row-label {
+		display: flex;
+		flex: 1 1 0;
+		align-items: center;
+		gap: 6px;
+		min-width: 0;
+	}
+
+	&__row-title {
+		color: #2f2f2f;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+	}
+
+	/* The only carrier of the help text, so a button — see ModuleOptionRow. */
+	&__row-help {
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		padding: 0;
+		color: #949494;
+		background: none;
+		border: 0;
+		cursor: pointer;
+
+		svg {
+			display: block;
+			width: 13px;
+			height: 13px;
+		}
+
+		&:hover,
+		&:focus-visible {
+			color: var(--sp-shaped-gallery-dash-accent-strong, #{$sp-shaped-gallery-brand-strong});
+		}
+	}
+
+	&__row-control {
+		display: flex;
+		flex: 1 1 0;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+		min-width: 0;
+
+		/*
+		 * Every shared control carries the library's 16px stacking margin, which a
+		 * row that owns its own spacing does not want. The popover rows are the
+		 * exception: they ARE the row, so their margin is the row gap and is left
+		 * alone.
+		 */
+		.sp-shaped-gallery-cmp-mb {
+			margin-bottom: 0;
+		}
+
+		/* A field takes the whole right column; a switch stays at its end. */
+		.sp-shaped-gallery-select-field,
+		.sp-shaped-gallery-button-group {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		/*
+		 * Unchecked track as a solid grey pill where core paints an outlined one —
+		 * the one piece of the design's switch skin that isn't the shared Toggle's
+		 * own look. Scoped to this panel, so the block inspector's toggles are left
+		 * exactly as they are. The checked state is NOT overridden here any more
+		 * (was Gutenberg/Alert green, #3d9e56): the shared Toggle component already
+		 * paints checked in the brand accent, and this panel was the other copy of
+		 * the same drift `fix(settings): match Integrations/Modules toggle color to
+		 * the brand` already fixed on the Modules/Integrations module-head toggles.
+		 */
+		.components-form-toggle:not(.is-checked) .components-form-toggle__track {
+			background: #bbb;
+			border-color: #bbb;
+		}
+
+		.components-form-toggle:not(.is-checked) .components-form-toggle__thumb {
+			background: #fff;
+			border-color: #fff;
+		}
+	}
+
+	/* --- popover rows (a row whose options open a panel of their own) ------ */
+
+	/*
+	 * SpPopover already draws a label-left / trigger-right row at the same 16px
+	 * rhythm, which is exactly the design's gear row — it only needs the row's own
+	 * label colour and the design's 24px trigger.
+	 */
+	.sp-shaped-gallery-popover__toggle-row .sp-shaped-gallery-control__title {
+		color: #2f2f2f;
+		font-size: 13px;
+		line-height: 20px;
+	}
+
+	.sp-shaped-gallery-popover__toggle {
+		width: 24px;
+		height: 24px;
+		color: #2f2f2f;
+	}
+
+	/* The gear of a sub-panel the design file has no frame for (`pending`). */
+	&__gear {
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		color: #2f2f2f;
+		background: none;
+		border: 0;
+
+		&:disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+	}
+
+	/* --- measurement row -------------------------------------------------- */
+
+	&__measure {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__measure-input {
+		width: 96px;
+	}
+
+	/*
+	 * The design's unit badge: display only, so a span rather than a `Units`
+	 * switcher. 40px, not the design's 36px, to sit level with the field beside it —
+	 * the shared controls are all 40px (`__next40pxDefaultSize`).
+	 */
+	&__measure-unit {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		min-width: 30px;
+		height: 40px;
+		padding: 8px;
+		color: #949494;
+		font-size: 10px;
+		line-height: 1;
+		text-transform: uppercase;
+		border: 1px solid #949494;
+		border-radius: 2px;
+	}
+
+	/* --- paired measurements (Image Size, Offset Watermark) --------------- */
+
+	&__pair {
+		display: flex;
+		flex: 1 1 auto;
+		gap: 12px;
+		min-width: 0;
+	}
+
+	&__pair-field {
+		display: flex;
+		flex: 1 1 0;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	/* The sub-label and its unit badge sit on one line above the field. */
+	&__pair-head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	&__pair-unit {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		height: 20px;
+		padding: 0 5px;
+		color: #8c8f94;
+		font-size: 10px;
+		line-height: 1;
+		text-transform: uppercase;
+		background: #fff;
+		border: 1px solid #8c8f94;
+		border-radius: 2px;
+	}
+
+	/* A paired field fills its own column, so the shared input width is dropped. */
+	&__pair &__measure {
+		width: 100%;
+	}
+
+	&__pair &__measure-input {
+		width: 100%;
+	}
+
+	/* --- the file chip (Watermark Image) ---------------------------------- */
+
+	&__file-row {
+		display: flex;
+		flex: 1 1 auto;
+		align-items: center;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	&__file {
+		display: flex;
+		flex: 1 1 auto;
+		align-items: center;
+		gap: 8px;
+		min-width: 0;
+		height: 40px;
+		padding: 6px;
+		overflow: hidden;
+		background: #fff;
+		border: 1px solid #ddd;
+		border-radius: 2px;
+		cursor: pointer;
+
+		&:hover {
+			border-color: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+		}
+	}
+
+	&__file-thumb {
+		display: flex;
+		flex: 0 0 28px;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		overflow: hidden;
+		color: #949494;
+
+		img {
+			display: block;
+			width: 28px;
+			height: 28px;
+			object-fit: contain;
+		}
+	}
+
+	&__file-name {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow: hidden;
+		color: #1e1e1e;
+		font-size: 13px;
+		line-height: 20px;
+		text-align: start;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* --- the token field (unwired since the EXIF panel was removed) -------- */
+
+	/*
+	 * Core's `FormTokenField` in the design's clothes: one bordered box holding grey
+	 * chips. Its own chrome is a rounded 2px input with a blue focus ring and pill
+	 * tokens, so what is restyled here is the box, the token and the inner input —
+	 * never the component's structure, which carries its combobox semantics.
+	 */
+	&__tokens {
+		flex: 1 1 auto;
+		min-width: 0;
+
+		.components-form-token-field__input-container {
+			min-height: 36px;
+			padding: 6px 4px 6px 8px;
+			border: 1px solid #ddd;
+			border-radius: 2px;
+			box-shadow: none;
+
+			&.is-active {
+				border-color: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+				box-shadow: none;
+			}
+		}
+
+		.components-form-token-field__token {
+			margin: 2px;
+		}
+
+		.components-form-token-field__token-text,
+		.components-form-token-field__remove-token.components-button {
+			height: 20px;
+			color: #1e1e1e;
+			font-size: 12px;
+			line-height: 16px;
+			background: #f0f0f0;
+		}
+
+		.components-form-token-field__token-text {
+			padding: 2px 2px 2px 6px;
+			border-radius: 2px 0 0 2px;
+		}
+
+		.components-form-token-field__remove-token.components-button {
+			min-width: 20px;
+			padding: 0 4px 0 0;
+			border-radius: 0 2px 2px 0;
+		}
+
+		.components-form-token-field__input {
+			min-height: 20px;
+			margin: 2px;
+			font-size: 12px;
+			line-height: 16px;
+		}
+	}
+
+	/* --- the preview tiles (Attribute Layout) ------------------------------ */
+
+	&__tiles {
+		display: flex;
+		flex: 1 1 auto;
+		align-items: stretch;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	/*
+	 * A radio drawn as a preview: 44px tall, the design's Visual/500 outline, and the
+	 * accent plus a check badge on the selected one. The icon-only tile does not grow,
+	 * as the design draws it at a fixed 42px.
+	 */
+	&__tile {
+		position: relative;
+		display: flex;
+		flex: 1 1 0;
+		align-items: center;
+		gap: 6px;
+		min-width: 0;
+		height: 44px;
+		padding: 0 10px;
+		overflow: hidden;
+		color: #718491;
+		background: #fff;
+		border: 1px solid #718491;
+		border-radius: 4px;
+		cursor: pointer;
+
+		&.is-icon-only {
+			flex: 0 0 48px;
+			justify-content: center;
+			padding: 0;
+		}
+
+		&:hover {
+			border-color: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+		}
+
+		&.is-selected {
+			border-color: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+		}
+
+		/* The design's 12px check badge, straddling the top-right corner. */
+		&.is-selected::after {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 12px;
+			height: 12px;
+			color: #fff;
+			font-size: 9px;
+			line-height: 1;
+			content: "✓";
+			background: var(--sp-shaped-gallery-dash-accent, #{$sp-shaped-gallery-brand});
+			border-radius: 20px;
+		}
+	}
+
+	&__tile-mark {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+
+		svg {
+			display: block;
+			padding: 8px;
+		}
+	}
+
+	/*
+	 * Display Style's marks are full self-bordered card exports (border + fine
+	 * detail), not a plain glyph — the shared 20px rule above reads as an empty box
+	 * for these, so they get their own larger size, scoped so any other tile row is
+	 * untouched.
+	 */
+	&__tile-mark--asset svg {
+		display: block;
+	}
+
+	&__tile-text {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		overflow: hidden;
+	}
+
+	&__tile-label {
+		color: #718491;
+		font-size: 9px;
+		line-height: 12px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	&__tile-value {
+		color: #718491;
+		font-size: 13px;
+		font-weight: 700;
+		line-height: 16px;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	/* --- inline actions (Purge Cache) ------------------------------------- */
+
+	/*
+	 * Gutenberg blue, which is what the design gives it — not the dashboard's own
+	 * link blue, and not the brand accent the footer's Save uses.
+	 */
+	&__action {
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		padding: 6px 10px;
+		color: #fff;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		background: #007cba;
+		border: 1px solid #007cba;
+		border-radius: 4px;
+		cursor: pointer;
+
+		&:hover {
+			background: #006ba1;
+			border-color: #006ba1;
+		}
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+	}
+
+	/*
+	 * An action's outcome sits with the action, not in the footer: the footer status
+	 * reports a SAVE, and a purge is not one (see ActionControl's doc-block). The
+	 * message wraps under the button on a narrow drawer rather than squeezing it.
+	 */
+	&__action-row {
+		display: flex;
+		flex: 0 0 auto;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	&__action-status {
+		margin: 0;
+		font-size: 12px;
+		line-height: 18px;
+
+		&.is-error {
+			color: #b32d2e;
+		}
+
+		&.is-success {
+			color: #007017;
+		}
+	}
+
+	/* --- footer ----------------------------------------------------------- */
+
+	&__foot {
+		position: relative;
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		gap: 12px;
+		padding: 16px 32px;
+		background: #fff;
+		box-shadow: 0 -4px 2px rgba(0, 0, 0, 0.06);
+	}
+
+	&__status {
+		position: absolute;
+		inset-inline-end: 32px;
+		max-width: 40%;
+		margin: 0;
+		font-size: 13px;
+		line-height: 20px;
+		text-align: end;
+
+		&.is-error {
+			color: #b32d2e;
+		}
+
+		&.is-success {
+			color: #007017;
+		}
+	}
+
+	/*
+	 * Save/Reset dim only while there is nothing to do — "no changes" and "saving"
+	 * are the same visual state, and the moment an option changes the pair returns
+	 * to full contrast. Stated here rather than relied on from the settings page's
+	 * own `:disabled` rule: the drawer is `position: fixed` and reads as a screen of
+	 * its own, so its footer should not depend on an ancestor's styling.
+	 */
+	&__foot .sp-shaped-gallery-settings__button:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+
+	/* --- responsive ------------------------------------------------------- */
+
+	@media (max-width: 600px) {
+		&__body {
+			padding: 16px;
+		}
+
+		/* Label above control, so a two-word label is not squeezed to one. */
+		&__row {
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		&__row-label,
+		&__row-control {
+			flex: 1 1 100%;
+			justify-content: flex-start;
+		}
+
+		&__foot {
+			flex-wrap: wrap;
+			padding: 16px;
+		}
+
+		/*
+		 * There is no room beside the buttons at this width, so the message rejoins
+		 * the flow as its own full-width line UNDER them — `order` rather than a DOM
+		 * move because the element is not focusable, so visual order and tab order
+		 * cannot disagree.
+		 */
+		&__status {
+			position: static;
+			order: 1;
+			max-width: none;
+			width: 100%;
+			text-align: center;
+		}
+	}
+}
+
+@media (max-width: 600px) {
+	.sp-shaped-gallery-modal.sp-shaped-gallery-module-panel {
+		width: 100%;
+		border-radius: 0;
+	}
+}

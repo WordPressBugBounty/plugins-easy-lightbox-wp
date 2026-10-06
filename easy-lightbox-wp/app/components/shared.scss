@@ -1,0 +1,804 @@
+/**
+ * Shared chrome for the @shaped-gallery/components option-panel controls.
+ *
+ * Editor-only. Every class is `sp-shaped-gallery-`-prefixed and intentionally NOT nested under
+ * a parent selector so the controls style the Gutenberg inspector sidebar (and
+ * the headless admin editor / dashboard) without leaking into the theme
+ * frontend. Accent tracks the plugin brand ($sp-shaped-gallery-primary in styles/chrome.scss).
+ *
+ * Ported + de-branded from the sibling ShapedPlugin control library.
+ */
+
+@import "../styles/brand";
+
+/* Brand ramp: declared once in styles/_brand.scss (§18), re-exported here under
+ * the names this control library has always used. */
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand; /* Primary/500 — brand accent. */
+$sp-shaped-gallery-accent-tint: $sp-shaped-gallery-brand-tint; /* Primary/50 — active segment fill. */
+$sp-shaped-gallery-accent-border: $sp-shaped-gallery-brand-soft; /* Primary/400 — active segment border. */
+$sp-shaped-gallery-accent-strong: $sp-shaped-gallery-brand-strong; /* Primary/600 — active segment label. */
+$sp-shaped-gallery-muted: #8c8f94;
+$sp-shaped-gallery-label: #2f2f2f; /* Gutenberg Gray 800 — control labels / segment text. */
+/* Grey/Field Border, the same hairline as Gutenberg Gray 300 — the segmented-control frame, the
+ * numeric field's border and the ring around the range slider's ball all draw from it. */
+$sp-shaped-gallery-field-border: #ddd;
+
+.sp-shaped-gallery-cmp-mb {
+	margin-bottom: 16px;
+
+	.components-base-control {
+		margin: 0;
+	}
+}
+
+.sp-shaped-gallery-control__title {
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 20px;
+	text-transform: none;
+	color: $sp-shaped-gallery-label;
+}
+
+.sp-shaped-gallery-control-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+
+	&__left,
+	&__right {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+}
+
+/* Reset-to-default button. */
+.sp-shaped-gallery-reset.components-button {
+	min-width: 24px;
+	height: 24px;
+	padding: 0;
+	color: $sp-shaped-gallery-muted;
+	border-radius: 4px;
+	transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+
+	&:hover {
+		color: $sp-shaped-gallery-accent;
+		background-color: $sp-shaped-gallery-accent-tint;
+	}
+
+	&::after {
+		border: 0;
+	}
+}
+
+/* Responsive device switcher. */
+.sp-shaped-gallery-responsive {
+	position: relative;
+	color: $sp-shaped-gallery-muted;
+
+	&__current {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 20px;
+		border: 1px solid $sp-shaped-gallery-muted;
+		border-radius: 2px;
+		cursor: pointer;
+	}
+
+	&__menu {
+		position: absolute;
+		z-index: 999;
+		right: 0;
+		display: flex;
+		margin-top: 2px;
+		background: #fff;
+		box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, 0.15);
+		opacity: 0;
+		visibility: hidden;
+		transition: 0.2s;
+
+		.components-button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 24px;
+			padding: 0;
+			border-radius: 0;
+			color: $sp-shaped-gallery-muted;
+			box-shadow: none;
+
+			&.is-active {
+				color: #fff;
+				background: $sp-shaped-gallery-accent;
+			}
+
+			&:hover:not(.is-active) {
+				color: $sp-shaped-gallery-accent;
+				background: $sp-shaped-gallery-accent-tint;
+			}
+		}
+	}
+
+	&:hover &__current {
+		border-color: $sp-shaped-gallery-accent;
+		color: $sp-shaped-gallery-accent;
+	}
+
+	&:hover &__menu {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+/* Unit switcher (px / % / em …). */
+.sp-shaped-gallery-units {
+	position: relative;
+	color: $sp-shaped-gallery-muted;
+
+	&__current {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		width: auto;
+		height: 22px;
+		padding: 0 6px;
+		font-size: 11px;
+		text-transform: lowercase;
+		border: 1px solid $sp-shaped-gallery-muted;
+		border-radius: 3px;
+		cursor: pointer;
+		white-space: nowrap;
+	}
+
+	&__menu {
+		position: absolute;
+		z-index: 999;
+		right: 0;
+		display: flex;
+		margin-top: 2px;
+		background: #fff;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		border-radius: 3px;
+		overflow: hidden;
+		opacity: 0;
+		visibility: hidden;
+		transition: 0.2s;
+
+		.components-button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 30px;
+			width: auto;
+			height: 24px;
+			padding: 0 8px;
+			margin: 0;
+			border: 0;
+			font-size: 11px;
+			text-transform: lowercase;
+			border-radius: 0;
+			color: $sp-shaped-gallery-muted;
+			box-shadow: none;
+			background: transparent;
+			white-space: nowrap;
+
+			&.is-active {
+				color: #fff;
+				background: $sp-shaped-gallery-accent;
+				border: 0;
+				box-shadow: none;
+			}
+
+			&:hover:not(.is-active) {
+				color: $sp-shaped-gallery-accent;
+				background: $sp-shaped-gallery-accent-tint;
+				border: 0;
+				box-shadow: none;
+			}
+		}
+	}
+
+	&:hover &__current {
+		border-color: $sp-shaped-gallery-accent;
+		color: $sp-shaped-gallery-accent;
+	}
+
+	&:hover &__menu {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+/* Range slider — accent the track + thumb, center the numeric input.
+ *
+ * Geometry is Figma node 57:15006 (the "Animation Duration" reference ranger).
+ * Core already ships most of it — a 4px rail in Gutenberg Gray 300, a 12px
+ * thumb, a 2px field radius, 13px #1e1e1e value type — so only the deltas are
+ * restated below rather than the whole control. */
+.sp-shaped-gallery-range-control {
+	.components-range-control__track {
+		background: $sp-shaped-gallery-accent;
+	}
+
+	.components-range-control__thumb-wrapper {
+		z-index: 9 !important;
+
+		span {
+			background: $sp-shaped-gallery-accent;
+
+			/*
+			 * The design's ball is a 12px accent core inside a 2px #ddd ring —
+			 * a 16px circle drawn as r=7 with a 2px stroke. Painting the ring
+			 * as a box-shadow rather than a border keeps the thumb box at the
+			 * 12px core's own positioning math assumes (margin-left: -10px,
+			 * translateX( 4.5px )); a border would grow the box and walk the
+			 * ball off the rail at both ends. It also replaces core's
+			 * elevationXSmall drop shadow, which the design does not have.
+			 */
+			box-shadow: 0 0 0 2px $sp-shaped-gallery-field-border;
+		}
+	}
+
+	/*
+	 * Core pads this field 5px on the TOP only, which sat the rail 2.5px below
+	 * the middle of the row it shares with the numeric input, the axis glyph
+	 * and the preset toggle — the design centres all four on one line. Zeroing
+	 * the pad centres them and settles the row at the 40px the design gives
+	 * the Range itself.
+	 *
+	 * Matched through its parent rather than on its own: core sets the pad
+	 * from an emotion rule of the same two-class weight, and emotion injects
+	 * its <style> after this stylesheet's <link>, so an equal-specificity
+	 * selector loses the tie on order alone.
+	 */
+	.components-base-control > .components-base-control__field {
+		padding-top: 0;
+	}
+
+	.components-input-control__container input {
+		text-align: center;
+	}
+
+	/*
+	 * Numeric input — the design's "Measurement" box is 66 × 32 with a #ddd
+	 * hairline, where core draws 80 × 40 with a #8d8d8d one.
+	 *
+	 * The design's padding is asymmetric (8 left, 4 right) to clear a spinner
+	 * column it draws inside the box; the browser's own number spinner only
+	 * surfaces on hover, so there is no column to clear here and the inset
+	 * stays symmetric — against centred text, 8/4 would only shift the value
+	 * off centre.
+	 */
+	.components-range-control__number {
+		border: none !important;
+		padding: 0 !important;
+
+		.components-input-control__container {
+			width: 66px;
+		}
+
+		.components-input-control__container,
+		input[type="number"] {
+			height: 32px;
+			min-height: 32px;
+		}
+
+		input[type="number"] {
+			width: 66px;
+			padding-right: 8px;
+			padding-left: 8px;
+		}
+
+		/*
+		 * Four classes deep on purpose: core colours this border from an
+		 * emotion rule written `&&&`, so anything shorter loses the cascade.
+		 */
+		.components-input-control__container .components-input-control__backdrop {
+			border-color: $sp-shaped-gallery-field-border;
+		}
+	}
+
+	/* Multi-step ranger: slider + preset toggle on one row. */
+	&__row {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	&__ranger {
+		flex: 1;
+		min-width: 0;
+
+		/*
+		 * Margin + z-index only — no `display`/`width` override. Core's own
+		 * `Root` (`.components-range-control__root`) is already a flex row and
+		 * its `Wrapper` (`.components-range-control__wrapper`) is already
+		 * `display:block; flex:1; width:100%` by default (see
+		 * `@wordpress/components/src/range-control/styles`). A prior version
+		 * forced `display:flex` + `width:100%` onto these classes to "align"
+		 * them, which flipped Wrapper's NORMAL-FLOW children — the native
+		 * range `<input>` and the marks track (`MarksWrapper`, itself
+		 * `width:100%` of Wrapper) — into flex siblings instead of a stacked
+		 * block. That squeezed the marks track down to a fraction of the
+		 * rail's width, bunching every preset step's tick together with no
+		 * visible separation between steps. The same bare descendant selector
+		 * also matched a SECOND, nested `.components-base-control` /
+		 * `__field` pair inside the injected NumberControl (`withInputField`
+		 * renders one next to the slider), which is what starved the slider
+		 * down to a stray thumb when marks/presets toggled off — a later fix
+		 * scoped the match to a direct-child combinator instead of removing
+		 * the cause, which fixed the number field but left the marks squeeze
+		 * in place. Checked wp-carousel-pro's and styble-pro's own
+		 * rangeControl/Spacing ranger CSS for reference: neither touches
+		 * `display` or `width` here, and both render correctly with marks on.
+		 */
+		.components-base-control__field,
+		.components-range-control__wrapper {
+			margin-bottom: 0;
+
+			.components-range-control__thumb-wrapper {
+				z-index: 99 !important;
+			}
+		}
+	}
+
+	/*
+	 * Axis glyph (horizontal / vertical gap) — a bare 20px centering box.
+	 *
+	 * No CSS border: the glyph draws its own rounded square (see
+	 * `GapHorizontalIcon` / `GapVerticalIcon`), and a frame here would ring it a
+	 * second time. `color` still owns the frame's stroke, which the artwork takes
+	 * as `currentColor`, so the hairline is defined in exactly one place.
+	 */
+	&__axis {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		color: $sp-shaped-gallery-muted;
+
+		svg {
+			display: block;
+		}
+	}
+
+	&__preset {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		background: transparent;
+		border: 0;
+		color: $sp-shaped-gallery-accent;
+		cursor: pointer;
+	}
+
+	/* Static, display-only unit badge (e.g. seconds) — mirrors the unit box. */
+	&__unit {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 24px;
+		height: 20px;
+		padding: 0 5px;
+		font-size: 10px;
+		text-transform: lowercase;
+		color: $sp-shaped-gallery-muted;
+		border: 1px solid $sp-shaped-gallery-muted;
+		border-radius: 2px;
+	}
+
+	/*
+	 * Gradient rail (image-filter previews): paint the whole rail with the
+	 * supplied gradient and drop the accent fill, so the slider reads as the
+	 * effect it controls (brightness, saturation, hue). The thumb stays branded.
+	 */
+	&.has-track-gradient {
+		.components-range-control__rail {
+			background: var(--sp-shaped-gallery-track-gradient);
+		}
+
+		.components-range-control__track {
+			background: transparent;
+		}
+	}
+}
+
+/*
+ * Toggle — label on the left, switch on the right (Figma), accent checked track.
+ *
+ * The core ToggleControl lays out an HStack of [switch, label] where the label
+ * (a FlexBlock, flex: 1) grows to fill. Ordering the label first pulls it to the
+ * left and the grow pushes the switch to the right edge — matching the design
+ * without re-implementing the control (keyboard, focus + label binding stay
+ * intact). Keys off the stable `components-*` classes, never the emotion-hashed
+ * HStack wrapper, so it survives @wordpress/components upgrades.
+ */
+.sp-shaped-gallery-toggle {
+	.components-form-toggle__input:focus,
+	.components-form-toggle__input:focus-visible,
+	input[type='checkbox']:focus,
+	input[type='checkbox']:focus-visible {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	.components-toggle-control__label {
+		order: -1;
+		font-size: 13px;
+		line-height: 20px;
+		color: $sp-shaped-gallery-label;
+	}
+
+	.components-form-toggle.is-checked .components-form-toggle__track {
+		background: $sp-shaped-gallery-accent;
+		border-color: $sp-shaped-gallery-accent;
+	}
+
+	/*
+	 * `hideLabel`: the label stays in the DOM (it is the switch's accessible name)
+	 * but leaves the visual flow, for a row that already prints the name itself.
+	 * Clipped rather than `display: none`, which would drop it from the a11y tree.
+	 */
+	&.is-label-hidden .components-toggle-control__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip-path: inset(50%);
+		border: 0;
+		white-space: nowrap;
+	}
+}
+
+/*
+ * Segmented button group (ToggleGroupControl) — restyled to the Figma spec.
+ *
+ * WP renders a sliding dark "pill" indicator (the radiogroup's `::before`) with
+ * white text on the selected option. The design instead wants a flat tinted
+ * segment (pink fill + border + label). We therefore suppress the indicator and
+ * paint the selected radio directly. Selectors key off the stable ARIA roles
+ * Ariakit emits (`role="radiogroup"` / `role="radio"` + `aria-checked`), never
+ * the hashed Emotion classes — so this survives @wordpress/components upgrades.
+ * Higher specificity than Emotion's single-class rules, so no `!important`.
+ */
+.sp-shaped-gallery-button-group {
+	div:focus-within,
+	*:focus-within {
+		outline: none !important;
+		box-shadow: none !important;
+	}
+
+	/* Figma label: 13px sentence case — scoped to this control only. */
+	.sp-shaped-gallery-control__title {
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+		text-transform: none;
+		color: $sp-shaped-gallery-label;
+	}
+
+	[role='radiogroup'] {
+		min-height: 40px;
+		padding: 4px;
+		background: #fff;
+		border: 1px solid $sp-shaped-gallery-field-border;
+		border-radius: 2px;
+		outline: none !important;
+		box-shadow: none !important;
+
+		&:focus,
+		&:focus-within {
+			outline: none !important;
+			box-shadow: none !important;
+		}
+
+		/* Kill the sliding indicator pill; segments are painted directly. */
+		&::before {
+			content: none;
+		}
+	}
+
+	[role='radio'] {
+		padding: 6px;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+		color: $sp-shaped-gallery-label;
+		border-radius: 2px;
+		height: auto;
+
+		/* Selected segment: pink tint + border + label (inset shadow keeps size). */
+		&[aria-checked='true'] {
+			color: $sp-shaped-gallery-accent-strong;
+			background: $sp-shaped-gallery-accent-tint;
+			box-shadow: inset 0 0 0 1px $sp-shaped-gallery-accent-border !important;
+
+			&:focus {
+				box-shadow: inset 0 0 0 1px $sp-shaped-gallery-accent-border !important;
+			}
+		}
+	}
+}
+
+/* Inline select field (label left, control right) — the `flexStyle` variant. */
+.sp-shaped-gallery-select-field.is-flex {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+
+	.sp-shaped-gallery-control__title {
+		flex: none;
+	}
+
+	.components-base-control {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+/*
+ * Screen-reader-only text. Defined here rather than reused from the dashboard
+ * stylesheet because this library also runs inside Gutenberg, where admin.scss is
+ * not enqueued.
+ */
+.sp-shaped-gallery-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	border: 0;
+	white-space: nowrap;
+}
+
+/* Shortcode field: read-only value with the copy trigger docked inside it (ShortcodeField). */
+
+/*
+ * Chrome sampled from the reference screenshot rather than estimated: a 1px #b3c5cd
+ * hairline, a 3px radius and a fill that is off-white with the faintest wash of the
+ * accent (the brand at 2%), not pure white. The text is 12px in the UI face, NOT a monospace stack: the
+ * reference sets a shortcode as ordinary body text, and the proportional letterforms
+ * are what make it read as a label rather than a code field.
+ *
+ * The copy trigger sits INSIDE the box, right-aligned, and the whole box is the click
+ * target — clicking anywhere in the field copies the shortcode, not only the icon. It
+ * stays permanently visible rather than hover-revealed, since the box itself is now
+ * the affordance.
+ */
+.sp-shaped-gallery-shortcode-field {
+	display: inline-flex;
+	align-items: center;
+
+	&__box {
+		display: flex;
+		flex: none;
+		align-items: stretch;
+		/*
+		 * No fixed width: the input sizes itself to the VALUE's own length (see the
+		 * component's `size` attribute), so the box hugs a 3-digit id as tightly as a
+		 * 6-digit one leaves it loose. `min-width` only keeps a 1-digit id from
+		 * looking like a stub.
+		 */
+		min-width: 140px;
+		border: 1px solid #b3c5cd;
+		border-radius: 3px;
+		background: $sp-shaped-gallery-brand-02;
+		cursor: pointer;
+
+		&:focus-within {
+			border-color: var(--sp-shaped-gallery-accent, #{$sp-shaped-gallery-accent});
+		}
+	}
+
+	/*
+	 * Scoped under the wrapper, so the compiled selector carries two classes.
+	 *
+	 * A single class loses this field to whatever else is on the screen: wp-admin and
+	 * several plugins style `input[type="text"]` through selectors like
+	 * `.some-wrap input[type=text]` (0,1,1), which outranks `&__input` (0,1,0) and was
+	 * silently winning — the field rendered 40px tall with `padding: 0 12px` and the
+	 * inherited text colour, not the values below. A bare <input> dropped into the
+	 * same cell picked up exactly the same metrics, which is how it was pinned down.
+	 *
+	 * `height`/`min-height` are reset for the same reason: the rule that was winning
+	 * set both, and padding alone cannot undo a fixed height.
+	 */
+	.sp-shaped-gallery-shortcode-field__input {
+		/*
+		 * No `flex: 1`: that would re-stretch the input to fill the box, undoing
+		 * the `size` attribute's whole point. `flex: none` lets it keep the
+		 * character-count width the DOM gave it.
+		 */
+		flex: none;
+		height: auto;
+		min-height: 0;
+		margin: 0;
+		padding: 7px 4px 7px 12px;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+		color: #2f2f2f;
+		font-size: 12px;
+		line-height: 1.1;
+		cursor: pointer;
+
+		&:focus {
+			outline: none;
+			box-shadow: none;
+		}
+	}
+
+	/* Anchors the confirmation directly above the icon. */
+	&__action {
+		position: relative;
+		display: flex;
+		flex: none;
+		align-items: center;
+		padding-inline: 4px 8px;
+	}
+
+	.sp-shaped-gallery-shortcode-field__copy {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: #757575;
+		cursor: pointer;
+		transition: color 0.15s ease;
+
+		svg {
+			display: block;
+			width: 18px;
+			height: 18px;
+		}
+
+		&:hover,
+		&:focus-visible {
+			color: var(--sp-shaped-gallery-accent, #{$sp-shaped-gallery-accent});
+		}
+	}
+
+	/*
+	 * The confirmation still only shows up mid-copy — anchored above the
+	 * now-permanent icon rather than gating the icon's own visibility.
+	 */
+	&.is-copied .sp-shaped-gallery-shortcode-field__copy {
+		color: var(--sp-shaped-gallery-accent, #{$sp-shaped-gallery-accent});
+	}
+
+	/*
+	 * Kept mounted and faded rather than mounted on demand: this element is also the
+	 * live region (see the component), and a region has to be present before its text
+	 * changes for the change to be announced. `pointer-events: none` so it can never
+	 * intercept the click that produced it.
+	 */
+	&__toast {
+		position: absolute;
+		bottom: calc(100% + 6px);
+		left: 50%;
+		z-index: 10;
+		padding: 3px 8px;
+		color: #317d46;
+		font-size: 11px;
+		font-weight: 500;
+		line-height: 16px;
+		white-space: nowrap;
+		background: #e8f4ec;
+		border-radius: 3px;
+		opacity: 0;
+		transform: translate(-50%, 3px);
+		transition: opacity 0.15s ease, transform 0.15s ease;
+		pointer-events: none;
+
+		&.is-visible {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
+
+		/*
+		 * Guarded here rather than relying on the dashboard's blanket rule: this
+		 * control also renders inside Gutenberg, which that rule does not reach.
+		 */
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+}
+
+/* Divider. */
+.sp-shaped-gallery-divider {
+	display: block;
+	height: 1px;
+	margin: 12px 0;
+	background: #e0e0e0;
+}
+
+/* Override conflicting panel body title margins to prevent sidebar gaps. */
+.components-panel__body-title {
+	margin-top: 0 !important;
+}
+
+/* Force margin: 0 !important on all panel body states to prevent gaps from active/open panels. */
+.components-panel__body.sp-shaped-gallery-child-panel,
+.components-panel__body {
+	&, &.is-opened {
+		margin: 0 !important;
+		padding-top: 0 !important;
+		padding-bottom: 0 !important;
+	}
+
+	/*
+	 * Gap between a panel header and the first control's label
+	 */
+	&.is-opened > .components-panel__body-title {
+		margin-bottom: 16px;
+	}
+
+	/*
+	 * WP core (@wordpress/components panel/style.scss) only paints the grey
+	 * wash on `.components-panel__body-title:hover` — there's no equivalent
+	 * rule for the opened/expanded panel, so the header only ever looked
+	 * "active" while the cursor stayed over it. Mirror core's own selector
+	 * shape and color here so an opened panel keeps the same background once
+	 * expanded, and `:active` (mouse down) gets it too.
+	 */
+	> .components-panel__body-title:active,
+	&.is-opened > .components-panel__body-title {
+		background: #f0f0f0;
+		border: none;
+	}
+
+	/* Reset panel header toggle button to standard normal style */
+	.components-panel__body-toggle,
+	.components-panel__body-title .components-button {
+		color: #1e1e1e !important;
+		background: transparent !important;
+		border: none !important;
+		outline: none !important;
+		box-shadow: none !important;
+
+		&:hover,
+		&:focus,
+		&:focus-visible,
+		&:active {
+			color: #1e1e1e !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			box-shadow: none !important;
+		}
+	}
+
+	&.is-opened {
+		> .components-panel__body-title .components-button,
+		> .components-panel__body-toggle,
+		.components-panel__body-toggle,
+		.components-panel__body-title .components-button {
+			color: #1e1e1e !important;
+			background: transparent !important;
+			border: none !important;
+			outline: none !important;
+			box-shadow: none !important;
+		}
+	}
+}

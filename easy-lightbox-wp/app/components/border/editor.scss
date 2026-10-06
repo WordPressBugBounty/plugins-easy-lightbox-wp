@@ -1,0 +1,15 @@
+/* Border — composite border control layout (editor-only). */
+
+.sp-shaped-gallery-border {
+	.sp-shaped-gallery-button-group {
+		margin-bottom: 12px;
+	}
+
+	/* Style-toggle line glyphs: scale to the segment and inherit its colour
+	 * (so the active segment's accent flows through). */
+	.sp-shaped-gallery-button-group [role='radio'] svg {
+		display: block;
+		width: auto;
+		height: 12px;
+	}
+}

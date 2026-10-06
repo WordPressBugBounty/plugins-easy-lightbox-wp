@@ -1,0 +1,445 @@
+/**
+ * Editor-only styles for the gallery block. Pulls in the shared chrome (picker,
+ * media modal, provider rail) so the in-editor experience matches the admin page.
+ */
+@import "../../styles/chrome.scss";
+
+.shaped-gallery-block-editor {
+	.sp-shaped-gallery {
+		max-width: 100%;
+	}
+
+	/* Core's empty-state label crowds the brand mark against "ShapedGallery" at its
+	 * own 4px (`.components-placeholder__label > svg`) — widen it to match the
+	 * icon-to-text spacing used elsewhere in the dashboard chrome. */
+	.components-placeholder__label > svg {
+		margin-right: 10px;
+	}
+
+	/* Content Settings block (image title / description). The shared style.scss
+	 * rules draw it; the editor adds only inertness, because per-item text is edited
+	 * in the media modals, not in the canvas. Overlay sits directly over the image,
+	 * where without this it would swallow the click that selects the image block
+	 * underneath; Classic sits beside it, where the same inertness keeps a stray
+	 * text selection from starting mid-drag. */
+	.sp-shaped-gallery__content {
+		pointer-events: none;
+		user-select: none;
+	}
+
+	/* Editable preview: each image is a native core/image inner block acting as a
+	 * gallery cell. Override core/image's own sizing so the block's grid/justified/
+	 * masonry geometry stays authoritative. !important is used deliberately to beat
+	 * WP core's third-party image styles (see §16). */
+	.sp-shaped-gallery.is-editable {
+		.sp-shaped-gallery__item {
+			/* NO `margin: 0` here. This is the plugin's own tile (item-content-filter
+			 * wraps each image block in it), and style.scss already gives it
+			 * `margin: var(--sp-shaped-gallery-iv-mg, 0)` — which resets the UA
+			 * `figure` margin through its own fallback. A blanket `margin: 0` at this
+			 * selector's specificity (0,4,0 vs style.scss's 0,2,0) beat that var
+			 * unconditionally, so the Image & Video Settings → Margin control moved
+			 * nothing in the canvas however it was set. The inner core/image figure
+			 * below is the one that genuinely needs the reset. */
+
+			/* The tile is OURS, so the core/image figure inside has to fill the media
+			 * frame — the frame, not the tile, because the tile now also holds a
+			 * Classic content block and its height is `frame + content`. Filling the
+			 * tile would have put the image back over the caption. */
+			.sp-shaped-gallery__frame > figure {
+				margin: 0;
+				width: 100%;
+				height: 100%;
+				flex: 1 1 0%;
+				min-height: 0;
+			}
+
+			/* core wraps the <img> in a ResizableBox / optional link — fill the cell.
+			 * Descendant rather than child selectors: the wrapper adds one level. */
+			a,
+			.components-resizable-box__container {
+				width: 100% !important;
+				height: 100% !important;
+				display: block;
+			}
+
+			/* core/image's own resize handles, OFF.
+			 *
+			 * The tile's geometry belongs to the layout: the rules above pin the
+			 * figure, the ResizableBox container and the `<img>` to the cell with
+			 * `!important`, so a drag can only write `width`/`height` onto the
+			 * core/image block that nothing then reads — the handle moved, the image
+			 * did not. A control that cannot change what it points at is a fake
+			 * affordance, and it sat on the corner the user reaches for to drag the
+			 * tile. Image size is set per layout, not by dragging here.
+			 *
+			 * `display: none` rather than `pointer-events: none` so the handles leave
+			 * the box entirely: a transparent-but-present handle still sits over the
+			 * tile's corner, which is where the drag-to-reorder gesture starts. */
+			.components-resizable-box__handle {
+				display: none;
+			}
+
+			img {
+				display: block;
+				width: 100% !important;
+				height: 100% !important;
+				max-width: none;
+				object-fit: cover;
+			}
+
+			/* core/image's OWN caption round-trips via the attribute; keep cells clean
+			 * in the canvas. Scoped with :not() so it never hides the gallery's
+			 * Content Settings block, which ./item-content-filter renders inside this
+			 * same figure. */
+			figcaption:not(.sp-shaped-gallery__content) {
+				display: none;
+			}
+		}
+
+	}
+}
+
+/*
+ * Block sidebar header card — Figma "Block Description" (node 1272:57428).
+ *
+ * The design draws ONE card: icon + title + description + Documentation link +
+ * "Start with Ready Gallery". The first three of those are Gutenberg's own block
+ * card, which core renders above the InspectorControls slot and which we cannot
+ * reach from inside our own tree — so the card is composed from two halves and
+ * the seam is closed with CSS: core's card loses its bottom padding, ours picks
+ * the flow back up 6px later, and neither draws a divider between them.
+ *
+ * Scoping is `:has()` on the inspector wrapper: the block card carries no block
+ * name, so the presence of OUR section in the same inspector is the only honest
+ * signal that this card belongs to the gallery block. Without it these overrides
+ * would restyle every block's card in the editor.
+ *
+ * Figma geometry (280px card): 18px padding, 24px icon + 12px gap, 4px title →
+ * description, 6px description → link, 16px link → button, 40px button.
+ */
+$sp-shaped-gallery-card-pad: 18px;
+$sp-shaped-gallery-card-ink: #1d2327; /* WP Gray/Gray 90 — title + description. */
+$sp-shaped-gallery-card-link: #007cba; /* Gutenberg/Blue — Documentation link. */
+
+.block-editor-block-inspector:has( .sp-shaped-gallery-info ) {
+	/* Hide native WordPress core Advanced panel (replaced by ShapedGallery's Advanced Settings panel). */
+	.block-editor-block-inspector__advanced,
+	.block-editor-advanced-controls-panel,
+	.editor-advanced-controls-panel,
+	.components-panel__body:has( .block-editor-advanced-controls-panel ),
+	.components-panel__body:has( .editor-advanced-controls-panel ) {
+		display: none !important;
+	}
+
+
+
+
+
+	.block-editor-block-card {
+		padding: $sp-shaped-gallery-card-pad $sp-shaped-gallery-card-pad 0;
+
+		/* Core's VStack between the title row and the description; the design
+		 * tightens core's 8px to 4px. Only the direct child is the stack — the
+		 * rows nested inside it keep their own gaps. */
+		> div {
+			gap: 4px;
+		}
+
+		.block-editor-block-icon {
+			flex: 0 0 24px;
+			width: 24px;
+			height: 24px;
+			margin-right: 12px;
+
+			svg {
+				width: 24px;
+				height: 24px;
+			}
+		}
+
+		&__title {
+			font-size: 13px;
+			font-weight: 500;
+			line-height: 16px;
+			color: $sp-shaped-gallery-card-ink;
+		}
+
+		/* Core pads the name 3px vertically, which would push the 16px line box
+		 * past the 24px the icon sets for the row. */
+		&__name {
+			padding: 0;
+		}
+
+		&__description {
+			margin: 0;
+			font-size: 12px;
+			font-weight: 400;
+			line-height: 16px;
+			color: $sp-shaped-gallery-card-ink;
+		}
+	}
+}
+
+/*
+ * Gallery Information — the lower half of the header card: the docs link and
+ * the gallery's permanent shortcode (gallery CPT only, so it has no
+ * counterpart in the design).
+ */
+.sp-shaped-gallery-info {
+	padding: 6px $sp-shaped-gallery-card-pad $sp-shaped-gallery-card-pad;
+
+	&__docs {
+		display: inline-flex;
+		align-items: center;
+		min-height: 16px;
+		color: $sp-shaped-gallery-card-link;
+		font-size: 12px;
+		font-weight: 600;
+		line-height: 16px;
+		text-decoration: none;
+
+		&:hover,
+		&:focus-visible {
+			text-decoration: underline;
+		}
+	}
+
+	&__hint {
+		margin: 16px 0 8px;
+		color: #50575e;
+		font-size: 12px;
+		line-height: 16px;
+
+		a {
+			color: $sp-shaped-gallery-card-link;
+			font-weight: 600;
+			text-decoration: none;
+
+			&:hover,
+			&:focus-visible {
+				text-decoration: underline;
+			}
+		}
+	}
+}
+
+/* Remove focus outline & Gutenberg toolbar ::before pseudo-element focus box-shadow on toolbar action buttons */
+.sp-shaped-gallery-toolbar-action,
+.block-editor-block-toolbar .components-button.sp-shaped-gallery-toolbar-action,
+.components-toolbar .components-button.sp-shaped-gallery-toolbar-action,
+.components-accessible-toolbar .components-button.sp-shaped-gallery-toolbar-action {
+	outline: none !important;
+	box-shadow: none !important;
+	border: none !important;
+	border-radius: 4px;
+
+	/*
+	 * Core sets an explicit `height: 48px` on every toolbar button
+	 */
+	height: 32px;
+	margin: 8px 0;
+
+	&::before,
+	&::after,
+	&:focus::before,
+	&:focus-visible::before,
+	&:active::before {
+		content: none !important;
+		display: none !important;
+		box-shadow: none !important;
+		outline: none !important;
+		border: none !important;
+	}
+
+	/*
+	 * Stripping the border/box-shadow/outline above also stripped the only visual
+	 * feedback these buttons had — neither state painted a background, so the
+	 * button looked identical whether hovered, focused or pressed. Grey wash
+	 * (#f0f0f1, the same neutral the visibility badge above uses) restores that
+	 * feedback (Figma reference: hover/active on Change Layout, Edit Gallery).
+	 */
+	&:hover,
+	&:focus,
+	&:focus-visible,
+	&:active,
+	&.is-pressed {
+		background: #f0f0f1 !important;
+		outline: none !important;
+		box-shadow: none !important;
+		border: none !important;
+	}
+}
+
+/* "Gallery Information" panel in the Post tab. */
+.sp-shaped-gallery-doc-panel {
+	&__row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		margin-bottom: 12px;
+
+		&--stacked {
+			display: block;
+		}
+	}
+
+	&__label {
+		color: #1e1e1e;
+		font-size: 12px;
+		font-weight: 600;
+	}
+
+	&__value {
+		color: #50575e;
+		font-family: Menlo, Consolas, monaco, monospace;
+		font-size: 12px;
+	}
+
+	&__row--stacked &__label {
+		display: block;
+		margin-bottom: 6px;
+	}
+
+	&__hint {
+		margin: 0;
+		color: #757575;
+		font-size: 11px;
+		line-height: 1.5;
+		margin-bottom: 10px;
+	}
+}
+
+/*
+ * Advanced → Visibility — canvas feedback for the four Hide on <device> toggles.
+ *
+ * The block's `style` stylesheet is loaded in the editor iframe too, so the real
+ * `sp-shaped-gallery-hide-*` classes would `display:none !important` the block here
+ * and leave no way to select it and switch the option back off. `edit.jsx` puts
+ * `is-shaped-hidden-*` markers on the wrapper instead (`app/lib/visibility.js` holds
+ * both spellings), and the rules below make the setting VISIBLE without ever making
+ * the block unreachable.
+ *
+ * The badge names every device the gallery is hidden on, including Mobile
+ * Landscape — WordPress previews Desktop / Tablet / Mobile only, and its Mobile
+ * canvas is a portrait phone, so a sideways phone has no preview to dim and can be
+ * reported and nothing else.
+ */
+.sp-shaped-gallery-visibility-badge {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	margin-bottom: 10px;
+	padding: 4px 10px 4px 8px;
+	border: 1px solid rgb(0 0 0 / 12%);
+	border-radius: 2px;
+
+	/* #757575 on this tint is 4.6:1 — AA for the small text it carries (§14). */
+	color: #757575;
+	font-size: 12px;
+	line-height: 1.5;
+	background: #f0f0f1;
+
+	svg {
+		flex: none;
+		fill: currentcolor;
+	}
+}
+
+/*
+ * Previewing a device this gallery hides on. Dimmed and outlined rather than
+ * removed: colour is never the only signal (§14 — the badge carries the same fact
+ * in words), and every tile stays clickable, draggable and selectable at 55%
+ * opacity.
+ */
+.shaped-gallery-block-editor.is-shaped-hidden-here {
+
+	.sp-shaped-gallery,
+	.sp-shaped-gallery-preview__empty {
+		opacity: 0.55;
+		outline: 1px dashed rgb(0 0 0 / 25%);
+		outline-offset: 4px;
+	}
+
+	.sp-shaped-gallery-visibility-badge {
+		border-color: rgb(0 0 0 / 20%);
+		color: #1e1e1e;
+		background: #fcf9e8;
+	}
+}
+
+/*
+ * The leftover "Dimensions" header on a gallery tile.
+ *
+ * A tile's native image block offers no dimension controls — the gallery owns
+ * tile geometry, so `allowResize` is off and Margin comes from Image/Video
+ * Settings instead (see ./tile-controls). Core still renders the group's panel
+ * wrapper, because core/image mounts the `dimensions` fill whether or not
+ * anything inside it survives, leaving a header with nothing under it.
+ *
+ * Matched on emptiness rather than on the block, because the inspector carries
+ * no block name and the tile renders nothing of ours to key off. A tools panel
+ * with no items AND no dropdown has no hidden options to restore either — the
+ * dropdown is the only way back — so it can offer a reader nothing, whichever
+ * block put it there. Panels whose options are merely deselected keep their
+ * dropdown and are untouched.
+ *
+ * `:has()` failing would show the empty header again, which is the visible
+ * degradation §19 asks for rather than a silent one.
+ */
+.block-editor-block-inspector
+	.dimensions-block-support-panel:not( :has( .components-tools-panel-item ) ):not( :has( .components-dropdown-menu ) ) {
+	display: none;
+}
+
+/*
+ * Align, hidden while the layout picker is the canvas.
+ *
+ * `supports.align` is read from the block TYPE, so core's alignment dropdown
+ * cannot be switched off for one instance — and switching it off for the type
+ * would take the wide canvas the picker is sized against with it. edit.jsx
+ * therefore fills the same `group="block"` toolbar group with a marker while the
+ * picker is showing; core's align control is that group's only other occupant
+ * (this block supports no other `block`-group feature), so hiding the group that
+ * CONTAINS the marker hides the alignment control and nothing else. Every other
+ * toolbar, and this block's own toolbar once the gallery has images, is
+ * untouched — the marker is only in the tree while the picker is.
+ */
+.sp-shaped-gallery-align-suppressor {
+	display: none;
+}
+
+.components-toolbar-group:has(.sp-shaped-gallery-align-suppressor) {
+	display: none;
+}
+
+/*
+ * Inserter tile — keep "ShapedGallery" on ONE line.
+ *
+ * The block name is deliberately one word (block.json, `index.js` and the
+ * category heading all spell it without a space) so it cannot break at a space.
+ * Core still splits it: `.block-editor-block-types-list__item` carries
+ * `word-break: break-word` and the title adds `hyphens: auto`, and the word is a
+ * few pixels wider than the tile — hence the stranded "y" on its own line.
+ *
+ * Two parts to the fix, because switching wrapping off alone would just push the
+ * last glyph under the neighbouring tile:
+ *   1. turn every soft-wrap opportunity off on this tile's title;
+ *   2. give the label the tile's own 8px side padding back (plus core's 2px of
+ *      title padding) so the word has ~20px more room than the icon above it.
+ * Every other block in the list keeps core's wrapping untouched.
+ */
+.block-editor-block-types-list__item.editor-block-list-item-shaped-gallery-gallery {
+	word-break: normal;
+
+	.block-editor-block-types-list__item-title {
+		margin-inline: -8px;
+		padding-inline: 0;
+		hyphens: none;
+		word-break: normal;
+		overflow-wrap: normal;
+		white-space: nowrap;
+		text-align: center;
+	}
+}

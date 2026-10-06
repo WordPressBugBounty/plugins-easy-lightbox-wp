@@ -1,0 +1,592 @@
+/*
+ * Shared dashboard components. Imported by admin.scss —
+ * never from JS (see the header comment there).
+ */
+
+/* --- nav --------------------------------------------------------------------- */
+
+.sp-shaped-gallery-dash-nav {
+	/*
+	 * Sits directly beside the brand, left-aligned — the fixed margin IS the
+	 * brand-to-nav gap (40-50px, per the design), not a byproduct of centring in
+	 * whatever space is left over. The help menu still gets the rest of the row via
+	 * its own `margin-inline-start: auto` (see HeaderBar's admin.scss).
+	 */
+	display: flex;
+	flex: 0 0 auto;
+	margin-inline-start: 44px;
+
+	@media (max-width: 600px) {
+		margin-inline-start: 0;
+	}
+
+	&__list {
+		display: flex;
+		gap: 24px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__item {
+		margin-bottom: 0;
+
+		a:focus,
+		a:focus-visible {
+			outline: 0;
+			box-shadow: none;
+		}
+	}
+
+	/*
+	 * 36 + 20 + 12 = the same 68px header as before, just redistributed: less of it
+	 * sits below the label now, so the active underline (bottom: -1px, right at
+	 * this box's own edge) reads as tight to the text instead of floating a full
+	 * 24px below it. The sum now gives the header's 64px `min-height` instead — never
+	 * asserted a second time elsewhere.
+	 */
+	&__link {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		padding: 25px 0 18px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 22px;
+		text-decoration: none;
+		white-space: nowrap;
+		box-shadow: none;
+
+		&:hover {
+			color: var(--sp-shaped-gallery-dash-accent-strong);
+		}
+
+		&.is-active {
+			color: var(--sp-shaped-gallery-dash-accent-strong);
+
+			/*
+			 * A static bar, per the design. A measured sliding indicator would need
+			 * resize and webfont re-measure handling for no visible gain.
+			 */
+			&::after {
+				content: '';
+				position: absolute;
+				inset-inline: 0;
+				bottom: -1px;
+				height: 2px;
+				background: var(--sp-shaped-gallery-dash-accent);
+			}
+		}
+	}
+}
+
+/* --- help centre ------------------------------------------------------------- */
+
+.sp-shaped-gallery-dash-help {
+	position: relative;
+
+	&__toggle {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 6px 8px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 20px;
+		background: none;
+		border: 0;
+		border-radius: var(--sp-shaped-gallery-dash-radius-sm);
+		cursor: pointer;
+	}
+
+	&__icon {
+		display: flex;
+		color: var(--sp-shaped-gallery-dash-accent);
+	}
+
+	/*
+	 * An always-present, invisible strip bridging the gap between the toggle and
+	 * the list below. `&__list` cannot bridge this on its own: while it is
+	 * closed it is `visibility: hidden`, which drops it from hit-testing
+	 * entirely — so the instant the pointer left the toggle for the gap, the
+	 * only other thing that could keep this wrapper `:hover` was already gone,
+	 * and `pointer-events` on the list snaps back to `none` in that same frame
+	 * (it isn't transitioned, unlike opacity/visibility). This pseudo-element
+	 * belongs to the wrapper, never toggles, and is always hit-testable, so
+	 * crossing the gap can never break the hover chain the way it used to.
+	 * Its width/height must track `&__list`'s width and the gap below.
+	 */
+	&::after {
+		content: '';
+		position: absolute;
+		inset-inline-end: 0;
+		top: 100%;
+		width: 250px;
+		height: 4px;
+	}
+
+	/*
+	 * `margin: 0` matters: a bare `<ul>` carries a browser-default top margin
+	 * (measured ~14px here), which silently reopened the exact dead gap the
+	 * bridge above exists to close. `top: calc(100% + 4px)` is the ONLY gap —
+	 * it matches the bridge's height exactly, so there is no additional space
+	 * past what the bridge already covers.
+	 *
+	 * `padding: 4px 8px` (not `4px 0`): each row is an inset card, 8px clear of
+	 * the list's own edges on both sides — not an edge-to-edge flush fill. The
+	 * row itself carries the matching `border-radius` for that (see `&__link`).
+	 */
+	&__list {
+		position: absolute;
+		inset-inline-end: 0;
+		top: calc(100% + 4px);
+		z-index: 10;
+		width: 250px;
+		margin: 0;
+		padding: 4px 8px;
+		list-style: none;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: var(--sp-shaped-gallery-dash-radius-md);
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-4px);
+		transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+		pointer-events: none;
+	}
+
+	/*
+	 * Driven by the `is-open` class (HelpCenter.jsx's debounced open/close),
+	 * not raw `:hover`/`:focus-within` — see the component's own docblock for
+	 * why a plain CSS hover toggle was the actual bug: it drops `pointer-events`
+	 * to `none` the instant the pointer is off this chain for even one frame,
+	 * with nothing forgiving a fast or diagonal move through the gap.
+	 */
+	&.is-open &__list {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+
+	/*
+	 * `&.sp-shaped-gallery-dash-extlink` (not just `&`): `ExternalLink` renders both
+	 * classes on the same anchor, and `.sp-shaped-gallery-dash-extlink` has its own
+	 * unconditional blue `color` at equal (single-class) specificity — without the
+	 * compound selector, source order decides the winner and this row's colour
+	 * becomes a coin flip. The compound beats it outright, in either order.
+	 */
+	&__link.sp-shaped-gallery-dash-extlink {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		padding: 10px 8px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 13px;
+		font-weight: 500;
+		text-decoration: none;
+		border-radius: var(--sp-shaped-gallery-dash-radius-sm);
+
+		&:hover,
+		&:focus-visible,
+		&:active {
+			color: var(--sp-shaped-gallery-dash-accent-strong);
+			background: var(--sp-shaped-gallery-dash-accent-tint);
+			outline: none;
+
+			.sp-shaped-gallery-dash-help__itemicon {
+				color: var(--sp-shaped-gallery-dash-accent-strong);
+			}
+
+			.sp-shaped-gallery-dash-help__arrow {
+				opacity: 1;
+				transform: translate(0, 0);
+			}
+		}
+	}
+
+	/*
+	 * 16px, and the row's own ink rather than the muted grey — the design draws
+	 * these glyphs the same weight as the label beside them, and dropping them to
+	 * `--dash-muted` made the icon column read as disabled next to it. The box is
+	 * sized to the artwork exactly (the glyphs are 16px, not 20px), so the 10px
+	 * gap the design specifies is the real optical gap.
+	 */
+	&__itemicon {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: 16px;
+		height: 16px;
+		color: var(--sp-shaped-gallery-dash-text);
+
+		svg {
+			display: block;
+		}
+	}
+
+	&__itemlabel {
+		flex: 1 1 auto;
+	}
+
+	/*
+	 * Hidden until the row is hovered/focused, then slides in from the
+	 * bottom-left — the same reveal Product Slider Pro's Get Help popup uses.
+	 */
+	&__arrow {
+		display: flex;
+		flex: 0 0 auto;
+		width: 12px;
+		color: var(--sp-shaped-gallery-dash-accent-strong);
+		opacity: 0;
+		transform: translate(-6px, 6px);
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+}
+
+/* --- page scaffolding -------------------------------------------------------- */
+
+/*
+ * One stacked column. The `--split` two-column variant went with the Dashboard's
+ * right rail: no route has a rail any more, and Settings brings its own grid.
+ */
+.sp-shaped-gallery-dash-page {
+	display: grid;
+	gap: var(--sp-shaped-gallery-dash-gap);
+}
+
+/* --- card -------------------------------------------------------------------- */
+
+.sp-shaped-gallery-dash-card {
+	padding: var(--sp-shaped-gallery-dash-card-pad);
+	background: var(--sp-shaped-gallery-dash-surface);
+	border: 1px solid var(--sp-shaped-gallery-dash-border);
+	border-radius: var(--sp-shaped-gallery-dash-radius-card);
+}
+
+/* --- banner ------------------------------------------------------------------ */
+
+/*
+ * The full-width introduction card, drawn twice: the Dashboard's block-first hero
+ * and Saved Galleries' first-run state (see components/DashBanner.jsx for why they
+ * are one component).
+ *
+ * Its own surface rule rather than `.sp-shaped-gallery-dash-card`: the design gives
+ * this card a 14px radius and 40/44 padding against the shared card's 12px and 32px,
+ * and it is the only card on the screen drawn in the banner ramp. Two equal columns
+ * that WRAP rather than a media query — the photo scales with whatever track it
+ * gets instead of needing a breakpoint.
+ */
+.sp-shaped-gallery-dash-banner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 44px;
+	padding: 40px 44px;
+	background: var(--sp-shaped-gallery-dash-surface);
+	border: 1px solid var(--sp-shaped-gallery-dash-banner-rule);
+	border-radius: var(--sp-shaped-gallery-dash-banner-radius);
+
+	/*
+	 * `1 1 360px` on both halves is the design's `1fr 1fr` while there is room for
+	 * it, and the wrap point once there is not — 360px being the width below which
+	 * the collage stops reading as a gallery.
+	 */
+	&__text,
+	&__art {
+		flex: 1 1 360px;
+		min-width: 0;
+	}
+
+	&__title {
+		margin-bottom: 12px;
+		color: var(--sp-shaped-gallery-dash-banner-ink);
+		font-size: 28px;
+		font-weight: 500;
+		line-height: 1.2;
+		text-wrap: balance;
+	}
+
+	&__desc {
+		/* 400px is the design's own measure; ch keeps it honest if the font changes. */
+		max-width: 52ch;
+		margin-bottom: 26px;
+		color: var(--sp-shaped-gallery-dash-banner-body);
+		font-size: 15px;
+		line-height: 1.6;
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 18px;
+	}
+
+	/* --- the artwork --------------------------------------------------------- */
+
+	&__art {
+		display: flex;
+	}
+
+	&__art-image {
+		display: block;
+		width: 100%;
+		height: auto;
+		border-radius: 11px;
+	}
+
+	@media (max-width: 600px) {
+		gap: 28px;
+		padding: 24px;
+
+		&__title {
+			font-size: 22px;
+		}
+	}
+}
+
+/* --- links ------------------------------------------------------------------- */
+
+.sp-shaped-gallery-dash-extlink {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	color: var(--sp-shaped-gallery-dash-link);
+	text-decoration: none;
+	box-shadow: none;
+
+	&:hover {
+		color: var(--sp-shaped-gallery-dash-link-hover);
+	}
+
+	&__icon {
+		display: flex;
+	}
+}
+
+/* --- CTA --------------------------------------------------------------------- */
+
+/*
+ * The banner CTAs — one filled, one outlined, side by side.
+ *
+ * 11px/20px padding, 4px radius and 15px/500 are the design's. The colours are NOT:
+ * the design prototype was drawn in Tailwind blue, and the accent here has a single
+ * source of truth (`styles/_brand.scss`, §14/§18) that the block editor and the
+ * frontend read too. Both ramps put the resting fill at ~5:1 on white, so the roles
+ * transfer intact — the brand rests on --accent-strong (5.0:1) rather than --accent,
+ * which is 3.6:1 and would fail §14 behind a white label, and hovers to
+ * --accent-deep (7.0:1).
+ *
+ * Plain `<a>`, not core's `<Button>`: these are navigations, and the old rule had to
+ * out-specify `.components-button` to undo its chrome.
+ */
+.sp-shaped-gallery-dash-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 7px;
+	padding: 11px 20px;
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 20px;
+	text-decoration: none;
+	border: 1px solid transparent;
+	border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+	box-shadow: none;
+	transition: background 0.2s ease, border-color 0.18s ease, transform 0.2s ease,
+		box-shadow 0.2s ease;
+
+	&__icon {
+		display: flex;
+
+		svg {
+			width: 17px;
+			height: 17px;
+		}
+	}
+
+	&--primary {
+		color: #fff;
+		background: var(--sp-shaped-gallery-dash-accent-strong);
+
+		&:hover,
+		&:focus {
+			color: #fff;
+			background: var(--sp-shaped-gallery-dash-accent-deep);
+			/*
+			 * The design's lift. Reduced-motion is honoured by the blanket
+			 * `transition: none` in admin.scss, which leaves the colour change as
+			 * the whole hover — still a state change, not colour alone (§14).
+			 */
+			transform: translateY(-2px);
+			box-shadow: 0 8px 18px $sp-shaped-gallery-brand-28;
+		}
+	}
+
+	/*
+	 * The outlined twin. Its 1px edge is the brand at 28% — the design's own
+	 * light-accent hairline, expressed off the ramp instead of as a fourth blue.
+	 */
+	&--secondary {
+		color: var(--sp-shaped-gallery-dash-accent-strong);
+		background: var(--sp-shaped-gallery-dash-surface);
+		border-color: $sp-shaped-gallery-brand-28;
+
+		&:hover,
+		&:focus {
+			color: var(--sp-shaped-gallery-dash-accent-deep);
+			background: var(--sp-shaped-gallery-dash-accent-tint);
+			border-color: var(--sp-shaped-gallery-dash-accent-strong);
+		}
+	}
+}
+
+/* --- footer ------------------------------------------------------------------ */
+
+/*
+ * Two columns on the page background (not a card), matching the design. `space-
+ * between` keeps the credit pinned to the left and the social row to the right;
+ * it wraps to a stack on narrow screens without a breakpoint of its own.
+ */
+.sp-shaped-gallery-dash-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px var(--sp-shaped-gallery-dash-gap);
+	color: var(--sp-shaped-gallery-dash-muted);
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 16px;
+
+	&__credit {
+		display: flex;
+		flex: 0 0 320px;
+		flex-wrap: wrap;
+		align-items: center;
+		width: 320px;
+		gap: 4px;
+		color: #6e6a69;
+
+		/*
+		 * Nested, so the selector is `&__credit a` — scoped to the credit TEXT link
+		 * rather than every `a` in the bar. A blanket `.sp-shaped-gallery-dash-footer a`
+		 * would be (0,1,1) and outrank `&__sociallink` (0,1,0), which is exactly why
+		 * the social marks once rendered link blue instead of the design's grey.
+		 *
+		 * The one underlined link in the bar, per the design.
+		 */
+		a {
+			color: var(--sp-shaped-gallery-dash-link);
+			text-decoration: underline;
+			box-shadow: none;
+
+			&:hover {
+				color: var(--sp-shaped-gallery-dash-link-hover);
+			}
+		}
+	}
+
+	&__heart {
+		display: flex;
+		color: #e57373;
+
+		svg {
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	&__social {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		color: #6c6a6d;
+	}
+
+	&__sociallabel {
+		/* Matches the marks' box so `align-items: center` has two equal heights to
+		   centre, rather than a 16px line box against whatever the row resolves to. */
+		display: inline-flex;
+		align-items: center;
+		height: 16px;
+	}
+
+	&__sociallist {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+
+		li {
+			display: flex;
+			margin-bottom: 0; /* overrides the default list-item margin. */
+		}
+	}
+
+	/*
+	 * Sized to the glyph, not padded into a box: the design spaces the marks 8px
+	 * apart edge to edge.
+	 *
+	 * `line-height: 0` plus a block-level `svg` is what actually lines the row up
+	 * with the label. An inline `svg` sits on the text baseline and leaves room
+	 * beneath it for descenders, which drops the marks a few pixels below the
+	 * label's centre — the misalignment is the baseline, not the flexbox.
+	 */
+	&__sociallink {
+		display: flex;
+		align-items: center;
+		height: 16px;
+		color: var(--sp-shaped-gallery-dash-muted);
+		line-height: 0;
+
+		svg {
+			display: block;
+		}
+
+		&:hover {
+			color: var(--sp-shaped-gallery-dash-accent);
+		}
+	}
+
+	/* Below the design's width the end column stops being a fixed measure. */
+	@media (max-width: 1024px) {
+		&__credit {
+			flex: 1 1 auto;
+			width: auto;
+		}
+	}
+}
+
+/* --- support bubble ---------------------------------------------------------- */
+
+/*
+ * Fallback launcher, shown only when Crisp is not configured (Crisp draws its own).
+ * Fixed above the admin bar's stacking context but below the modal's z-index.
+ */
+.sp-shaped-gallery-dash-support {
+	position: fixed;
+	inset-inline-end: 24px;
+	bottom: 24px;
+	z-index: 90;
+	display: grid;
+	place-items: center;
+	width: 56px;
+	height: 56px;
+	color: #fff;
+	background: var(--sp-shaped-gallery-dash-chat);
+	border-radius: 50%;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24);
+	transition: background 0.2s ease;
+
+	&:hover {
+		color: #fff;
+		background: var(--sp-shaped-gallery-dash-link-hover);
+	}
+}

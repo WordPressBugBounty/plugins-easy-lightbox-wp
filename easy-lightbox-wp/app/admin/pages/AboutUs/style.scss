@@ -1,0 +1,329 @@
+/*
+ * About Us page. Imported by admin.scss — never from JS
+ * (see the header comment there).
+ *
+ * Two stacked sections: an intro card with the story and the team photograph, and
+ * a cross-sell grid. Both sit inside the shell's 1336px content width, which is
+ * exactly what the design draws, so no width is restated here.
+ */
+
+.sp-shaped-gallery-about {
+	/* The design's 80px between the intro card and the promo block. */
+	gap: 80px;
+
+	/* --- intro card ------------------------------------------------------- */
+
+	&__intro {
+		display: flex;
+		align-items: center;
+		gap: 48px;
+		padding: 32px;
+		overflow: hidden;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: var(--sp-shaped-gallery-dash-radius-card);
+	}
+
+	/* Both columns take half the card; the photo's own aspect ratio sets the height. */
+	&__text,
+	&__figure {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
+	&__text {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		padding-top: 10px;
+	}
+
+	&__heading {
+		font-size: 28px;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+
+	/*
+	 * The tinted rule sits BEHIND the words, not under them: a 5px band pinned near
+	 * the baseline, which is why it is a background layer rather than a border or an
+	 * underline (both of which would sit below the descenders).
+	 */
+	&__heading-mark {
+		position: relative;
+		display: inline-block;
+		padding-inline: 5px;
+
+		/*
+		 * `isolation: isolate` is what makes the band's `z-index: -1` safe. Without a
+		 * stacking context of its own, a negative z-index paints behind the nearest
+		 * one — which is outside this card — so the band would vanish behind the
+		 * card's own white background instead of sliding behind just the text.
+		 */
+		isolation: isolate;
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset-inline: 0;
+			bottom: 4px;
+			z-index: -1;
+			height: 5px;
+			background-color: $sp-shaped-gallery-brand-22;
+			border-radius: 2px;
+		}
+	}
+
+	&__para {
+		color: #2f2f2f;
+		font-size: 15px;
+		line-height: 26px;
+
+		strong {
+			font-weight: 700;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		margin-top: 8px;
+	}
+
+	&__cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px 16px;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 20px;
+		text-decoration: none;
+		text-transform: capitalize;
+		border: 1px solid transparent;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		box-shadow: none;
+
+		&--primary {
+			color: #fff;
+			background: var(--sp-shaped-gallery-dash-accent-strong);
+
+			&:hover,
+			&:focus {
+				color: #fff;
+				background: var(--sp-shaped-gallery-dash-accent-deep);
+			}
+		}
+
+		&--secondary {
+			/* The design's asymmetric inset: the arrow sits closer to the edge. */
+			padding-inline: 20px 16px;
+			color: var(--sp-shaped-gallery-dash-muted);
+			border-color: var(--sp-shaped-gallery-dash-muted);
+
+			&:hover,
+			&:focus {
+				color: var(--sp-shaped-gallery-dash-text);
+				border-color: var(--sp-shaped-gallery-dash-text);
+			}
+		}
+	}
+
+	&__figure {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+		margin: 0;
+	}
+
+	&__photo {
+		display: block;
+		width: 100%;
+		aspect-ratio: 600 / 400;
+		object-fit: cover;
+		border-radius: var(--sp-shaped-gallery-dash-radius-md);
+	}
+
+	&__caption {
+		color: var(--sp-shaped-gallery-dash-body);
+		font-size: 14px;
+		font-style: italic;
+		line-height: 20px;
+		text-align: center;
+	}
+
+	/* --- cross-sell grid --------------------------------------------------- */
+
+	&__promo {
+		display: flex;
+		flex-direction: column;
+		gap: 28px;
+	}
+
+	&__promo-head {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		text-align: center;
+	}
+
+	&__promo-title {
+		font-size: 24px;
+		font-weight: 500;
+		line-height: 1.4;
+	}
+
+	&__promo-desc {
+		color: #4e4f52;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	/*
+	 * Three columns at the design's width, intrinsic below it — same reasoning as
+	 * the Settings module grid, so the page needs no breakpoint of its own.
+	 */
+	/*
+	 * The 340px floor is chosen, not guessed: at the design's 1336px content width a
+	 * fourth column would need 4 x 340 + 60 = 1420px, so three is the most that can
+	 * fit — which is what the design draws — while three still fit at 1060px.
+	 */
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+		gap: 20px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__plugin {
+		display: flex;
+		margin: 0;
+	}
+
+	/*
+	 * The whole card is the link, so the hit area matches the box the design draws
+	 * and the name is not the only thing a keyboard can reach.
+	 */
+	&__plugin-link {
+		position: relative;
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		/* 24px from the mark to the copy; the copy's own 18px is set below. */
+		gap: 24px;
+		padding: 28px;
+		color: inherit;
+		text-decoration: none;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: var(--sp-shaped-gallery-dash-radius-card);
+		box-shadow: none;
+		transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+		&:hover,
+		&:focus-visible {
+			border-color: var(--sp-shaped-gallery-dash-border);
+			box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.08);
+		}
+	}
+
+	/*
+	 * Every mark is a real logo that brings its own colour and fills the tile, so the
+	 * tile paints nothing itself — it only sizes and clips. A product with no mark
+	 * renders no tile at all (see logoFor()), which is why there is no empty state
+	 * to style here.
+	 */
+	&__plugin-logo {
+		display: flex;
+		flex: 0 0 48px;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		overflow: hidden;
+		border-radius: 5px;
+
+		img,
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: contain;
+		}
+	}
+
+	&__plugin-text {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		padding-top: 5px;
+	}
+
+	&__plugin-name {
+		color: #343434;
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 20px;
+		text-transform: capitalize;
+	}
+
+	&__plugin-desc {
+		color: var(--sp-shaped-gallery-dash-body);
+		font-size: 14px;
+		line-height: 22px;
+	}
+
+	/* Shown on hover / focus only, per the design's annotated state. */
+	&__plugin-go {
+		position: absolute;
+		top: 28px;
+		inset-inline-end: 28px;
+		display: flex;
+		padding: 8px;
+		color: var(--sp-shaped-gallery-dash-link-section);
+		border: 1px solid rgba(26, 116, 228, 0.1);
+		border-radius: var(--sp-shaped-gallery-dash-radius-pill);
+		opacity: 0;
+		transition: opacity 0.15s ease;
+	}
+
+	&__plugin-link:hover &__plugin-go,
+	&__plugin-link:focus-visible &__plugin-go {
+		opacity: 1;
+	}
+
+	/* --- responsive -------------------------------------------------------- */
+
+	@media (max-width: 1024px) {
+		gap: 48px;
+
+		/* The photo drops under the story rather than squeezing both columns. */
+		&__intro {
+			flex-direction: column;
+			align-items: stretch;
+			gap: 32px;
+		}
+
+		&__heading {
+			font-size: 24px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		&__intro {
+			padding: 20px;
+		}
+
+		&__heading {
+			font-size: 22px;
+		}
+
+		&__promo-title {
+			font-size: 20px;
+		}
+	}
+}

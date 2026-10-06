@@ -1,0 +1,766 @@
+/*
+ * Settings page (Figma node 523:18540). Imported by admin.scss — never from JS
+ * (see the header comment there).
+ *
+ * Two surfaces: a fixed 244px section rail and a fluid panel card, 32px apart.
+ * That trio is exactly the design's 276 / 1124 split once the shell's own 32px
+ * page padding is accounted for, so the widths are not restated here.
+ *
+ * Sizes below are the spec's, not the shared tokens', where the two disagree: the
+ * design draws a 15px radius on both cards and a 5px radius on a rail item, and
+ * neither has a token. The exceptions are colours — those resolve to the dashboard
+ * palette so a re-theme still reaches this screen — and accent TEXT, which uses
+ * --accent-strong for the same 4.5:1 reason the header nav does (§14). The border
+ * and the caret keep the design's accent exactly; only the label is nudged.
+ */
+
+.sp-shaped-gallery-settings {
+	&__layout {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		gap: 32px;
+	}
+
+	/* --- section rail ---------------------------------------------------- */
+
+	&__rail {
+		display: flex;
+		flex: 0 0 244px;
+		flex-direction: column;
+		gap: 8px;
+		width: 244px;
+		padding: 16px;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: 15px;
+	}
+
+	&__tab {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		width: 100%;
+		/* The design's asymmetric inset: the icon sits 20px in, the caret 8px out. */
+		padding: 8px 8px 8px 12px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 14px;
+		font-weight: 500;
+		line-height: 20px;
+		text-align: start;
+		background: none;
+		/* Transparent, not absent: an inactive item must not shift when it lights up. */
+		border: 1px solid transparent;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+
+		&:hover:not(.is-active) {
+			background: var(--sp-shaped-gallery-dash-accent-tint);
+		}
+
+		&.is-active {
+			color: var(--sp-shaped-gallery-dash-accent-strong);
+			border-color: var(--sp-shaped-gallery-dash-accent);
+		}
+	}
+
+	&__tab-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		min-width: 0;
+	}
+
+	/* Both glyph slots inherit `color`, which is what makes one icon set enough. */
+	&__tab-icon,
+	&__tab-caret {
+		display: flex;
+		flex: 0 0 auto;
+	}
+
+	&__tab-caret {
+		color: var(--sp-shaped-gallery-dash-accent);
+	}
+
+	/* --- panel card ------------------------------------------------------ */
+
+	/* 32px all round is the panel padding every section shares. */
+	&__content {
+		display: flex;
+		flex: 1 1 520px;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 312px;
+		padding: 32px;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: 15px;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+
+		/* Programmatically focusable so the panel is reachable from its tab. */
+		&:focus {
+			outline: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid var(--sp-shaped-gallery-dash-accent);
+			outline-offset: 2px;
+		}
+	}
+
+	&__panel {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 24px;
+
+		&--centered {
+			align-items: center;
+			justify-content: center;
+			padding-block: 40px;
+			text-align: center;
+		}
+
+		&--rows {
+			gap: 20px;
+		}
+
+		&--section {
+			gap: 24px;
+		}
+	}
+
+	/* --- save / reset ------------------------------------------------------ */
+
+	&__actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+	}
+
+	&__status {
+		font-size: 13px;
+		line-height: 20px;
+
+		/*
+		 * Colour is the secondary cue; the text itself says which happened, and the
+		 * element is a live region so the outcome is announced either way (§14).
+		 */
+		&.is-success {
+			color: #2f7a3f;
+		}
+
+		&.is-error {
+			color: var(--sp-shaped-gallery-dash-alert);
+		}
+	}
+
+	/* --- option rows ----------------------------------------------------- */
+
+	/*
+	 * The design draws a hairline under every row, including the last one before the
+	 * footer button — so the rule belongs to the row, and the 20px above and below it
+	 * are the row's padding and the list's gap respectively. No separator elements.
+	 */
+	&__row {
+		display: flex;
+		align-items: flex-start;
+		gap: 32px;
+		padding-bottom: 20px;
+		border-bottom: 1px solid var(--sp-shaped-gallery-dash-border);
+	}
+
+	&__row-text {
+		display: flex;
+		flex: 0 1 600px;
+		flex-direction: column;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	&__row-title {
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 20px;
+	}
+
+	&__row-desc {
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.6;
+	}
+
+	&__row-control {
+		display: flex;
+		flex: 0 0 auto;
+		align-items: center;
+		gap: 10px;
+	}
+
+	/*
+	 * Clear Gallery Cache's button plus its outcome. The wrapper wraps rather than
+	 * stretching the row, so a long message drops under the button instead of pushing
+	 * the row's title column narrower; and the status is the same two colours the
+	 * module drawer's purge uses, because it is the same interaction.
+	 */
+	&__action-row {
+		display: flex;
+		flex: 0 0 auto;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	&__action-status {
+		margin: 0;
+		font-size: 12px;
+		line-height: 18px;
+
+		&.is-error {
+			color: var(--sp-shaped-gallery-dash-alert);
+		}
+
+		&.is-success {
+			color: #007017;
+		}
+	}
+
+	/*
+	 * Switch skin, shared by the option rows and the integration cards.
+	 *
+	 * The shared Toggle carries the control library's stacking margin, which a layout
+	 * that owns its own spacing does not want; and core paints an unchecked track as
+	 * an outlined pill where the design draws a solid grey one. Scoped to this screen
+	 * rather than to the shared component, so the block inspector's toggles are left
+	 * exactly as they are.
+	 */
+	&__row-control,
+	&__module-head {
+		.sp-shaped-gallery-cmp-mb {
+			margin-bottom: 0;
+		}
+
+		.components-form-toggle:not(.is-checked) .components-form-toggle__track {
+			background: #bbb;
+			border-color: #bbb;
+		}
+
+		.components-form-toggle:not(.is-checked) .components-form-toggle__thumb {
+			background: #fff;
+			border-color: #fff;
+		}
+	}
+
+	/* --- section heading + module grid ------------------------------------ */
+
+	&__section-head {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	&__section-title {
+		font-size: 20px;
+		font-weight: 500;
+		line-height: 20px;
+	}
+
+	&__section-desc {
+		color: #4e4f52;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	/*
+	 * Three columns at the design's width, and intrinsic below it: `auto-fit` with a
+	 * 260px floor drops to two and then one column on its own, so the grid needs no
+	 * breakpoint of its own (per the note in admin.scss).
+	 */
+	&__modules {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+		gap: 16px;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	&__module {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		min-height: 188px;
+		margin: 0;
+		padding: 24px;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: var(--sp-shaped-gallery-dash-radius-card);
+	}
+
+	&__module-head {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		min-height: 20px;
+	}
+
+	/*
+	 * Brand colours live here rather than in an inline style, so the screen's whole
+	 * palette stays in the stylesheet. Bricks paints nothing: its mark is a raster
+	 * that carries its own background.
+	 */
+	&__module-mark {
+		display: flex;
+		flex: 0 0 24px;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		overflow: hidden;
+		border-radius: 3px;
+
+		img {
+			display: block;
+			width: 24px;
+			height: 24px;
+		}
+
+		&.is-elementor {
+			background: #ed00ed;
+		}
+
+		&.is-divi {
+			background: linear-gradient(-45deg, #4b81eb 0%, #6752f4 100%);
+		}
+
+		&.is-wpbakery {
+			background: linear-gradient(-45deg, #0074af 12%, #328acf 65%, #7fabff 88%);
+		}
+
+		&.is-oxygen {
+			background: linear-gradient(-39deg, #2c1870 11%, #783fff 88%);
+		}
+
+		&.is-beaver {
+			background: linear-gradient(135deg, #aa7a55 13%, #8c5934 89%);
+		}
+
+		/*
+		 * Modules paint nothing here: every module mark (icons.jsx) is full-bleed
+		 * art carrying its own background gradient, same deal as Bricks above.
+		 */
+	}
+
+	&__module-name {
+		flex: 1 1 auto;
+		min-width: 0;
+		font-size: 16px;
+		font-weight: 600;
+		line-height: 20px;
+	}
+
+	/* Three lines at 24px, which is the height the design reserves for the copy. */
+	&__module-desc {
+		display: -webkit-box;
+		overflow: hidden;
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 14px;
+		line-height: 24px;
+		-webkit-line-clamp: 3;
+		line-clamp: 3;
+		-webkit-box-orient: vertical;
+	}
+
+	/* Docs on the left, the module's settings gear (when it has one) on the right. */
+	&__module-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+		margin-top: auto;
+	}
+
+	&__module-docs {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		padding: 4px 10px;
+		color: #949494;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		text-decoration: none;
+		text-transform: capitalize;
+		background: #fbfcff;
+		border: 1px solid #ecedf0;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		box-shadow: none;
+
+		&:hover,
+		&:focus {
+			color: var(--sp-shaped-gallery-dash-text);
+			border-color: var(--sp-shaped-gallery-dash-border);
+		}
+	}
+
+	/*
+	 * The gear is drawn as a bare glyph, but it opens the module's options, so it is
+	 * a button with a hit area rather than a decorated icon.
+	 */
+	&__module-settings {
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		margin-inline-start: auto;
+		padding: 0;
+		color: var(--sp-shaped-gallery-dash-text);
+		background: none;
+		border: 0;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		cursor: pointer;
+
+		&:hover {
+			color: var(--sp-shaped-gallery-dash-accent-strong);
+		}
+	}
+
+	/* --- row controls ---------------------------------------------------- */
+
+	/*
+	 * `&__field[type='number']` (not just `&__field`): the active admin theme carries
+	 * its own `input[type="number"]` rule at the same 0,1,0 specificity as a bare
+	 * class, so which one wins was down to enqueue order — here, losing, which is why
+	 * this field rendered at the theme's 40px/12px metrics instead of these. The
+	 * attribute qualifier makes this selector 0,2,0 so it always wins. `min-height`
+	 * needs the same override as `height` — the theme sets that too, and a min-height
+	 * silently wins over a smaller height with no specificity fight to lose, since
+	 * they aren't the same property. Width/height/text-align match the Columns range
+	 * control's own number field (Figma parity), which is why this is the narrow,
+	 * centred size every other numeric field should use.
+	 */
+	&__field[type='number'] {
+		width: 64px;
+		height: 32px;
+		min-height: 32px;
+		margin: 0;
+		padding: 0 8px;
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 11px;
+		line-height: 16px;
+		text-align: center;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: 2px;
+		box-shadow: none;
+
+		&:focus {
+			border-color: var(--sp-shaped-gallery-dash-accent);
+			outline: 2px solid var(--sp-shaped-gallery-dash-accent);
+			outline-offset: -2px;
+			box-shadow: none;
+		}
+	}
+
+	&__field-unit {
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	/* --- buttons --------------------------------------------------------- */
+
+	&__button {
+		flex: 0 0 auto;
+		height: 40px;
+		padding: 0 16px;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		border: 1px solid transparent;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		cursor: pointer;
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: default;
+		}
+
+		&--primary {
+			color: #fff;
+			background: var(--sp-shaped-gallery-dash-link);
+
+			&:hover:not(:disabled) {
+				background: var(--sp-shaped-gallery-dash-link-hover);
+			}
+		}
+
+		&--ghost {
+			color: var(--sp-shaped-gallery-dash-text);
+			background: var(--sp-shaped-gallery-dash-surface);
+			border-color: var(--sp-shaped-gallery-dash-border);
+
+			&:hover:not(:disabled) {
+				border-color: var(--sp-shaped-gallery-dash-accent);
+				color: var(--sp-shaped-gallery-dash-accent-strong);
+			}
+		}
+
+		/* The larger pair the design gives a section's own Save / Reset. */
+		&--lg {
+			height: 44px;
+			padding: 0 20px;
+			font-size: 14px;
+			border-radius: 5px;
+		}
+
+		&--accent {
+			color: #fff;
+			background: var(--sp-shaped-gallery-dash-accent-strong);
+
+			&:hover:not(:disabled) {
+				background: var(--sp-shaped-gallery-dash-accent-deep);
+			}
+		}
+
+		/* A row action (e.g. Clear Cache) sits beside its own label and description,
+		   so it doesn't need Save/Reset's wide padding to stay easy to hit. */
+		&--compact {
+			padding: 0 12px;
+		}
+
+		&--muted {
+			color: var(--sp-shaped-gallery-dash-muted);
+			background: var(--sp-shaped-gallery-dash-surface);
+			border-color: #bbb;
+
+			&:hover:not(:disabled) {
+				color: var(--sp-shaped-gallery-dash-text);
+				border-color: var(--sp-shaped-gallery-dash-muted);
+			}
+		}
+	}
+
+	&__intro {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		max-width: 640px;
+	}
+
+	&__title {
+		font-size: 20px;
+		font-weight: 500;
+		line-height: 20px;
+	}
+
+	&__lede {
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 28px;
+		/* The design title-cases this sentence; doing it in CSS keeps the source
+		   string a normal, translatable sentence. */
+		text-transform: capitalize;
+	}
+
+	&__lede-link {
+		color: inherit;
+		font-weight: 500;
+		text-decoration: underline;
+
+		&:hover,
+		&:focus {
+			color: var(--sp-shaped-gallery-dash-text);
+		}
+	}
+
+	/* --- responsive ------------------------------------------------------ */
+
+	@media (max-width: 1024px) {
+		&__layout {
+			gap: var(--sp-shaped-gallery-dash-gap);
+		}
+
+		/* The 600px text column stops being a fixed measure and takes the slack. */
+		&__row-text {
+			flex: 1 1 auto;
+		}
+	}
+
+	@media (max-width: 600px) {
+		/* The rail stops being a column beside the panel and becomes the row above it. */
+		&__rail {
+			flex: 1 1 100%;
+			width: auto;
+		}
+
+		&__content {
+			flex: 1 1 100%;
+			min-height: 0;
+			padding: 20px;
+		}
+
+		&__panel--centered {
+			padding-block: 12px;
+		}
+
+		/* Control drops under its own label rather than squeezing it to two words. */
+		&__row {
+			flex-wrap: wrap;
+			gap: 16px;
+		}
+	}
+}
+
+/*
+ * The Advanced Controls confirmation popover.
+ *
+ * Anchored under the control that opened it rather than centred over the screen: the
+ * question is about one row, so it is asked where that row is. The cell it lives in is
+ * the positioning context (`.has-confirm` below), and the panel hangs from the cell's
+ * RIGHT edge so it grows inwards across the card — the one direction it can grow
+ * without leaving the panel, which is what lets this be plain absolute positioning
+ * instead of a portal with collision detection.
+ *
+ * Type is set deliberately tight. This is a 300px panel a reader crosses in one glance,
+ * so the title is only a step above the body and carries its weight through 600 rather
+ * than through size; the body drops to 12.5px with generous leading, because the line
+ * length is short and the copy is the part that has to be read carefully. The whole
+ * thing is one level darker than the row behind it — a raised surface, not a dialog.
+ */
+.sp-shaped-gallery-settings__row-control.has-confirm {
+	position: relative;
+}
+
+.sp-shaped-gallery-settings-confirm {
+	position: absolute;
+	top: calc(100% + 12px);
+	right: -16px;
+	z-index: 20;
+	width: 300px;
+	padding: 16px;
+	background: var(--sp-shaped-gallery-dash-surface);
+	border: 1px solid var(--sp-shaped-gallery-dash-border);
+	border-radius: 10px;
+	box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+	text-align: left;
+
+	/*
+	 * The panel takes focus on open so a keyboard user lands inside it — but it is a
+	 * SURFACE, not a control, and the screen's own `[tabindex]:focus-visible` ring
+	 * (§14) drew a 2px accent outline around the whole card, which read as an error
+	 * state. Suppressed here only, and only for the container: the Cancel and Confirm
+	 * buttons inside keep their rings, which are the ones a keyboard user is actually
+	 * navigating between.
+	 *
+	 * Written with the wrapper class and the attribute so it out-specifies
+	 * `.sp-shaped-gallery-dash [tabindex]:focus-visible` (0,3,0) outright, rather than
+	 * tying it and depending on which stylesheet happens to be emitted last.
+	 */
+	.sp-shaped-gallery-dash &[tabindex]:focus,
+	.sp-shaped-gallery-dash &[tabindex]:focus-visible {
+		outline: none;
+		box-shadow: 0 8px 28px rgba(0, 0, 0, 0.14);
+	}
+
+	/*
+	 * Points back at the checkbox, so the panel reads as belonging to that row rather
+	 * than floating over it. Two stacked squares: the lower one paints the border, the
+	 * upper one covers the seam with the panel's own background.
+	 */
+	&__caret {
+		position: absolute;
+		top: -5px;
+		right: 20px;
+		width: 9px;
+		height: 9px;
+		background: var(--sp-shaped-gallery-dash-surface);
+		border-top: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-left: 1px solid var(--sp-shaped-gallery-dash-border);
+		border-radius: 1px 0 0 0;
+		transform: rotate(45deg);
+	}
+
+	&__title {
+		margin: 0 0 6px;
+		color: var(--sp-shaped-gallery-dash-text);
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1.35;
+		letter-spacing: -0.01em;
+	}
+
+	&__text {
+		margin: 0 0 16px;
+		color: var(--sp-shaped-gallery-dash-muted);
+		font-size: 12.5px;
+		font-weight: 400;
+		line-height: 1.6;
+		text-wrap: pretty;
+	}
+
+	&__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+	}
+
+	&__cancel,
+	&__confirm {
+		height: 30px;
+		padding: 0 12px;
+		border-radius: var(--sp-shaped-gallery-dash-radius-xs);
+		font-size: 12.5px;
+		font-weight: 500;
+		line-height: 1;
+		letter-spacing: 0;
+		cursor: pointer;
+		transition: background 0.15s ease, border-color 0.15s ease;
+	}
+
+	&__cancel {
+		border: 1px solid var(--sp-shaped-gallery-dash-border);
+		background: transparent;
+		color: var(--sp-shaped-gallery-dash-body);
+
+		&:hover {
+			background: var(--sp-shaped-gallery-dash-bg);
+		}
+	}
+
+	/*
+	 * Red because pressing it arms a permanent deletion, even though the deletion
+	 * itself happens later — at uninstall, with nobody watching.
+	 */
+	&__confirm {
+		border: 1px solid var(--sp-shaped-gallery-dash-alert);
+		background: var(--sp-shaped-gallery-dash-alert);
+		color: #fff;
+
+		&:hover {
+			background: var(--sp-shaped-gallery-dash-alert-hover);
+			border-color: var(--sp-shaped-gallery-dash-alert-hover);
+		}
+	}
+
+	@media (max-width: 600px) {
+		/*
+		 * The row wraps at this width, so the cell is no longer pinned to the right
+		 * edge and a right-hung panel would hang off the card. Full width of the row
+		 * instead, caret dropped — there is nothing left for it to point at.
+		 */
+		right: 0;
+		left: 0;
+		width: auto;
+
+		&__caret {
+			display: none;
+		}
+	}
+}

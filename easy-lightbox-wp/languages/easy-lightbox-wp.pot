@@ -1,0 +1,2527 @@
+# Copyright (C) 2026 ShapedPlugin
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: ShapedGallery 1.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/easy-lightbox-wp\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-06T07:07:02+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: easy-lightbox-wp\n"
+
+#. Plugin Name of the plugin
+#: plugin-main.php
+#: src/Admin/DashboardConfig.php:120
+#: src/Admin/Menu.php:52
+#: src/Admin/Menu.php:53
+#: src/Blocks/BlocksInit.php:78
+#: src/Core/PostType.php:156
+#: src/Integrations/BeaverGalleryModule.php:35
+#: src/Integrations/BeaverGalleryModule.php:37
+#: src/Integrations/BricksGalleryElement.php:55
+#: src/Integrations/DiviGalleryModule.php:66
+#: src/Integrations/ElementorGalleryWidget.php:48
+#: src/Integrations/ElementorIntegration.php:81
+#: src/Integrations/OxygenGalleryElement.php:32
+#: src/Integrations/WPBakeryIntegration.php:90
+#: src/Integrations/WPBakeryIntegration.php:93
+#: app/admin/components/HeaderBar.jsx:25
+#: app/admin/components/TabNav.jsx:24
+#: app/blocks/gallery/edit.jsx:155
+#: app/blocks/gallery/index.js:52
+#: app/picker/LayoutPicker.jsx:50
+msgid "ShapedGallery"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: plugin-main.php
+msgid "https://shapedplugin.com/shaped-gallery/"
+msgstr ""
+
+#. Description of the plugin
+#: plugin-main.php
+msgid "Responsive WordPress photo and video gallery builder. Create justified, grid and masonry galleries from the Media Library with a visual layout picker, in the block editor or from the admin."
+msgstr ""
+
+#. Author of the plugin
+#: plugin-main.php
+msgid "ShapedPlugin"
+msgstr ""
+
+#. Author URI of the plugin
+#: plugin-main.php
+msgid "https://shapedplugin.com"
+msgstr ""
+
+#: plugin-main.php:62
+msgid "ShapedGallery requires PHP 8.1 or higher. Please upgrade PHP to use this plugin."
+msgstr ""
+
+#: src/Admin/Admin.php:161
+msgid "Galleries"
+msgstr ""
+
+#: src/Admin/Admin.php:166
+msgid "Getting Started"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:132
+#: src/Admin/Menu.php:97
+#: src/Admin/Menu.php:98
+#: app/admin/pages/GettingStarted/index.jsx:38
+#: app/admin/routes.js:30
+msgid "Dashboard"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:139
+#: src/Admin/DashboardConfig.php:218
+#: src/Admin/Menu.php:69
+#: src/Admin/Menu.php:70
+#: src/Core/PostType.php:157
+#: app/admin/pages/ManageGalleries/index.jsx:193
+#: app/admin/routes.js:31
+msgid "Saved Galleries"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:144
+#: src/Admin/DashboardConfig.php:291
+#: src/Admin/Menu.php:106
+#: src/Admin/Menu.php:107
+#: app/admin/pages/Settings/index.jsx:94
+#: app/admin/routes.js:32
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:245
+#: app/blocks/gallery/panels/ContentSettings.jsx:346
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:257
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:149
+#: src/Admin/Menu.php:117
+#: src/Admin/Menu.php:118
+#: app/admin/pages/AboutUs/index.jsx:77
+#: app/admin/routes.js:33
+msgid "About Us"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:220
+#: app/admin/pages/ManageGalleries/index.jsx:226
+msgid "Create Reusable Saved Galleries"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:221
+msgid "Build a gallery once and reuse it anywhere with a shortcode — pages, posts, widgets, or page builders like Elementor and Divi."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:222
+#: app/admin/pages/ManageGalleries/index.jsx:241
+msgid "Create a Saved Gallery"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:224
+msgid "A grid of sample gallery photos with a shortcode tag"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:226
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:93
+msgid "Search.."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:227
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:87
+msgid "Search galleries"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:228
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:58
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:66
+msgid "Bulk Action"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:229
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:80
+msgid "Apply"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:233
+#: src/Admin/DashboardConfig.php:250
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:130
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:139
+msgid "Delete"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:237
+#: src/Admin/DashboardConfig.php:249
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:115
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:124
+msgid "Duplicate"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:240
+#: src/Admin/Menu.php:83
+#: src/Admin/Menu.php:84
+#: src/Core/PostType.php:158
+#: src/Core/PostType.php:159
+#: app/admin/pages/ManageGalleries/Toolbar.jsx:106
+msgid "Add New Gallery"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:242
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:107
+#: app/media-manager/AttachmentDetails.jsx:146
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:141
+msgid "Title"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:243
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:108
+#: app/blocks/gallery/document-panel.jsx:62
+#: app/components/shortcodeField/index.jsx:102
+msgid "Shortcode"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:244
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:109
+msgid "Date"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:245
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:110
+#: app/media-manager/edit-gallery/GallerySidebar.jsx:25
+#: app/media-manager/MediaSidebar.jsx:51
+msgid "Actions"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:248
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:102
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:109
+msgid "Edit"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:252
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:103
+msgid "Select all galleries"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:253
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:36
+msgid "(no title)"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:254
+#: app/blocks/gallery/document-panel.jsx:71
+#: app/blocks/gallery/panels/GalleryInfo.jsx:119
+#: app/components/shortcodeField/index.jsx:103
+msgid "Copy shortcode"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:255
+#: app/blocks/gallery/document-panel.jsx:72
+#: app/blocks/gallery/panels/GalleryInfo.jsx:120
+#: app/components/shortcodeField/index.jsx:163
+msgid "Copied"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:256
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:85
+msgid "No galleries yet."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:257
+msgid "Create your first gallery, then paste its shortcode anywhere on your site."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:258
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:80
+msgid "No galleries match your search."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:259
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:54
+#: app/admin/pages/ManageGalleries/index.jsx:216
+msgid "Loading galleries…"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:260
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:62
+#: app/admin/pages/ManageGalleries/index.jsx:296
+msgid "Could not load galleries. Please reload the page."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:266
+#: app/admin/pages/ManageGalleries/index.jsx:308
+msgid "Delete Gallery"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:267
+#: app/admin/pages/ManageGalleries/index.jsx:115
+msgid "Permanently delete this gallery? It will stop working everywhere its shortcode is used, and this cannot be undone."
+msgstr ""
+
+#. translators: %d: number of selected galleries.
+#: src/Admin/DashboardConfig.php:269
+#: app/admin/pages/ManageGalleries/index.jsx:147
+#, php-format,js-format
+msgid "Permanently delete %d selected galleries? They will stop working everywhere their shortcodes are used, and this cannot be undone."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:270
+#: app/admin/pages/ManageGalleries/index.jsx:129
+msgid "Select at least one gallery first."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:271
+#: app/admin/pages/ManageGalleries/index.jsx:184
+msgid "Gallery deleted."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:272
+#: app/admin/pages/ManageGalleries/index.jsx:98
+#: app/admin/pages/ManageGalleries/index.jsx:162
+msgid "Gallery duplicated."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:292
+#: app/admin/pages/Settings/index.jsx:102
+msgid "Settings sections"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:296
+#: app/admin/pages/Settings/sections.js:34
+msgid "Advanced Controls"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:300
+#: app/admin/pages/Settings/sections.js:39
+msgid "Integrations"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:304
+#: app/admin/pages/Settings/sections.js:44
+msgid "Modules"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:311
+#: src/Admin/DashboardConfig.php:370
+msgid "Clean-up Data on Deletion"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:312
+msgid "Completely remove all plugin data when the plugin is uninstalled."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:316
+msgid "Clear Cache Timeout"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:317
+msgid "Sets the cache timeout in hours, defining how often cached resources are cleared."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:318
+msgid "hours"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:322
+msgid "Enable Browser Caching"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:323
+msgid "Allow browsers to cache gallery assets for faster repeat visits. (Only affects plugin assets.)"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:327
+msgid "Clear Gallery Cache"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:328
+msgid "Instantly clear all cached gallery data."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:329
+msgid "Clear Cache"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:333
+#: app/admin/pages/Settings/AdvancedControls.jsx:282
+msgid "Clearing…"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:337
+msgid "Debug Performance"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:338
+msgid "Display performance logs and loading information for troubleshooting."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:342
+msgid "Retina Images"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:343
+msgid "Deliver high-resolution images on Retina and HiDPI displays."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:346
+#: app/admin/pages/Settings/AdvancedControls.jsx:308
+msgid "Reset to Default"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:371
+#: app/admin/pages/Settings/AdvancedControls.jsx:247
+msgid "Deleting the plugin will permanently remove all ShapedGallery data, including galleries, settings and caches. Nothing is removed now, and this cannot be undone."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:372
+#: app/admin/pages/Settings/AdvancedControls.jsx:254
+msgid "Enable Clean-up"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:373
+#: app/admin/pages/ManageGalleries/index.jsx:317
+#: app/admin/pages/Settings/AdvancedControls.jsx:258
+msgid "Cancel"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:377
+msgid "Control Page Builder Addons"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:378
+#: src/Admin/DashboardConfig.php:384
+msgid "Enable only the modules you need to keep your site fast and optimized."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:379
+#: src/Admin/DashboardConfig.php:385
+msgid "Docs"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:383
+msgid "Manage Modules"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:403
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:55
+msgid "Lightbox"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:404
+msgid "Display images in a beautiful lightbox with smooth navigation, zoom, and mobile-friendly touch gestures for everyone."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:407
+msgid "Image Custom URL"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:408
+msgid "Assign custom links to gallery images, directing visitors to products, pages, or external websites seamlessly."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:411
+msgid "Ready Patterns"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:412
+msgid "Browse and insert ready-made gallery patterns straight from the block editor. Off means no pattern button and no outbound request."
+msgstr ""
+
+#. translators: %s: module name, e.g. "Lightbox".
+#: src/Admin/DashboardConfig.php:426
+#, php-format
+msgid "%s documentation"
+msgstr ""
+
+#. translators: %s: module name, e.g. "Lightbox".
+#: src/Admin/DashboardConfig.php:431
+#, php-format
+msgid "%s settings"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:462
+#: app/admin/pages/Settings/modulePanels/ModulePanel.jsx:107
+#: app/admin/pages/Settings/SettingsActions.jsx:55
+msgid "Save Changes"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:463
+#: app/admin/pages/Settings/modulePanels/ModulePanel.jsx:97
+#: app/admin/pages/Settings/SettingsActions.jsx:64
+msgid "Reset Changes"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:466
+msgid "General Setting"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:470
+msgid "Close When Click Outside"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:474
+msgid "Item Counter"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:475
+msgid "Show the position of the current image, for example 3 / 12."
+msgstr ""
+
+#. translators: 1: plugin name. 2: page builder name, e.g. "Elementor".
+#: src/Admin/DashboardConfig.php:519
+#, php-format
+msgid "It allows using %1$s galleries in %2$s via the gallery shortcode."
+msgstr ""
+
+#. translators: %s: page builder name, e.g. "Elementor".
+#: src/Admin/DashboardConfig.php:528
+#, php-format
+msgid "%s integration documentation"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:602
+#: app/admin/pages/GettingStarted/index.jsx:41
+msgid "Build Beautiful Galleries in Minutes"
+msgstr ""
+
+#. translators: %s: plugin name.
+#: src/Admin/DashboardConfig.php:605
+#, php-format
+msgid "Add the %s block to any page, drop in your images, and pick a layout — no shortcode needed."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:608
+#: app/admin/pages/GettingStarted/index.jsx:54
+msgid "Create New Gallery"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:610
+#: app/admin/pages/GettingStarted/index.jsx:66
+msgid "Use Ready Patterns"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:619
+msgid "A grid of sample gallery photos"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:634
+msgid "Made with"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:635
+msgid "by the"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:636
+msgid "ShapedPlugin LLC Team"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:638
+msgid "Get Connected with"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:697
+msgid "Help Center"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:701
+msgid "What's New"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:706
+#: app/blocks/gallery/panels/GalleryInfo.jsx:92
+msgid "Documentation"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:711
+msgid "Technical Support"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:716
+msgid "Video Tutorials"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:721
+msgid "Request a Feature"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:726
+msgid "Blog: Latest News"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:731
+msgid "Join Community"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:753
+msgid "Beautiful Gallery Showcase Solution for WordPress by"
+msgstr ""
+
+#. translators: %s: plugin name.
+#: src/Admin/DashboardConfig.php:756
+#, php-format
+msgid "%s Team"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:761
+msgid "At "
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:762
+msgid "ShapedPlugin LLC"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:763
+msgid ", back in 2016, while building WordPress websites for clients and partners, we struggled to find a simple, flexible, and reliable way to showcase clients, partners, sponsors, and affiliates’ logos elegantly. Existing solutions lacked the design quality, usability, and customization options we needed—so we decided to build our own."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:767
+msgid " offers a simple yet powerful way to showcase images through carousels, grids, lists, category filters, and sleek layouts. It helps you build trust, enhance credibility, and display social proof with ease—we’re sure you’ll enjoy using it."
+msgstr ""
+
+#. translators: %s: plugin name.
+#: src/Admin/DashboardConfig.php:773
+#, php-format
+msgid "Explore %s"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:779
+msgid "More About Us"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:790
+msgid "The ShapedPlugin LLC team"
+msgstr ""
+
+#. translators: %s: plugin name.
+#: src/Admin/DashboardConfig.php:793
+#, php-format
+msgid "The Creative Minds Behind the %s Plugin"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:797
+msgid "Your Website Deserves More Than Typical - Go Premium Today!"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:798
+msgid "Unlock powerful plugins built to boost performance, elevate design, and grow your business."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:818
+msgid "WP Carousel"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:819
+msgid "The most powerful and user-friendly multi-purpose carousel, slider, & gallery plugin for WordPress."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:824
+msgid "Easy Accordion"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:825
+msgid "Minimize customer support by offering comprehensive FAQs and increasing conversions."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:830
+msgid "Real Testimonials"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:831
+msgid "Simply collect, manage, and display testimonials on your website and boost conversions."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:837
+msgid "Smart Post"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:838
+msgid "Filter and display posts (any post types), pages, taxonomy, custom taxonomy, and custom field, in beautiful layouts."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:843
+msgid "Smart Team"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:844
+msgid "Simply collect, manage, and display your team members on your website."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:850
+msgid "Location Weather"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:851
+msgid "Add customizable, real-time weather forecasts with multi-day views and current conditions to your WordPress site."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:857
+msgid "Smart Tabs"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:858
+msgid "Best WooCommerce custom product tabs & WordPress tabs builder plugin to create responsive tabs."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:863
+msgid "Reno Product Gallery"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:864
+msgid "Product gallery slider and additional variation images gallery for WooCommerce and boost your sales."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:869
+msgid "Reno Product Slider"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:870
+msgid "Boost sales by interactive product Slider, Grid, and Table in your WooCommerce website or store."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:876
+msgid "Reno Product Category"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:877
+msgid "Display by filtering the list of categories aesthetically and boosting sales."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:883
+msgid "Smart Swatch"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:884
+msgid "Smart Swatches is a best product variation swatches for WooCommerce to boost your store sales."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:890
+msgid "Styble"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:891
+msgid "Enhance web design with fast, modern Gutenberg blocks like accordions, buttons, info boxes, and tabs—no coding needed."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:919
+msgid "Support"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:920
+msgid "Chat with support"
+msgstr ""
+
+#. translators: %s: gallery shortcode, e.g. [shaped_gallery id="12"].
+#: src/Admin/GalleryEditor.php:428
+#, php-format
+msgid "Gallery saved. Use %s to place it anywhere."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:431
+#: src/Admin/GalleryEditor.php:441
+msgid "Gallery saved."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:436
+msgid "Custom field updated."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:437
+msgid "Custom field deleted."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:438
+#: src/Core/PostType.php:166
+msgid "Gallery updated."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:439
+msgid "Gallery restored to revision."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:442
+msgid "Gallery submitted."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:443
+msgid "Gallery scheduled."
+msgstr ""
+
+#: src/Admin/GalleryEditor.php:444
+msgid "Gallery draft updated."
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:174
+msgid "Loading more images…"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:175
+msgid "More images loaded."
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:176
+msgid "Could not load more images. Please try again."
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:185
+msgid "Image lightbox"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:186
+#: app/components/modal/index.jsx:159
+msgid "Close"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:187
+msgid "Previous image"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:188
+msgid "Next image"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:189
+msgid "This image could not be loaded."
+msgstr ""
+
+#. translators: 1: current image number, 2: total number of images.
+#: src/Blocks/BlocksInit.php:191
+#, php-format
+msgid "%1$d / %2$d"
+msgstr ""
+
+#: src/Core/PostType.php:100
+msgid "Sorry, you are not allowed to browse galleries."
+msgstr ""
+
+#: src/Core/PostType.php:154
+msgctxt "post type general name"
+msgid "Photo Galleries"
+msgstr ""
+
+#: src/Core/PostType.php:155
+msgctxt "post type singular name"
+msgid "ShapedGallery"
+msgstr ""
+
+#: src/Core/PostType.php:160
+#: app/blocks/gallery/edit.jsx:217
+#: app/media-manager/edit-gallery/EditGalleryModal.jsx:120
+#: app/media-manager/edit-gallery/EditGalleryModal.jsx:131
+#: app/media-manager/edit-gallery/GallerySidebar.jsx:36
+#: app/media-manager/MediaModal.jsx:271
+#: app/media-manager/MediaSidebar.jsx:16
+msgid "Edit Gallery"
+msgstr ""
+
+#: src/Core/PostType.php:161
+msgid "New Gallery"
+msgstr ""
+
+#: src/Core/PostType.php:162
+msgid "View Gallery"
+msgstr ""
+
+#: src/Core/PostType.php:163
+msgid "Search Galleries"
+msgstr ""
+
+#: src/Core/PostType.php:164
+msgid "No galleries found."
+msgstr ""
+
+#: src/Core/PostType.php:165
+msgid "No galleries found in Trash."
+msgstr ""
+
+#: src/Frontend/GalleryPassword.php:685
+msgid "This gallery is password protected. Enter the password to view it."
+msgstr ""
+
+#: src/Frontend/GalleryPassword.php:691
+msgid "That password was not correct. Please try again."
+msgstr ""
+
+#: src/Frontend/GalleryPassword.php:704
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:104
+msgid "Password"
+msgstr ""
+
+#: src/Frontend/GalleryPassword.php:715
+msgid "Submit"
+msgstr ""
+
+#: src/Includes/Functions.php:31
+msgid "Automatic Justified"
+msgstr ""
+
+#: src/Includes/Functions.php:32
+#: app/picker/layouts.data.js:23
+msgid "Grid"
+msgstr ""
+
+#: src/Includes/Functions.php:33
+#: app/picker/layouts.data.js:28
+msgid "Masonry"
+msgstr ""
+
+#: src/Integrations/BeaverGalleryModule.php:36
+#: src/Integrations/WPBakeryIntegration.php:92
+msgid "Display a saved ShapedGallery."
+msgstr ""
+
+#: src/Integrations/BeaverIntegration.php:73
+#: app/components/tabControls/index.jsx:49
+msgid "General"
+msgstr ""
+
+#: src/Integrations/BeaverIntegration.php:76
+#: src/Integrations/DiviGalleryModule.php:73
+#: src/Integrations/ElementorGalleryWidget.php:120
+msgid "Gallery"
+msgstr ""
+
+#: src/Integrations/BeaverIntegration.php:80
+#: src/Integrations/BricksGalleryElement.php:66
+#: src/Integrations/DiviGalleryModule.php:89
+#: src/Integrations/ElementorGalleryWidget.php:128
+#: src/Integrations/OxygenGalleryElement.php:74
+#: src/Integrations/WPBakeryIntegration.php:98
+msgid "Select Gallery"
+msgstr ""
+
+#: src/Integrations/BeaverIntegration.php:82
+#: src/Integrations/BricksGalleryElement.php:68
+#: src/Integrations/DiviGalleryModule.php:92
+#: src/Integrations/ElementorGalleryWidget.php:132
+#: src/Integrations/OxygenGalleryElement.php:78
+#: src/Integrations/WPBakeryIntegration.php:103
+msgid "Select a gallery…"
+msgstr ""
+
+#: src/Integrations/BeaverIntegration.php:83
+#: src/Integrations/BricksGalleryElement.php:72
+#: src/Integrations/DiviGalleryModule.php:94
+#: src/Integrations/ElementorGalleryWidget.php:133
+#: src/Integrations/WPBakeryIntegration.php:105
+msgid "Galleries are created and styled in ShapedGallery. Every placement of a gallery shows the same gallery, so editing it updates them all."
+msgstr ""
+
+#: src/Integrations/ElementorGalleryWidget.php:195
+msgid "Manage galleries"
+msgstr ""
+
+#: src/Integrations/ElementorGalleryWidget.php:197
+msgid "Add new gallery"
+msgstr ""
+
+#. translators: %d: gallery post id.
+#: src/Integrations/GalleryEmbed.php:139
+#, php-format
+msgid "Gallery #%d"
+msgstr ""
+
+#. translators: 1: gallery title. 2: gallery post id.
+#: src/Integrations/GalleryEmbed.php:170
+#, php-format
+msgid "%1$s (#%2$d)"
+msgstr ""
+
+#: src/Integrations/GalleryEmbed.php:193
+msgid "Select a gallery to display here."
+msgstr ""
+
+#: src/Integrations/GalleryEmbed.php:204
+msgid "This gallery is empty, unavailable, or has been deleted."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:308
+msgid "A pattern id is required."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:332
+msgid "That pattern could not be checked. Refresh the library and try again."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:342
+msgid "That pattern is not available in this version of ShapedGallery."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:350
+msgid "That pattern is available in ShapedGallery Pro."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:366
+msgid "That pattern could not be imported."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:490
+msgid "The pattern library could not be reached. Please try again."
+msgstr ""
+
+#. translators: %d: HTTP status code.
+#: src/Patterns/PatternLibrary.php:501
+#, php-format
+msgid "The pattern library answered with an error (HTTP %d)."
+msgstr ""
+
+#: src/Patterns/PatternLibrary.php:513
+msgid "The pattern library returned an unreadable response."
+msgstr ""
+
+#: src/Providers/MediaLibraryProvider.php:34
+#: app/media-manager/MediaModal.jsx:31
+msgid "Media Library"
+msgstr ""
+
+#: src/Providers/MediaLibraryProvider.php:41
+msgid "Add images and videos from your WordPress Media Library."
+msgstr ""
+
+#: src/Render/LayoutRenderer.php:267
+#: app/blocks/gallery/PaginationPreview.jsx:38
+msgid "Gallery pagination"
+msgstr ""
+
+#: src/Render/LayoutRenderer.php:271
+#: app/blocks/gallery/PaginationPreview.jsx:44
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:89
+msgid "Load More"
+msgstr ""
+
+#: src/Render/LayoutRenderer.php:272
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:96
+msgid "No more images available"
+msgstr ""
+
+#. translators: %s: video title.
+#: src/Render/LayoutRenderer.php:485
+#, php-format
+msgid "Play video: %s"
+msgstr ""
+
+#: src/Render/LayoutRenderer.php:486
+msgid "Play video"
+msgstr ""
+
+#: src/Rest/GalleryController.php:322
+msgid "Media provider is not available."
+msgstr ""
+
+#: src/Rest/GalleryController.php:369
+msgid "This gallery view is no longer available. Please reload the page."
+msgstr ""
+
+#: src/Rest/GalleryController.php:378
+msgid "Pagination is not enabled for this gallery."
+msgstr ""
+
+#. translators: %s: number of cache entries cleared so far.
+#: src/Rest/GalleryController.php:463
+#, php-format
+msgid "Cleared %s cache entries so far…"
+msgstr ""
+
+#: src/Rest/GalleryController.php:468
+#: app/admin/pages/Settings/AdvancedControls.jsx:284
+msgid "Gallery cache cleared."
+msgstr ""
+
+#: src/Rest/GalleryController.php:630
+msgid "Could not delete the gallery."
+msgstr ""
+
+#: src/Rest/GalleryController.php:690
+msgid "No galleries were selected."
+msgstr ""
+
+#: src/Rest/GalleryController.php:764
+msgid "Gallery not found."
+msgstr ""
+
+#: src/Rest/GalleryController.php:818
+msgid "Untitled Gallery"
+msgstr ""
+
+#. translators: %s: source gallery title.
+#: src/Rest/GalleryController.php:828
+#, php-format
+msgid "%s (Copy)"
+msgstr ""
+
+#: src/Rest/PatternController.php:86
+msgid "The Ready Patterns module is switched off."
+msgstr ""
+
+#: src/Rest/PatternController.php:94
+msgid "You are not allowed to browse the pattern library."
+msgstr ""
+
+#: app/admin/components/ExternalLink.jsx:47
+msgid "(opens in a new tab)"
+msgstr ""
+
+#. translators: %s: plugin version number.
+#: app/admin/components/HeaderBar.jsx:44
+#, js-format
+msgid "Version %s"
+msgstr ""
+
+#. translators: %s: title of the item being selected.
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:39
+#: app/media-manager/MediaCard.jsx:67
+#, js-format
+msgid "Select %s"
+msgstr ""
+
+#. translators: %d: number of images in the gallery.
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:67
+#, js-format
+msgid "%d items"
+msgstr ""
+
+#. translators: %s: gallery title.
+#: app/admin/pages/ManageGalleries/GalleryRow.jsx:78
+#, js-format
+msgid "Shortcode for %s"
+msgstr ""
+
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:130
+msgid "Galleries pagination"
+msgstr ""
+
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:137
+msgid "Previous"
+msgstr ""
+
+#. translators: 1: current page, 2: total pages, 3: total galleries.
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:142
+#, js-format
+msgid "Page %1$d of %2$d (%3$d galleries)"
+msgstr ""
+
+#: app/admin/pages/ManageGalleries/GalleryTable.jsx:154
+msgid "Next"
+msgstr ""
+
+#: app/admin/pages/ManageGalleries/index.jsx:88
+msgid "That action could not be completed."
+msgstr ""
+
+#: app/admin/pages/ManageGalleries/index.jsx:325
+msgid "Delete Permanently"
+msgstr ""
+
+#: app/admin/pages/Settings/AdvancedControls.jsx:243
+msgid "Are you sure?"
+msgstr ""
+
+#: app/admin/pages/Settings/AdvancedControls.jsx:288
+msgid "Could not clear the gallery cache."
+msgstr ""
+
+#: app/admin/pages/Settings/Integrations.jsx:62
+msgid "Integration has been saved."
+msgstr ""
+
+#: app/admin/pages/Settings/Integrations.jsx:63
+msgid "Could not update the integration. Please try again."
+msgstr ""
+
+#: app/admin/pages/Settings/modulePanels/ModulePanel.jsx:106
+#: app/admin/pages/Settings/SettingsActions.jsx:54
+msgid "Saving…"
+msgstr ""
+
+#: app/admin/pages/Settings/modulePanels/useModuleDraft.js:52
+#: app/admin/pages/Settings/useSettings.js:250
+msgid "Settings saved."
+msgstr ""
+
+#: app/admin/pages/Settings/modulePanels/useModuleDraft.js:206
+msgid "Could not save these settings."
+msgstr ""
+
+#: app/admin/pages/Settings/modulePanels/useModuleToggles.js:22
+msgid "Modules has been saved."
+msgstr ""
+
+#: app/admin/pages/Settings/modulePanels/useModuleToggles.js:23
+msgid "Could not update the module. Please try again."
+msgstr ""
+
+#: app/admin/pages/Settings/useSectionToggles.js:157
+msgid "Could not save the change. Please try again."
+msgstr ""
+
+#: app/admin/pages/Settings/useSettings.js:254
+msgid "Could not save the settings."
+msgstr ""
+
+#: app/blocks/gallery/document-panel.jsx:50
+msgid "Gallery Information"
+msgstr ""
+
+#: app/blocks/gallery/document-panel.jsx:55
+msgid "Gallery ID"
+msgstr ""
+
+#. translators: %d: gallery id.
+#: app/blocks/gallery/document-panel.jsx:68
+#: app/blocks/gallery/panels/GalleryInfo.jsx:116
+#, js-format
+msgid "Shortcode for gallery %d"
+msgstr ""
+
+#: app/blocks/gallery/document-panel.jsx:77
+msgid "Paste this shortcode into any page, post or page-builder widget. Editing this gallery updates every place it appears."
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:89
+#: app/components/responsive/index.jsx:19
+#: app/ready-patterns/PreviewDrawer.jsx:72
+msgid "Desktop"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:90
+#: app/components/responsive/index.jsx:20
+#: app/ready-patterns/PreviewDrawer.jsx:67
+msgid "Tablet"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:91
+msgid "Mobile Portrait"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:92
+msgid "Mobile Landscape"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:130
+#: app/media-manager/edit-gallery/GallerySidebar.jsx:38
+#: app/media-manager/MediaModal.jsx:247
+#: app/media-manager/MediaModal.jsx:272
+#: app/media-manager/MediaSidebar.jsx:17
+msgid "Add to Gallery"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:131
+#: app/media-manager/MediaModal.jsx:72
+msgid "Create a New Gallery"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:156
+msgid "Add images or videos to build your gallery."
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:159
+msgid "Add Media"
+msgstr ""
+
+#: app/blocks/gallery/edit.jsx:208
+msgid "Change Layout"
+msgstr ""
+
+#. translators: %s: comma-separated device list, e.g. "Desktop, Mobile Portrait".
+#: app/blocks/gallery/edit.jsx:236
+#, js-format
+msgid "Hidden on %s"
+msgstr ""
+
+#: app/blocks/gallery/EditableGalleryPreview.jsx:289
+#: app/blocks/gallery/GalleryPreview.jsx:57
+msgid "No images yet."
+msgstr ""
+
+#: app/blocks/gallery/index.js:54
+msgid "Showcase your Images, Videos beautifully and keep visitors engaged."
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:60
+msgid "Layout Settings"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:70
+msgid "Horizontal Gap"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:83
+msgid "Vertical Gap"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:97
+msgid "Order"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:102
+#: app/components/boxShadow/index.jsx:209
+#: app/components/selectField/index.jsx:48
+msgid "Default"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:103
+msgid "Random"
+msgstr ""
+
+#: app/blocks/gallery/Inspector.jsx:109
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:241
+msgid "Ajax Pagination"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:60
+#: app/blocks/gallery/panels/ContentSettings.jsx:322
+msgid "Padding"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:68
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:220
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:233
+msgid "Margin"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:99
+#: app/components/tabControls/index.jsx:71
+msgid "Visibility"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:103
+msgid "Public"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:105
+msgid "Private"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:111
+msgid "Set Password"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:118
+msgid "Hide on Desktop"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:123
+msgid "Hide on Tablet"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:128
+msgid "Hide on Mobile Portrait"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:133
+msgid "Hide on Mobile Landscape"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:159
+msgid "Additional CSS Class(es)"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:166
+msgid "Additional CSS ID"
+msgstr ""
+
+#: app/blocks/gallery/panels/AdvancedSettings.jsx:187
+msgid "Advanced Settings"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:46
+#: app/blocks/gallery/panels/ContentSettings.jsx:55
+msgid "Left"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:47
+#: app/blocks/gallery/panels/ContentSettings.jsx:56
+#: app/components/positionPicker/index.jsx:35
+msgid "Center"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:48
+#: app/blocks/gallery/panels/ContentSettings.jsx:57
+msgid "Right"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:75
+msgid "Show Per View"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:86
+msgid "Button Label"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:93
+msgid "Ending Message"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:100
+msgid "Alignment"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:152
+#: app/components/typography/index.jsx:173
+#: app/components/typography/index.jsx:228
+msgid "Typography"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:168
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:195
+msgid "Normal"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:169
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:196
+#: app/components/boxShadow/index.jsx:210
+msgid "Hover"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:174
+msgid "Text Color"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:181
+#: app/components/background/index.jsx:65
+msgid "Background Type"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:182
+#: app/blocks/gallery/panels/ContentSettings.jsx:295
+#: app/components/background/index.jsx:66
+msgid "Background Color"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:191
+#: app/blocks/gallery/panels/ContentSettings.jsx:304
+msgid "Border"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:201
+#: app/blocks/gallery/panels/ContentSettings.jsx:312
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:209
+msgid "Border Radius"
+msgstr ""
+
+#: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:211
+msgid "Inner Padding"
+msgstr ""
+
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:56
+msgid "URL"
+msgstr ""
+
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:57
+#: app/components/border/index.jsx:49
+msgid "None"
+msgstr ""
+
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:102
+msgid "Image Click Action"
+msgstr ""
+
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:104
+msgid "Click Action Type"
+msgstr ""
+
+#: app/blocks/gallery/panels/ClickActionSettings.jsx:118
+msgid "<b>Note:</b> <a>Configure Lightbox Settings</a> globally from Module Settings."
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:44
+msgid "H1"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:45
+msgid "H2"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:46
+msgid "H3"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:47
+msgid "H4"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:48
+msgid "H5"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:49
+msgid "H6"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:50
+msgid "Span"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:94
+msgid "Image Title"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:101
+msgid "Image Title Source"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:105
+msgid "Attachment Title"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:106
+#: app/blocks/gallery/panels/ContentSettings.jsx:132
+msgid "Attachment Caption"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:110
+msgid "HTML Tag"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:121
+msgid "Image Description"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:128
+msgid "Image Description Source"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:134
+msgid "Attachment Description"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:140
+msgid "Description Limit"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:158
+msgid "Content Display Style"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:162
+msgid "Classic"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:163
+msgid "Overlay"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:168
+msgid "Content Positions"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:172
+msgid "Top"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:173
+msgid "Bottom"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:178
+msgid "Content Alignment"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:188
+msgid "Title to Desc. Gap"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:244
+msgid "Title Typography"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:256
+msgid "Title Color"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:267
+msgid "Description Typography"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:279
+msgid "Description Color"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:294
+msgid "Content Background Style"
+msgstr ""
+
+#: app/blocks/gallery/panels/ContentSettings.jsx:342
+msgid "Content Settings"
+msgstr ""
+
+#: app/blocks/gallery/panels/GalleryInfo.jsx:101
+msgid "You can use this shortcode anywhere and manage it from <a>Saved Galleries</a>."
+msgstr ""
+
+#: app/blocks/gallery/panels/GalleryInfo.jsx:110
+msgid "You can use this shortcode anywhere."
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:76
+msgid "Resolution"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:81
+msgid "Thumbnail"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:82
+msgid "Medium"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:83
+msgid "Large"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:84
+msgid "Full"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:92
+msgid "Image Preloader"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:100
+msgid "Video Play Mode"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:104
+msgid "Inline"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:105
+msgid "Popup"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:110
+msgid "AutoPlay"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:117
+msgid "Note: Autoplay may be affected by <a>Google’s autoplay policy</a> on Chrome."
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:137
+msgid "Play Icon Size"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:147
+msgid "Display Icon on Hover"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:201
+msgid "Image Border"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:253
+msgid "Image & Video Settings"
+msgstr ""
+
+#: app/components/background/index.jsx:57
+#: app/components/border/index.jsx:50
+msgid "Solid"
+msgstr ""
+
+#: app/components/background/index.jsx:58
+msgid "Gradient"
+msgstr ""
+
+#: app/components/batchAction/index.js:116
+msgid "Done."
+msgstr ""
+
+#: app/components/batchAction/index.js:124
+msgid "The action could not be completed."
+msgstr ""
+
+#: app/components/batchAction/index.js:139
+msgid "Working…"
+msgstr ""
+
+#: app/components/border/index.jsx:51
+msgid "Dashed"
+msgstr ""
+
+#: app/components/border/index.jsx:52
+msgid "Dotted"
+msgstr ""
+
+#: app/components/border/index.jsx:53
+msgid "Double"
+msgstr ""
+
+#: app/components/border/index.jsx:88
+msgid "Border Width"
+msgstr ""
+
+#: app/components/border/index.jsx:103
+msgid "Border Hover Color"
+msgstr ""
+
+#: app/components/border/index.jsx:104
+msgid "Border Color"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:110
+msgid "Box Shadow"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:120
+msgid "Shadow Type"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:143
+msgid "Switch to presets"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:144
+msgid "Switch to custom"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:198
+msgid "X Offset"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:199
+msgid "Y Offset"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:200
+msgid "Blur"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:201
+msgid "Spread"
+msgstr ""
+
+#: app/components/boxShadow/index.jsx:206
+#: app/components/boxShadow/index.jsx:216
+msgid "Shadow Color"
+msgstr ""
+
+#: app/components/color/index.jsx:58
+msgid "Select colour"
+msgstr ""
+
+#: app/components/dualRange/index.jsx:172
+msgid "Range start"
+msgstr ""
+
+#: app/components/dualRange/index.jsx:173
+msgid "Range end"
+msgstr ""
+
+#: app/components/modal/index.jsx:152
+msgid "Dialog"
+msgstr ""
+
+#: app/components/popover/index.jsx:28
+msgid "Popover"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:31
+msgid "Top left"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:32
+msgid "Top center"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:33
+msgid "Top right"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:34
+msgid "Center left"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:36
+msgid "Center right"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:37
+msgid "Bottom left"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:38
+msgid "Bottom center"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:39
+msgid "Bottom right"
+msgstr ""
+
+#: app/components/positionPicker/index.jsx:54
+msgid "Position"
+msgstr ""
+
+#: app/components/rangeControl/index.jsx:286
+#: app/components/spacing/index.jsx:208
+msgid "Toggle step presets"
+msgstr ""
+
+#: app/components/resetButton/index.jsx:16
+msgid "Reset to default"
+msgstr ""
+
+#: app/components/responsive/index.jsx:21
+#: app/ready-patterns/PreviewDrawer.jsx:70
+msgid "Mobile"
+msgstr ""
+
+#: app/components/spacing/index.jsx:354
+msgid "Unlink sides"
+msgstr ""
+
+#: app/components/spacing/index.jsx:355
+msgid "Link all sides"
+msgstr ""
+
+#: app/components/tabControls/index.jsx:60
+msgid "Style"
+msgstr ""
+
+#: app/components/tabControls/index.jsx:82
+msgid "Advanced"
+msgstr ""
+
+#: app/components/typography/index.jsx:77
+msgid "Thin 100"
+msgstr ""
+
+#: app/components/typography/index.jsx:78
+msgid "Extra Light 200"
+msgstr ""
+
+#: app/components/typography/index.jsx:79
+msgid "Light 300"
+msgstr ""
+
+#: app/components/typography/index.jsx:80
+msgid "Regular 400"
+msgstr ""
+
+#: app/components/typography/index.jsx:81
+msgid "Medium 500"
+msgstr ""
+
+#: app/components/typography/index.jsx:82
+msgid "Semi Bold 600"
+msgstr ""
+
+#: app/components/typography/index.jsx:83
+msgid "Bold 700"
+msgstr ""
+
+#: app/components/typography/index.jsx:84
+msgid "Extra Bold 800"
+msgstr ""
+
+#: app/components/typography/index.jsx:85
+msgid "Black 900"
+msgstr ""
+
+#: app/components/typography/index.jsx:94
+msgid "Italic"
+msgstr ""
+
+#: app/components/typography/index.jsx:95
+msgid "Underline"
+msgstr ""
+
+#: app/components/typography/index.jsx:96
+msgid "Strikethrough"
+msgstr ""
+
+#: app/components/typography/index.jsx:97
+msgid "Uppercase"
+msgstr ""
+
+#: app/components/typography/index.jsx:98
+msgid "Lowercase"
+msgstr ""
+
+#: app/components/typography/index.jsx:99
+msgid "Capitalize"
+msgstr ""
+
+#: app/components/typography/index.jsx:154
+#: app/components/typography/index.jsx:272
+msgid "PX"
+msgstr ""
+
+#: app/components/typography/index.jsx:240
+msgid "Font Family"
+msgstr ""
+
+#: app/components/typography/index.jsx:254
+msgid "Font Style"
+msgstr ""
+
+#: app/components/typography/index.jsx:263
+msgid "Font Size"
+msgstr ""
+
+#: app/components/typography/index.jsx:275
+msgid "Line Height"
+msgstr ""
+
+#: app/components/typography/index.jsx:291
+msgid "Letter Spacing"
+msgstr ""
+
+#: app/components/typography/index.jsx:300
+msgid "Word Spacing"
+msgstr ""
+
+#: app/components/typography/index.jsx:312
+msgid "Text Format"
+msgstr ""
+
+#: app/layouts/controls/ColumnsControls.jsx:20
+#: app/layouts/controls/MasonryControls.jsx:29
+msgid "Columns"
+msgstr ""
+
+#: app/layouts/controls/ColumnsControls.jsx:28
+#: app/layouts/controls/MasonryControls.jsx:37
+msgid "Set per device using the device switcher."
+msgstr ""
+
+#: app/layouts/controls/JustifiedControls.jsx:24
+msgid "Maximum Row Height"
+msgstr ""
+
+#: app/layouts/controls/JustifiedControls.jsx:29
+msgid "Auto"
+msgstr ""
+
+#: app/layouts/controls/JustifiedControls.jsx:30
+msgid "Custom"
+msgstr ""
+
+#: app/layouts/controls/JustifiedControls.jsx:35
+msgid "Row Height (px)"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:73
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:74
+msgid "Attachment Details"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:84
+msgid "No item selected. Select an item to see its details."
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:108
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:91
+msgid "Original image:"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:120
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:106
+msgid "Edit Image"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:128
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:110
+msgid "Delete permanently"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:137
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:124
+msgid "Alt Text"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:156
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:152
+msgid "Caption"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:165
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:163
+msgid "Description"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:174
+msgid "File URL"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:189
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:184
+msgid "Copied!"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:190
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:185
+msgid "Copy URL to clipboard"
+msgstr ""
+
+#: app/media-manager/AttachmentDetails.jsx:195
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:190
+msgid "Custom URL"
+msgstr ""
+
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:120
+msgid "Select an image to view its details."
+msgstr ""
+
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:135
+msgid "Learn how to describe the purpose of the image."
+msgstr ""
+
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:137
+msgid "Leave empty if the image is purely decorative."
+msgstr ""
+
+#: app/media-manager/edit-gallery/AttachmentPanel.jsx:174
+msgid "File URL:"
+msgstr ""
+
+#: app/media-manager/edit-gallery/BulkActionBar.jsx:20
+msgid "Bulk actions"
+msgstr ""
+
+#. translators: %d: number of selected images.
+#: app/media-manager/edit-gallery/BulkActionBar.jsx:24
+#, js-format
+msgid "%d image selected"
+msgid_plural "%d images selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/media-manager/edit-gallery/BulkActionBar.jsx:31
+msgid "Clear"
+msgstr ""
+
+#: app/media-manager/edit-gallery/BulkActionBar.jsx:34
+msgid "Remove from gallery"
+msgstr ""
+
+#: app/media-manager/edit-gallery/EditGalleryModal.jsx:152
+#: app/media-manager/edit-gallery/EditMediaGrid.jsx:30
+msgid "No media to display."
+msgstr ""
+
+#: app/media-manager/edit-gallery/EditGalleryModal.jsx:166
+#: app/media-manager/MediaModal.jsx:277
+msgid "Close dialog"
+msgstr ""
+
+#: app/media-manager/edit-gallery/EditGalleryModal.jsx:184
+msgid "Update Gallery"
+msgstr ""
+
+#. translators: %s: media title.
+#: app/media-manager/edit-gallery/EditMediaCard.jsx:66
+#: app/media-manager/MediaCard.jsx:65
+#, js-format
+msgid "View details for %s"
+msgstr ""
+
+#. translators: %s: media title.
+#: app/media-manager/edit-gallery/EditMediaCard.jsx:93
+#, js-format
+msgid "Remove %s from the gallery"
+msgstr ""
+
+#: app/media-manager/edit-gallery/GallerySidebar.jsx:22
+msgid "Gallery actions"
+msgstr ""
+
+#: app/media-manager/edit-gallery/GallerySidebar.jsx:29
+msgid "Cancel Gallery"
+msgstr ""
+
+#: app/media-manager/edit-gallery/ReorderHintBar.jsx:19
+msgid "Drag and drop to reorder media files."
+msgstr ""
+
+#: app/media-manager/edit-gallery/ReorderHintBar.jsx:23
+msgid "Reverse Order"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:34
+msgid "Add Images"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:35
+msgid "Paste image URLs to embed them in your gallery. You can add several at once."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:36
+msgid "Image Link"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:37
+msgid "Ex. https://example.com/image1234.jpeg"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:38
+msgid "Add Image"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:39
+msgid "Enter a valid image URL (http or https)."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:40
+msgid "That image has already been added."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:41
+msgid "That URL could not be loaded as an image."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:42
+msgid "Remove image"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:46
+msgid "Add Videos"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:47
+msgid "Paste video URLs to embed them in your gallery. You can add several at once."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:48
+msgid "Video Link"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:49
+msgid "Ex. https://example.com/video1234.mp4"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:50
+#: app/media-manager/ExternalMediaPane.jsx:62
+msgid "Add Video"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:51
+msgid "Enter a valid video URL (http or https)."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:52
+#: app/media-manager/ExternalMediaPane.jsx:64
+msgid "That video has already been added."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:53
+msgid "That URL could not be loaded as a video."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:54
+#: app/media-manager/ExternalMediaPane.jsx:66
+msgid "Remove video"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:58
+msgid "Add YouTube Videos"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:59
+msgid "Paste YouTube links to embed them in your gallery. You can add several at once."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:60
+msgid "YouTube Link"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:61
+msgid "Ex. https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:63
+msgid "Enter a valid YouTube URL."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:65
+msgid "That YouTube URL could not be added."
+msgstr ""
+
+#: app/media-manager/ExternalMediaPane.jsx:204
+msgid "Adding…"
+msgstr ""
+
+#: app/media-manager/FilterBar.jsx:24
+msgid "All dates"
+msgstr ""
+
+#: app/media-manager/FilterBar.jsx:32
+msgid "Filter by date"
+msgstr ""
+
+#: app/media-manager/FilterBar.jsx:42
+msgid "Search media"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:31
+msgid "Add media from"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:35
+msgid "Images"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:42
+msgid "External Images"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:50
+msgid "Videos"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:57
+msgid "External Video"
+msgstr ""
+
+#: app/media-manager/media-sources.data.js:65
+msgid "YouTube"
+msgstr ""
+
+#: app/media-manager/MediaCard.jsx:33
+msgid "Untitled"
+msgstr ""
+
+#. translators: %s: media title.
+#: app/media-manager/MediaCard.jsx:92
+#, js-format
+msgid "Deselect %s"
+msgstr ""
+
+#: app/media-manager/MediaGrid.jsx:35
+msgid "No media added yet."
+msgstr ""
+
+#: app/media-manager/MediaGrid.jsx:60
+msgid "Remove"
+msgstr ""
+
+#: app/media-manager/MediaLibraryBrowser.jsx:61
+msgid "Media library"
+msgstr ""
+
+#: app/media-manager/MediaLibraryBrowser.jsx:83
+msgid "No media found."
+msgstr ""
+
+#: app/media-manager/MediaLibraryBrowser.jsx:89
+msgid "Load more"
+msgstr ""
+
+#. translators: %d: number of media items shown.
+#: app/media-manager/MediaLibraryBrowser.jsx:97
+#, js-format
+msgid "%d item shown"
+msgid_plural "%d items shown"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/media-manager/MediaModal.jsx:30
+msgid "Upload files"
+msgstr ""
+
+#: app/media-manager/MediaModal.jsx:288
+msgid "Media source tabs"
+msgstr ""
+
+#. translators: %d: selected item count.
+#: app/media-manager/MediaModal.jsx:332
+#, js-format
+msgid "%d item selected"
+msgid_plural "%d items selected"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/media-manager/MediaSidebar.jsx:49
+msgid "Media sources"
+msgstr ""
+
+#: app/media-manager/MediaThumb.jsx:31
+msgid "Video"
+msgstr ""
+
+#: app/media-manager/UploadPane.jsx:28
+msgid "Drop files to upload"
+msgstr ""
+
+#: app/media-manager/UploadPane.jsx:29
+msgid "or"
+msgstr ""
+
+#: app/media-manager/UploadPane.jsx:31
+msgid "Select Files"
+msgstr ""
+
+#. translators: 1: file name, 2: upload percent.
+#: app/media-manager/UploadPane.jsx:51
+#, js-format
+msgid "Uploading %1$s… %2$d%%"
+msgstr ""
+
+#. translators: 1: width in pixels, 2: height in pixels.
+#: app/media-manager/useAttachmentDetails.js:181
+#: app/media-manager/useAttachmentDetails.js:188
+#, js-format
+msgid "%1$d by %2$d pixels"
+msgstr ""
+
+#: app/media-manager/useAttachmentDetails.js:312
+msgid "this item"
+msgstr ""
+
+#. translators: %s: title or file name of the attachment being deleted.
+#: app/media-manager/useAttachmentDetails.js:321
+#, js-format
+msgid "Permanently delete “%s”?"
+msgstr ""
+
+#: app/media-manager/useAttachmentDetails.js:325
+msgid "This removes the file from your Media Library and from every gallery that uses it. This action cannot be undone."
+msgstr ""
+
+#. translators: %s: title or file name of the attachment.
+#: app/media-manager/useAttachmentDetails.js:360
+#, js-format
+msgid "Could not delete “%s”. You may not have permission, or the file may be in use. Please try again."
+msgstr ""
+
+#. translators: %s: title or file name of the attachment.
+#: app/media-manager/useAttachmentDetails.js:375
+#, js-format
+msgid "Could not load “%s” to delete it — it may have already been removed. Refresh and try again."
+msgstr ""
+
+#: app/media-manager/useMediaLibrary.js:318
+msgid "Could not load media. Please try again."
+msgstr ""
+
+#: app/picker/LayoutPicker.jsx:51
+msgid "Choose a layout to start building your gallery"
+msgstr ""
+
+#: app/picker/LayoutPicker.jsx:60
+msgid "Apply Layout"
+msgstr ""
+
+#: app/picker/layouts.data.js:18
+msgid "Auto. Justified"
+msgstr ""
+
+#: app/ready-patterns/ErrorBoundary.jsx:62
+msgid "The pattern library could not be displayed."
+msgstr ""
+
+#: app/ready-patterns/ErrorBoundary.jsx:65
+msgid "Try again"
+msgstr ""
+
+#: app/ready-patterns/index.js:172
+#: app/ready-patterns/Library.jsx:171
+#: app/ready-patterns/Library.jsx:184
+msgid "Ready Patterns Library"
+msgstr ""
+
+#: app/ready-patterns/Library.jsx:118
+msgid "All layouts"
+msgstr ""
+
+#: app/ready-patterns/Library.jsx:130
+msgid "All categories"
+msgstr ""
+
+#. translators: %d: number of patterns currently shown.
+#: app/ready-patterns/Library.jsx:162
+#, js-format
+msgid "%d pattern"
+msgid_plural "%d patterns"
+msgstr[0] ""
+msgstr[1] ""
+
+#: app/ready-patterns/Library.jsx:194
+msgid "Dismiss"
+msgstr ""
+
+#: app/ready-patterns/LockedCta.jsx:30
+msgid "Pro only"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:51
+#: app/ready-patterns/Sidebar.jsx:114
+msgid "Pro"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:62
+msgid "Preview"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:77
+msgid "Remove from favourites"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:78
+msgid "Add to favourites"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:86
+msgid "Get Pro"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:95
+#: app/ready-patterns/PreviewDrawer.jsx:286
+msgid "Inserting…"
+msgstr ""
+
+#: app/ready-patterns/PatternCard.jsx:96
+#: app/ready-patterns/PreviewDrawer.jsx:287
+msgid "Insert"
+msgstr ""
+
+#: app/ready-patterns/PatternGrid.jsx:70
+msgid "No favourites yet."
+msgstr ""
+
+#: app/ready-patterns/PatternGrid.jsx:71
+msgid "No patterns match those filters."
+msgstr ""
+
+#: app/ready-patterns/PatternGrid.jsx:75
+msgid "Tap the heart on a pattern to keep it here."
+msgstr ""
+
+#: app/ready-patterns/PatternGrid.jsx:76
+msgid "Try a different layout, category or search term."
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:192
+msgid "Back"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:209
+#: app/ready-patterns/PreviewDrawer.jsx:210
+msgid "Previous pattern"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:218
+#: app/ready-patterns/PreviewDrawer.jsx:219
+msgid "Next pattern"
+msgstr ""
+
+#. translators: 1: position of the previewed pattern, 2: number of patterns shown.
+#: app/ready-patterns/PreviewDrawer.jsx:233
+#, js-format
+msgid "%1$d of %2$d"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:245
+msgid "Preview width"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:275
+msgid "Get Pro to use this pattern"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:299
+msgid "Close the pattern library"
+msgstr ""
+
+#. translators: %s: pattern name.
+#: app/ready-patterns/PreviewDrawer.jsx:318
+#, js-format
+msgid "Preview of %s"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:321
+msgid "Pattern preview"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:338
+msgid "No preview is available for this pattern."
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:351
+msgid "Loading preview…"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:112
+msgid "All"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:113
+msgid "Free"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:125
+msgid "Filter by tier"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:148
+#: app/ready-patterns/Sidebar.jsx:155
+msgid "Search patterns"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:162
+msgid "Layout Type"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:163
+msgid "Filter by layout"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:170
+msgid "Category Type"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:171
+msgid "Filter by category"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:18
+#: app/ready-patterns/Toolbar.jsx:56
+msgid "Sort By"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:19
+msgid "Popular"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:20
+msgid "Latest"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:68
+msgid "Sort patterns"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:92
+msgid "Grid density"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:104
+msgid "columns"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:121
+msgid "Show all patterns"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:122
+msgid "Show favourites only"
+msgstr ""
+
+#: app/ready-patterns/Toolbar.jsx:135
+msgid "Refresh the pattern library"
+msgstr ""
+
+#: app/ready-patterns/usePatternLibrary.js:152
+msgid "The pattern library could not be loaded."
+msgstr ""
+
+#: app/ready-patterns/usePatternLibrary.js:239
+msgid "That pattern is empty."
+msgstr ""
+
+#: app/ready-patterns/usePatternLibrary.js:245
+msgid "That pattern contained no blocks."
+msgstr ""

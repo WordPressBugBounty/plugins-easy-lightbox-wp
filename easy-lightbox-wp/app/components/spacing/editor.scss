@@ -1,0 +1,191 @@
+/*
+ * Spacing — stacked per-side ranger rows (slider + step-presets toggle) with a
+ * link / unlink all-sides button, unit switcher, and reset in the header, plus
+ * the labelled (numeric-input) mode used by Box Shadow. Reuses the shared
+ * `.sp-shaped-gallery-range-control` chrome (accent track, axis + preset row layout) from
+ * shared.scss; this file adds only the spacing-specific bits. Editor-only,
+ * `sp-shaped-gallery-`-prefixed.
+ */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-accent: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-accent-tint: $sp-shaped-gallery-brand-tint;
+$sp-shaped-gallery-muted: #8c8f94;
+$sp-shaped-gallery-border: #ddd;
+
+.sp-shaped-gallery-spacing {
+	&__rows {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	/* Tighten the shared ranger row gap for the compact side glyph. */
+	.sp-shaped-gallery-range-control__row {
+		gap: 10px;
+	}
+
+	/*
+	 * Row indicator glyph — the side / corner-radius SVG is self-framing (it
+	 * draws its own square or corner brackets), so this is just a fixed-size
+	 * centering box with no CSS border. It marks the side, it is not interactive.
+	 */
+	&__axis {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+
+		svg {
+			width: 18px;
+			height: 18px;
+		}
+	}
+
+	/*
+	 * Link / unlink all-sides chip — an interactive header control, so it is
+	 * framed like the sibling responsive / unit chips (bordered box). Accent
+	 * tint marks the linked (bound) state.
+	 */
+	&__link.components-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 20px;
+		width: 20px;
+		height: 20px;
+		padding: 0;
+		background: none;
+		border: 0;
+
+		svg {
+			display: block;
+			width: 20px;
+			height: 20px;
+
+			rect {
+				stroke: $sp-shaped-gallery-muted;
+				fill: none;
+				transition: stroke 0.12s ease, fill 0.12s ease;
+			}
+
+			path {
+				fill: #1e1e1e;
+				transition: fill 0.12s ease;
+			}
+		}
+
+		&::after {
+			border: 0;
+		}
+
+		&:hover:not( :disabled ) {
+			background: none;
+			border: 0;
+
+			svg {
+				rect {
+					stroke: $sp-shaped-gallery-accent;
+					fill: $sp-shaped-gallery-accent-tint;
+				}
+				path {
+					fill: $sp-shaped-gallery-accent;
+				}
+			}
+		}
+
+		&:focus:not( :disabled ) {
+			box-shadow: none;
+			outline: none;
+		}
+
+		&.is-active {
+			background: none;
+			border: 0;
+
+			svg {
+				rect {
+					stroke: $sp-shaped-gallery-accent;
+					fill: $sp-shaped-gallery-accent-tint;
+				}
+				path {
+					fill: $sp-shaped-gallery-accent;
+				}
+			}
+		}
+	}
+
+	/*
+	 * Labelled mode — four plain numeric inputs under text labels (Box Shadow's
+	 * X / Y / Blur / Spread). Not spatial sides, so no slider / glyph / link.
+	 *
+	 * Geometry is Figma node 7:32565: a 32px joined field row (one shared
+	 * hairline between cells, the outer corners rounded 2px) with the 11px/16px
+	 * caption 8px below it. `flex: 1` on the cells rather than the design's fixed
+	 * 62px, because the inspector sidebar is not a fixed 280px in every host.
+	 */
+	&__fields {
+		display: flex;
+		text-align: center;
+
+		label {
+			display: inline-block;
+			margin-top: 8px;
+			font-size: 11px;
+			line-height: 16px;
+			color: $sp-shaped-gallery-muted;
+		}
+
+		input {
+			width: 100%;
+			height: 32px;
+			min-height: 32px;
+			padding: 0;
+			font-size: 13px;
+			line-height: 20px;
+			text-align: center;
+			/*
+			 * The whole shorthand, not `border-color` alone: wp-admin's forms.css
+			 * is what supplies these inputs their 1px frame, and outside the
+			 * dashboard (the headless block editor, a page builder's own panel)
+			 * that stylesheet is not guaranteed to be on the page — leaving the
+			 * cells with the browser's default inset border and only the colour
+			 * overridden.
+			 */
+			border: 1px solid $sp-shaped-gallery-border;
+			border-right: 0;
+			border-radius: 0;
+
+			&:focus:not( :disabled ) {
+				border-color: $sp-shaped-gallery-border;
+				box-shadow: none;
+				outline: none;
+			}
+		}
+	}
+
+	&__field {
+		flex: 1;
+		min-width: 0;
+	}
+
+	/*
+	 * SIDES order is top → right → bottom → left, so `top` is the first cell and
+	 * `left` the last: the outer radii and the closing hairline hang off those
+	 * two, not off `:first-child` / `:last-child`, which would silently move if
+	 * the order ever changed.
+	 */
+	&__field--top input {
+		border-top-left-radius: 2px;
+		border-bottom-left-radius: 2px;
+	}
+
+	&__field--left input {
+		border-right: 1px solid $sp-shaped-gallery-border;
+		border-top-right-radius: 2px;
+		border-bottom-right-radius: 2px;
+	}
+}

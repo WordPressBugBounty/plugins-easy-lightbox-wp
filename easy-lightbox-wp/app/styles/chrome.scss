@@ -1,0 +1,1654 @@
+/**
+ * Shared editor chrome: layout picker, card mosaics, media modal, source sidebar
+ * and buttons. Imported by BOTH the block editor bundle and the standalone admin
+ * "Add New Gallery" bundle so the two contexts look identical.
+ */
+
+@import "brand";
+
+/* ---------- Design tokens (from the Figma variable library) ----------
+ * Primary/500 = accent for active/selected; Primary/50 = active row tint;
+ * Gutenberg Gray 900 / Blue / Blueberry per the design system.
+ */
+$sp-shaped-gallery-primary: $sp-shaped-gallery-brand;
+$sp-shaped-gallery-primary-50: $sp-shaped-gallery-brand-tint;
+$sp-shaped-gallery-black: #1e1e1e;
+$sp-shaped-gallery-text: #111827;
+$sp-shaped-gallery-blue: #007cba;
+$sp-shaped-gallery-blueberry: #3858e9;
+$sp-shaped-gallery-gray-800: #2f2f2f;
+$sp-shaped-gallery-gray-700: #757575;
+$sp-shaped-gallery-gray-600: #6b7280;
+$sp-shaped-gallery-gray-500: #949494;
+$sp-shaped-gallery-gray-400: #ccc;
+/* Gutenberg greys the picker chrome is drawn from: bar fill, hairline, card edge. */
+$sp-shaped-gallery-gray-300: #ddd;
+$sp-shaped-gallery-gray-200: #e0e0e0;
+$sp-shaped-gallery-gray-100: #f0f0f0;
+/* Change Layout popover's selected-state accent (Figma node 3011:54473, var
+ * "primary/base"). This used to be the one place that deliberately did NOT take
+ * the app-wide accent — it kept the design's blue while the brand was pink. The
+ * brand IS that blue now, so the two have converged and the alias just records
+ * that the popover was drawn from the same token. */
+$sp-shaped-gallery-layout-popover-accent: $sp-shaped-gallery-brand;
+/* Change Layout popover's label footer (Figma node 3003:46028) — the band
+ * under each swatch, distinct from the app-wide preset tint below. */
+$sp-shaped-gallery-layout-popover-footer-bg: #f9f9f9;
+/* Preset/Background — the board behind every layout thumbnail (Figma node
+ * 236:18966). Mirrored for the inline SVG by `PRESET_BG` in app/icons/index.js,
+ * which paints the same board inside the artwork; change the two together. */
+$sp-shaped-gallery-preset-bg: #f9fbfe;
+/* Neutral badge/border for a selected-but-inactive media tile (WP grid style). */
+$sp-shaped-gallery-check-grey: #b4b4b4;
+$sp-shaped-gallery-border: #e5e7eb;
+$sp-shaped-gallery-surface: #f9fafb;
+$sp-shaped-gallery-white: #fff;
+
+/* ---------- Buttons ---------- */
+.sp-shaped-gallery-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 9px 18px;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 1;
+	border: 1px solid #dcdcde;
+	border-radius: 6px;
+	background: $sp-shaped-gallery-white;
+	color: $sp-shaped-gallery-black;
+	cursor: pointer;
+
+	/*
+	 * White label needs the 4.5:1 AA floor: Primary/500 is only 3.58:1, so rest is
+	 * Primary/600 (5.03:1) and hover Primary/700 (6.95:1) — the same pair every
+	 * other accent button in the plugin uses (mirrors the Edit Gallery CTA).
+	 */
+	&--primary {
+		background: $sp-shaped-gallery-brand-strong;
+		border-color: $sp-shaped-gallery-primary;
+		color: $sp-shaped-gallery-white;
+
+		&:hover {
+			background: $sp-shaped-gallery-brand-deep;
+		}
+	}
+	&--secondary {
+		background: $sp-shaped-gallery-black;
+		border-color: $sp-shaped-gallery-black;
+		color: $sp-shaped-gallery-white;
+	}
+	&:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+}
+
+/* ---------- Layout picker ----------
+ * Two stacked bands, each drawing its own hairline and fill: a grey header bar
+ * carrying the lockup and Apply, over a white card body. Sizes, weights and
+ * line-heights are the design's; the FAMILY is not — the picker renders inside
+ * wp-admin, so it inherits the admin font rather than pulling Roboto in.
+ */
+.sp-shaped-gallery-picker {
+	/*
+	 * The design frame stretches to its container, so the width is ours to cap,
+	 * and the cap is DERIVED from the card rather than picked: five 146px cards
+	 * + four 19.5px gutters (808) + the grid's own 2x16px padding and 2x1px
+	 * border (34) is 842, rounded up to 844 so the fifth track survives
+	 * sub-pixel rounding. At that width a full row lands flush against both
+	 * edges instead of ending on a dead strip. `width: 100%` is what makes it a
+	 * cap rather than a size — the picker also renders inside the editor
+	 * canvas, which is routinely narrower than any of this.
+	 */
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 844px;
+	margin: 0 auto;
+	background: $sp-shaped-gallery-white;
+	border-radius: 8px;
+	overflow: hidden;
+
+	&__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 16px;
+		background: #f9fbfe;
+		border: 1px solid $sp-shaped-gallery-gray-300;
+		border-radius: 8px 8px 0 0;
+	}
+	&__title {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	&__logo {
+		display: block;
+		flex: none;
+		width: 40px;
+		height: 40px;
+
+		svg {
+			display: block;
+		}
+	}
+	&__titles {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+
+		h2 {
+			margin: 0;
+			font-size: 14px;
+			font-weight: 500;
+			line-height: 16px;
+			color: #000;
+		}
+		p {
+			margin: 0 !important;
+			font-size: 12px;
+			line-height: 16px;
+			color: $sp-shaped-gallery-gray-700;
+		}
+	}
+	/* The design's Apply button is taller and rounder than the shared button; it
+	 * sits in the header now, so it is trimmed to clear the 40px lockup rather
+	 * than filling a footer bar of its own. */
+	&__apply {
+		flex: none;
+		padding: 9px 18px;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 16px;
+		border-radius: 5px;
+	}
+
+	/*
+	 * A fluid track grid, not fixed-width cards — but `auto-FILL`, never
+	 * `auto-fit`. The difference is the whole behaviour here: `auto-fit`
+	 * COLLAPSES the tracks no card occupies and hands their width to the ones
+	 * that are left, so this build's three layouts each ballooned past 280px on
+	 * a wide screen. `auto-fill` keeps the empty tracks, so a card is the same
+	 * size whether the registry holds three layouts or seven.
+	 *
+	 * With the 844px cap above, the track resolves to the design's 146px and a
+	 * full row runs edge to edge — no dead strip on the right. Narrower than
+	 * the cap, the column count drops and the `1fr` ceiling lets the remaining
+	 * cards absorb the slack, so the row still fills. The floor stops a
+	 * container narrower than one card overflowing.
+	 */
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(146px, 100%), 1fr));
+		align-items: center;
+		gap: 19.5px;
+		box-sizing: border-box;
+		padding: 16px;
+		/* Closing band now the footer is gone: the head draws this edge's top. */
+		border: 1px solid $sp-shaped-gallery-gray-300;
+		border-top: 0;
+		border-radius: 0 0 8px 8px;
+	}
+}
+
+/* ---------- Layout card ---------- */
+.sp-shaped-gallery-card {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	box-sizing: border-box;
+	/* The track decides the width now (see the picker grid); the card fills it. */
+	width: 100%;
+	min-width: 0;
+	padding: 0 0 12px;
+	overflow: hidden;
+	background: $sp-shaped-gallery-white;
+	border: 1px solid $sp-shaped-gallery-gray-200;
+	border-radius: 8px;
+	cursor: pointer;
+	text-align: left;
+
+	&.is-selected {
+		border-color: $sp-shaped-gallery-primary;
+	}
+
+	&__preview {
+		position: relative;
+		display: block;
+		box-sizing: border-box;
+		width: 100%;
+		/*
+		 * The thumbnail's own 158x100 viewBox, held as a ratio rather than the
+		 * 100px it used to be fixed at: the box grows with the track, and a
+		 * fixed height would letterbox the artwork inside a widening card.
+		 */
+		aspect-ratio: 158 / 100;
+		overflow: hidden;
+		background: $sp-shaped-gallery-preset-bg;
+		border-radius: 8px;
+	}
+	&__label {
+		padding: 0 10px;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 16px;
+		color: #000;
+	}
+	&__check {
+		position: absolute;
+		top: 5.5px;
+		right: 8.5px;
+		display: flex;
+		width: 14px;
+		height: 14px;
+		color: $sp-shaped-gallery-primary;
+	}
+
+	/* Layout thumbnail (self-contained SVG icon filling the preview box) */
+	&__figure {
+		display: block;
+		width: 100%;
+		height: 100%;
+
+		svg {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	/* Compact variant — `ChangeLayoutPopover`'s quick-switch grid (Figma node
+	 * 3003:46028). Unlike the full-size card above, the border wraps the WHOLE
+	 * card — swatch and label share one 2px-radius box with a light-grey
+	 * hairline — and the label sits in its own footer band, not a bare caption. */
+	&.is-compact {
+		width: 96px;
+		gap: 0;
+		padding: 0;
+		background: $sp-shaped-gallery-white;
+		border: 1px solid $sp-shaped-gallery-gray-100;
+		border-radius: 2px;
+
+		&.is-selected,
+		&:hover {
+			border-color: $sp-shaped-gallery-layout-popover-accent;
+			box-shadow: none;
+		}
+
+		.sp-shaped-gallery-card__preview {
+			/* The compact swatch is the design's 96x74, not the artwork's ratio. */
+			aspect-ratio: auto;
+			height: 74px;
+			background: transparent;
+			border: 0;
+			border-radius: 0;
+		}
+
+		/* The icon SVG paints its own full-bleed background rect (shared with
+		 * the full-size card, which wants the preset board tint) — override
+		 * it here so the compact swatch shows white, matching the card body
+		 * it now sits flush inside instead of hiding it underneath. */
+		.sp-shaped-gallery-layout-icon-bg {
+			fill: $sp-shaped-gallery-white;
+		}
+
+		/* Fixed line-height + no-wrap: every label is one line at the same
+		 * height regardless of word count, so a longer name (see the
+		 * shortened "Auto. Justified" in the registry) can't grow its card
+		 * a row taller than its neighbours. */
+		.sp-shaped-gallery-card__label {
+			padding: 5px 8px;
+			background: $sp-shaped-gallery-layout-popover-footer-bg;
+			font-size: 11px;
+			font-weight: 500;
+			line-height: 12px;
+			white-space: nowrap;
+			text-align: center;
+		}
+	}
+}
+
+/* ---------- Change Layout popover (Figma node 3011:54473) ----------
+ * Anchored panel opened from the block toolbar or the Layout Settings source
+ * row (ChangeLayoutPopover). Core `Popover` already frames `.components-
+ * popover__content` with its own border-ring box-shadow and 4px radius
+ * (see SpPopover, which draws only an extra drop-shadow on top for the same
+ * reason) — adding a border + a DIFFERENT radius here on top of that drew a
+ * visible second, mismatched frame around the panel. */
+.sp-shaped-gallery-layout-popover {
+	&__content {
+		box-sizing: border-box;
+		padding: 20px;
+		background: $sp-shaped-gallery-white;
+		box-shadow: 4px 4px 12px 2px rgba(0, 0, 0, 0.1);
+	}
+	/* Fixed 3-column grid — explicit rather than flex-wrap's implicit "however
+	 * many fit", so the panel stays 3 across regardless of how many layouts
+	 * `LAYOUTS` ends up holding. */
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(3, 96px);
+		gap: 12px;
+	}
+}
+
+/* ---------- Media modal ---------- */
+.sp-shaped-gallery-media-modal__overlay {
+	.components-modal__frame {
+		width: min(1536px, 96vw);
+		height: min(1082px, 94vh);
+		max-width: 96vw;
+		max-height: 94vh;
+		border-radius: 6px;
+	}
+	.components-modal__content {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+		overflow: hidden;
+		border-radius: 6px;
+	}
+	/*
+	 * WP wraps our children in this extra div. Left as a plain block it breaks the
+	 * flex height chain: the layout + footer size to their natural height, so a tall
+	 * details panel pushes the footer past the clipped content edge. Make it the
+	 * flex column that fills the content so `min-height: 0` propagates — the details
+	 * panel then scrolls internally and the footer stays pinned + fully visible.
+	 */
+	.components-modal__children-container {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-height: 0;
+		height: 100%;
+		overflow: hidden;
+	}
+}
+
+.sp-shaped-gallery-media-modal {
+	/* Row: sidebar | content-wrap. The footer is a sibling below (full width). */
+	&__layout {
+		display: flex;
+		flex: 1 1 auto;
+		min-height: 0;
+	}
+
+	/* Sidebar (full height, own scroll) */
+	&__sidebar {
+		flex: 0 0 250px;
+		overflow-y: auto;
+		padding: 12px 0;
+		background: $sp-shaped-gallery-surface;
+		border-right: 1px solid $sp-shaped-gallery-border;
+	}
+
+	/* Everything right of the sidebar: shared header + tabs, then the split. */
+	&__content-wrap {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 0;
+	}
+
+	/* Shared header band (title + close), full content width. */
+	&__topbar {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 24px 24px 20px;
+	}
+	&__heading {
+		margin: 0;
+		font-size: 32px;
+		font-weight: 600;
+		line-height: 1.1;
+		color: $sp-shaped-gallery-text;
+	}
+	&__close {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		padding: 4px;
+		border: 0;
+		border-radius: 4px;
+		background: transparent;
+		color: $sp-shaped-gallery-black;
+		cursor: pointer;
+		transition: background 0.15s ease;
+
+		&:hover {
+			background: rgba(0, 0, 0, 0.05);
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: -2px;
+		}
+	}
+
+	/* Tabs (shared, below the header). */
+	&__tabs {
+		display: flex;
+		flex: none;
+		border-bottom: 1px solid $sp-shaped-gallery-border;
+	}
+
+	/* Split below the tabs: media workspace (left) + details panel (right). */
+	&__split {
+		display: flex;
+		flex: 1 1 auto;
+		min-height: 0;
+	}
+
+	/* Main column (scrolls independently). */
+	&__main {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		min-width: 0;
+		min-height: 0;
+		overflow-y: auto;
+	}
+	&__workspace {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 24px;
+		padding: 24px;
+	}
+
+	/* Filter bar */
+	&__filterbar {
+		display: flex;
+		align-items: flex-end;
+		gap: 24px;
+		margin: 0;
+		flex-wrap: wrap;
+	}
+
+	/* Details panel (scrolls independently, aligned with the workspace top). */
+	&__details {
+		display: flex;
+		flex: 0 0 280px;
+		flex-direction: column;
+		gap: 16px;
+		min-height: 0;
+		overflow-y: auto;
+		padding: 16px;
+		background: $sp-shaped-gallery-surface;
+		border-left: 1px solid $sp-shaped-gallery-border;
+	}
+
+	/* Footer — pinned to the bottom, full modal width, never scrolls. */
+	&__footer {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 20px 32px;
+		border-top: 1px solid $sp-shaped-gallery-border;
+		background: $sp-shaped-gallery-white;
+
+		.sp-shaped-gallery-btn {
+			padding: 13px 24px;
+			font-size: 15px;
+			border-radius: 6px;
+		}
+	}
+	&__count {
+		font-size: 14px;
+		color: $sp-shaped-gallery-gray-700;
+	}
+	&__actions {
+		display: flex;
+		gap: 12px;
+	}
+
+	/*
+	 * Filter bar controls — Figma "filter-bar" (node 1272:59816).
+	 *
+	 * The select is a WP InputControl, which draws NOTHING on the `<select>`
+	 * itself: its border lives on an absolutely-positioned backdrop, and its own
+	 * emotion rules are written `&&&{…}` — three classes' worth of specificity.
+	 * That is why the border below moves to the backdrop and why the select's own
+	 * box is addressed through `__container`: at one class less, the declarations
+	 * here lost to emotion and silently did nothing, which is how this control
+	 * kept WP's default grey 1px edge while the rule below claimed Gray 800.
+	 *
+	 * The pair has to read as ONE control drawn twice, but they are two different
+	 * components with two different roots — the select's edge lives on that
+	 * backdrop, the search field carries its own border — so every shared
+	 * measurement is a variable here rather than a repeated literal. Written
+	 * twice, they drift, and the two halves of one bar looking subtly unlike each
+	 * other is exactly what this rule exists to stop.
+	 */
+	.sp-shaped-gallery-filter {
+		/*
+		 * 40px / 12px is WP's own `is-next-40px-default-size` — the platform's
+		 * large control, which is what these two are. The bar was drawn at 48px
+		 * with a 19.5px value, taller than the modal's own footer button (43px)
+		 * and set larger than anything else on the screen, so the filters read as
+		 * the loudest thing on a panel whose subject is the grid underneath them.
+		 */
+		$field-height: 40px;
+		$field-padding: 12px;
+		$field-font: 15px;
+		/*
+		 * Gray 500 is both WP's default input edge and the lightest grey that
+		 * still clears §14's 3:1 for a control boundary (3.03:1 on white). The
+		 * previous Gray 800 is #2f2f2f — not a grey at that size but a black
+		 * outline, which is the other half of why the bar shouted.
+		 */
+		$field-border: $sp-shaped-gallery-gray-500;
+
+		&--date {
+			width: 240px;
+		}
+		&--search {
+			width: 360px;
+			max-width: 100%;
+		}
+		/*
+		 * Both field labels, on the source label's 15px/500 (§18 — the sidebar and
+		 * the filter bar are the same modal, so they name their controls the same
+		 * way). Grey 600 keeps the label a step behind its value; at 4.83:1 that
+		 * is still §14 text.
+		 *
+		 * SelectControl does not render a BaseControl label at all — it hands
+		 * `label` to InputBase, which draws its own `__label`: an 11px uppercase
+		 * Text in the default foreground, styled `&&&`, i.e. three classes deep.
+		 * So "Filter by date" stayed dark, small and uppercase while "Search
+		 * media" followed this rule. The doubled class is what outranks emotion.
+		 */
+		.components-base-control__label,
+		.components-input-control__label.components-input-control__label {
+			color: $sp-shaped-gallery-gray-600;
+			font-size: 15px;
+			font-weight: 500;
+			line-height: normal;
+			text-transform: none;
+		}
+
+		/*
+		 * …and the same 6px under each. That is a margin below BaseControl's
+		 * label, but on the select it is the InputBase root's flex gap — the
+		 * label and the field are siblings in a column there, not a label with
+		 * something under it.
+		 */
+		.components-base-control__label {
+			margin-bottom: 6px;
+		}
+		.components-select-control .components-base-control__field > * {
+			gap: 6px;
+		}
+
+		.components-input-control__container {
+			border-radius: 6px;
+
+			/* The select's visible edge. */
+			.components-input-control__backdrop {
+				border-width: 1px;
+				border-color: $field-border;
+			}
+
+			.components-select-control__input {
+				height: $field-height;
+				/* The gutter + the 18px chevron + 6px of air, so a long month never
+				 * runs under the glyph. */
+				padding: 0 ($field-padding + 24px) 0 $field-padding;
+				font-size: $field-font;
+				color: $sp-shaped-gallery-text;
+			}
+		}
+
+		/*
+		 * The chevron: core wraps it in an absolutely-positioned div pinned to the
+		 * container's right edge, whose padding is the gutter, and then optically
+		 * nudges the glyph 4px further right again. It sits on the same gutter as
+		 * the value, so the nudge is taken back out.
+		 */
+		.components-input-control__suffix {
+			color: $sp-shaped-gallery-gray-700;
+
+			> * {
+				padding-inline-end: $field-padding;
+			}
+			> * > * {
+				margin-inline-end: 0;
+			}
+			svg {
+				width: 18px;
+				height: 18px;
+			}
+		}
+
+		/* The search field is a plain input and carries its own border. */
+		.components-text-control__input {
+			height: $field-height;
+			padding: 0 $field-padding;
+			font-size: $field-font;
+			color: $sp-shaped-gallery-text;
+			border: 1px solid $field-border;
+			border-radius: 6px;
+			box-shadow: none;
+		}
+
+		/*
+		 * Focus, restated for both.
+		 *
+		 * The resting edges above outrank core's focus styling — this rule is
+		 * three classes deep and core's `:focus` is one — so the search field had
+		 * no focus indicator at all (`box-shadow: none` also swallowed the ring)
+		 * and the select kept core's glow but not its border change. Same accent
+		 * ring the Image Link field draws, so every field in this modal focuses
+		 * alike (§14).
+		 */
+		.components-input-control__container:focus-within .components-input-control__backdrop,
+		.components-text-control__input:focus {
+			outline: none;
+			border-color: $sp-shaped-gallery-primary;
+			box-shadow: 0 0 0 1px $sp-shaped-gallery-primary;
+		}
+	}
+}
+
+/*
+ * Source sidebar items — Figma "sidebar" (node 1272:59731).
+ *
+ * The design's frame is scaled by ~1.0013, so its 30.039 / 12.016 measurements
+ * are 30 and 12; they are written here as the round numbers they are.
+ */
+.sp-shaped-gallery-source {
+	&__group {
+		/*
+		 * Every group is closed by a hairline, the last one included — the design
+		 * ends the source list with the same rule it uses between groups. Drawn as
+		 * a pseudo-element rather than a border so the 16px of air above and below
+		 * it belongs to the rule instead of to the neighbouring rows, and inset
+		 * 2px like the design's divider component.
+		 */
+		&::after {
+			content: "";
+			display: block;
+			height: 1px;
+			margin: 16px 2px;
+			background: $sp-shaped-gallery-gray-400;
+		}
+	}
+	&__heading {
+		margin: 0;
+		padding: 12px 30px;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: normal;
+		text-transform: uppercase;
+		color: $sp-shaped-gallery-gray-600;
+	}
+	&__list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	&__item {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		width: 100%;
+		/*
+		 * 26px + the 4px border is the design's 30px, and it is on the border
+		 * rather than the padding so an active row's accent bar does not shunt its
+		 * label and icon 4px to the right of every inactive one.
+		 */
+		min-height: 48px;
+		padding: 12px 30px 12px 26px;
+		border: 0;
+		border-left: 4px solid transparent;
+		/* Same as the horizontal tabs: the accent bar is this border, so the row
+		 * stays square or the bar's ends round off. */
+		border-radius: 0;
+		background: transparent;
+		color: $sp-shaped-gallery-black;
+		line-height: normal;
+		text-align: left;
+		cursor: pointer;
+		transition:
+			background 0.15s ease,
+			color 0.15s ease;
+
+		/* The glyph reads a step quieter than its label until the row is active. */
+		.sp-shaped-gallery-source__icon {
+			color: $sp-shaped-gallery-gray-700;
+		}
+
+		&:hover {
+			background: rgba(0, 0, 0, 0.03);
+		}
+		&.is-active {
+			background: $sp-shaped-gallery-primary-50;
+			border-left-color: $sp-shaped-gallery-primary;
+			color: $sp-shaped-gallery-primary;
+
+			.sp-shaped-gallery-source__icon {
+				color: inherit;
+			}
+			/* NO `font-weight` for the label here, deliberately: every row's label
+			 * is 500, active or not. The accent colour and the left bar already
+			 * say which row is selected, so weight is a third signal the design
+			 * does not ask for. */
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: -2px;
+		}
+	}
+	&__icon {
+		display: inline-flex;
+		flex: none;
+		width: 20px;
+		height: 20px;
+
+		/* The glyph fills the box the wrapper sets, so this is the ONE place the
+		 * icon's rendered size lives — `Icon size=` in MediaSidebar only sizes the
+		 * pre-CSS paint and is kept in step with it. */
+		svg {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	/* The row's only text, so the type is declared here rather than on `__item`
+	 * and inherited. This is the ONE weight the label ever has: `.is-active`
+	 * above deliberately leaves it alone. */
+	&__label {
+		flex: 1;
+		font-size: 14px;
+		font-weight: 500;
+	}
+}
+
+/* Tabs */
+.sp-shaped-gallery-tab {
+	appearance: none;
+	margin-bottom: -1px;
+	padding: 16px 24px;
+	border: 0;
+	border-bottom: 3px solid transparent;
+	/* The accent bar IS this bottom border, so the button has to stay square —
+	 * wp-admin's own `button` rule rounds every corner by 3px and rounded the
+	 * bar's ends with it. */
+	border-radius: 0;
+	background: transparent;
+	color: $sp-shaped-gallery-gray-700;
+	font-size: 16px;
+	font-weight: 500;
+	cursor: pointer;
+	transition:
+		color 0.15s ease,
+		border-color 0.15s ease;
+
+	&:hover {
+		color: $sp-shaped-gallery-black;
+	}
+	&.is-active {
+		color: $sp-shaped-gallery-black;
+		border-bottom-color: $sp-shaped-gallery-primary;
+	}
+	/* No box around the tab: the modal moves focus into the tablist on open,
+	 * which drew a full blue frame on the active tab. wp-admin's own
+	 * `button:focus` box-shadow is cleared too. Keyboard focus is still shown,
+	 * as a tint behind the label (§14), so the underline stays the only edge. */
+	&:focus,
+	&:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+	&:focus-visible {
+		background: rgba(0, 0, 0, 0.05);
+	}
+}
+
+/* Browsing grid + cards */
+.sp-shaped-gallery-mediagrid2 {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 120px);
+	justify-content: start;
+	column-gap: 16px;
+	row-gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	/* Keep Shift-click range selection from highlighting tile text. */
+	user-select: none;
+}
+
+.sp-shaped-gallery-mediacard {
+	position: relative;
+	box-sizing: border-box;
+	aspect-ratio: 1 / 1;
+	/* 1px at rest, 2px once the tile is selected. `border-box` is what keeps the
+	 * extra pixel off the layout: the tile's outer size is the grid track either
+	 * way, so selecting/deselecting never shifts its neighbours. */
+	border: 1px solid transparent;
+	border-radius: 3px;
+	background: #d9d9d9;
+	cursor: pointer;
+	transition:
+		border-color 0.15s ease,
+		box-shadow 0.15s ease;
+
+	&__image {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+		border-radius: 3px;
+
+		img,
+		video {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			background: #1e1e1e;
+		}
+	}
+	&__name {
+		position: absolute;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		padding: 3px 6px;
+		background: rgba(255, 255, 255, 0.9);
+		color: $sp-shaped-gallery-black;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 1.2;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		border-radius: 0 0 3px 3px;
+	}
+
+	/*
+	 * Selection badge / deselect control.
+	 */
+	&__check {
+		position: absolute;
+		top: -10px;
+		right: -10px;
+		z-index: 2;
+		display: flex;
+		align-items: center;
+		box-sizing: border-box;
+		padding: 2px;
+		background: $sp-shaped-gallery-white;
+		border: 1px solid $sp-shaped-gallery-primary;
+		border-radius: 3px;
+		cursor: pointer;
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 1px;
+		}
+	}
+	&__check-on,
+	&__check-off {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		border-radius: 2px;
+		background: $sp-shaped-gallery-primary;
+		color: $sp-shaped-gallery-white;
+	}
+	/* The tick is a stroked polyline; the minus it swaps to is a filled bar. */
+	&__check-on svg {
+		fill: none;
+		stroke: currentcolor;
+	}
+	&__check-off {
+		display: none;
+
+		svg {
+			fill: currentcolor;
+		}
+	}
+	&__check:hover &__check-on {
+		display: none;
+	}
+	&__check:hover &__check-off {
+		display: flex;
+	}
+
+	&__video {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 9px 0 9px 15px;
+		border-color: transparent transparent transparent #fff;
+		filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+	}
+
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-blue;
+		outline-offset: 2px;
+	}
+
+	/* Selected but not the active/details tile → neutral grey (matches the badge). */
+	&.is-selected {
+		border-width: 2px;
+		border-color: $sp-shaped-gallery-check-grey;
+	}
+	/* The active (details) tile that is also selected → brand-colored border.
+	 * Requires BOTH classes, so deselecting via the badge drops it. The badge
+	 * itself no longer changes with this state: the design draws one badge. */
+	&.is-selected.is-active {
+		border-color: $sp-shaped-gallery-primary;
+	}
+}
+
+/* Browser states */
+.sp-shaped-gallery-browser {
+	&__loading {
+		display: flex;
+		justify-content: center;
+		padding: 32px 0;
+	}
+	&__empty,
+	&__error {
+		padding: 32px 0;
+		color: $sp-shaped-gallery-gray-700;
+		text-align: center;
+	}
+	&__error {
+		color: #cc1818;
+	}
+	&__more {
+		display: flex;
+		justify-content: center;
+		padding: 24px 0 4px;
+	}
+}
+
+/* Upload pane */
+.sp-shaped-gallery-media-modal__upload {
+	padding: 8px 0;
+}
+.sp-shaped-gallery-upload {
+	&__dropzone {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		width: 100%;
+		min-height: 340px;
+		border: 2px dashed $sp-shaped-gallery-gray-400;
+		border-radius: 8px;
+		background: $sp-shaped-gallery-surface;
+		color: $sp-shaped-gallery-gray-700;
+		cursor: pointer;
+		transition:
+			border-color 0.15s ease,
+			background 0.15s ease;
+
+		&:hover {
+			border-color: $sp-shaped-gallery-primary;
+			background: $sp-shaped-gallery-primary-50;
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 2px;
+		}
+	}
+	&__icon {
+		color: $sp-shaped-gallery-gray-500;
+	}
+	&__title {
+		font-size: 16px;
+		font-weight: 600;
+		color: $sp-shaped-gallery-black;
+	}
+	&__hint {
+		font-size: 13px;
+	}
+	&__input {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+	&__queue {
+		margin: 12px 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	&__queue-item {
+		padding: 6px 0;
+		font-size: 13px;
+		color: $sp-shaped-gallery-gray-700;
+	}
+	&__error {
+		margin: 12px 0 0;
+		font-size: 13px;
+		color: #cc1818;
+	}
+}
+
+/* ---------- External images pane ---------- */
+.sp-shaped-gallery-external__header {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+}
+
+.sp-shaped-gallery-external {
+	&__icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 48px;
+		height: 48px;
+		border-radius: 10px;
+		background: $sp-shaped-gallery-primary-50;
+		color: $sp-shaped-gallery-primary;
+	}
+	&__title {
+		margin: 0;
+		font-size: 20px;
+		font-weight: 600;
+		line-height: 1.2;
+		color: $sp-shaped-gallery-text;
+	}
+	&__desc {
+		margin: 4px 0 0;
+		font-size: 14px;
+		color: $sp-shaped-gallery-gray-700;
+	}
+
+	/* Staged preview grid (below the link field) */
+	&__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+		gap: 16px;
+		margin: 24px 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	&__card {
+		position: relative;
+		aspect-ratio: 4 / 3;
+		border-radius: 6px;
+		overflow: hidden;
+		background: $sp-shaped-gallery-surface;
+		border: 1px solid $sp-shaped-gallery-border;
+
+		img,
+		video {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		&.is-video {
+			background: #1e1e1e;
+		}
+	}
+	&__play {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 10px 0 10px 16px;
+		border-color: transparent transparent transparent $sp-shaped-gallery-white;
+		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+		pointer-events: none;
+	}
+	&__remove {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 22px;
+		height: 22px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: #e02d2d;
+		color: $sp-shaped-gallery-white;
+		cursor: pointer;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+		/* @wordpress/icons ship no `fill`, so the glyph renders black unless
+		 * it is told to follow the button's white `color`. */
+		svg {
+			width: 20px;
+			height: 20px;
+			fill: currentcolor;
+		}
+
+		&:hover {
+			background: #c41f1f;
+		}
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: 2px;
+		}
+	}
+
+	/* Image Link field */
+	&__form {
+		max-width: 760px;
+	}
+	&__label {
+		display: block;
+		margin-bottom: 6px;
+		font-size: 14px;
+		font-weight: 600;
+		color: $sp-shaped-gallery-text;
+	}
+	&__row {
+		display: flex;
+		align-items: stretch;
+		gap: 12px;
+	}
+	&__input {
+		flex: 1 1 auto;
+		min-width: 0;
+		min-height: 44px;
+		padding: 0 14px;
+		font-size: 14px;
+		border: 1px solid #dcdcde;
+		border-radius: 6px;
+		background: $sp-shaped-gallery-white;
+		color: $sp-shaped-gallery-text;
+
+		&:focus {
+			outline: none;
+			border-color: $sp-shaped-gallery-primary;
+			box-shadow: 0 0 0 1px $sp-shaped-gallery-primary;
+		}
+		&[aria-invalid="true"] {
+			border-color: #e02d2d;
+		}
+		&:disabled {
+			background: $sp-shaped-gallery-surface;
+			cursor: not-allowed;
+		}
+	}
+	&__add {
+		flex: none;
+		min-height: 44px;
+		white-space: nowrap;
+	}
+	&__error {
+		margin: 8px 0 0;
+		font-size: 13px;
+		color: #cc1818;
+	}
+}
+
+/* Details panel internals */
+.sp-shaped-gallery-details {
+	&__title {
+		margin: 0;
+		font-size: 13px;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		text-transform: uppercase;
+		color: $sp-shaped-gallery-gray-700;
+	}
+	&__placeholder {
+		margin: 0;
+		color: $sp-shaped-gallery-gray-700;
+		font-size: 13px;
+	}
+	&__preview {
+		position: relative;
+		float: left;
+		max-width: 120px;
+		max-height: 120px;
+		margin-top: 5px;
+		margin-right: 10px;
+		margin-bottom: 5px;
+
+		img,
+		video {
+			display: block;
+			max-width: 120px;
+			max-height: 120px;
+			margin: 0 auto;
+		}
+	}
+	&__meta {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		font-size: 13px;
+		color: #646970;
+
+		p {
+			margin: 0;
+		}
+	}
+	&__filename {
+		font-size: 12px;
+		font-weight: 600;
+		color: $sp-shaped-gallery-black;
+		word-break: break-word;
+	}
+	&__original {
+		a {
+			color: $sp-shaped-gallery-blueberry;
+		}
+	}
+	&__edit-image-btn {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 0;
+		background: none;
+		border: none;
+		color: $sp-shaped-gallery-blueberry;
+		font-size: 13px;
+		text-decoration: underline;
+		cursor: pointer;
+		text-align: left;
+
+		&:hover,
+		&:focus {
+			color: darken($sp-shaped-gallery-blueberry, 15%);
+			outline: none;
+		}
+	}
+	&__delete-btn {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 0;
+		background: none;
+		border: none;
+		color: #b32d2e;
+		font-size: 13px;
+		text-decoration: underline;
+		cursor: pointer;
+		text-align: left;
+
+		&:hover,
+		&:focus {
+			color: #e14d43;
+			outline: none;
+		}
+	}
+	&__actions {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 2px;
+	}
+	&__divider {
+		height: 1px;
+		background: $sp-shaped-gallery-gray-400;
+	}
+	&__hint {
+		margin: 0;
+		padding: 8px;
+		border: 1px solid $sp-shaped-gallery-border;
+		border-radius: 4px;
+		background: $sp-shaped-gallery-white;
+		font-size: 12px;
+		color: $sp-shaped-gallery-gray-700;
+	}
+
+	/* Label-left / control-right field rows (WP media-modal style). */
+	&__fields {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+	&__field {
+		display: grid;
+		grid-template-columns: 70px 1fr;
+		align-items: start;
+		gap: 12px;
+	}
+	&__label {
+		padding-top: 8px;
+		font-size: 13px;
+		line-height: 1.2;
+		color: #646970;
+		text-align: right;
+	}
+	&__control {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		min-width: 0;
+	}
+	&__input {
+		width: 100%;
+		min-height: 32px;
+		margin: 0;
+		padding: 6px 8px;
+		font-size: 13px;
+		color: $sp-shaped-gallery-black;
+		background: $sp-shaped-gallery-white;
+		border: 1px solid $sp-shaped-gallery-gray-800;
+		border-radius: 3px;
+		box-shadow: none;
+
+		&:focus {
+			outline: none;
+			border-color: $sp-shaped-gallery-blue;
+			box-shadow: 0 0 0 1px $sp-shaped-gallery-blue;
+		}
+		&:disabled {
+			background: $sp-shaped-gallery-surface;
+			color: $sp-shaped-gallery-gray-700;
+			cursor: not-allowed;
+		}
+		&--readonly {
+			background: #f6f7f7;
+			border-color: #dcdcde;
+			color: $sp-shaped-gallery-gray-700;
+		}
+	}
+	&__textarea {
+		min-height: 64px;
+		resize: vertical;
+	}
+	&__copy {
+		align-self: flex-start;
+		padding: 6px 12px;
+		font-size: 12px;
+		font-weight: 500;
+		color: $sp-shaped-gallery-blueberry;
+		background: #f6f7f7;
+		border: 1px solid $sp-shaped-gallery-blueberry;
+		border-radius: 3px;
+		cursor: pointer;
+
+		&:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+	}
+}
+
+@media (max-width: 1100px) {
+	.sp-shaped-gallery-media-modal__details {
+		display: none;
+	}
+}
+
+@media (max-width: 782px) {
+	.sp-shaped-gallery-media-modal__sidebar {
+		flex-basis: 200px;
+	}
+	.sp-shaped-gallery-media-modal__heading {
+		font-size: 24px;
+	}
+}
+
+/* ---------- Media grid (selected tiles — drag-reorder, used by Edit Gallery) ---------- */
+.sp-shaped-gallery-mediagrid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 10px;
+
+	&__empty {
+		color: #757575;
+		padding: 24px 0;
+	}
+	&__tile {
+		position: relative;
+		aspect-ratio: 1 / 1;
+		border-radius: 6px;
+		overflow: hidden;
+		cursor: grab;
+		background: #f0f0f1;
+
+		img,
+		video {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+	}
+	&__remove {
+		position: absolute;
+		top: 4px;
+		right: 4px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		border: 0;
+		border-radius: 50%;
+		background: rgba(0, 0, 0, 0.6);
+		color: #fff;
+		cursor: pointer;
+	}
+	&__handle {
+		position: absolute;
+		bottom: 4px;
+		left: 4px;
+		color: #fff;
+		opacity: 0.8;
+	}
+	&__video {
+		position: absolute;
+		inset: 0;
+		margin: auto;
+		width: 0;
+		height: 0;
+		border-style: solid;
+		border-width: 9px 0 9px 15px;
+		border-color: transparent transparent transparent #fff;
+	}
+}
+
+/* ---------- Gallery editor wrapper ---------- */
+.shaped-gallery-block-editor {
+	.sp-shaped-gallery-preview__empty {
+		color: #757575;
+		padding: 24px;
+		text-align: center;
+	}
+}
+
+/* ---------- Block toolbar quick actions (Change Layout / Edit Gallery) ----------
+ * Two native ToolbarButtons in the block toolbar's "other" group (Figma 43-13084).
+ * The design paints the icon in the plugin accent but the label in the editor's
+ * near-black text colour — `color` no longer doubles as the icon's `currentcolor`
+ * source, so the svg gets its own `color` (EditGalleryIcon's paths are drawn with
+ * `fill="currentColor"`, which resolves against the svg's own colour, not a
+ * `fill` property set on the svg element) plus a `fill` fallback for icons that
+ * don't set their own path fill (Change Layout's core `layout` icon).
+ * These render in the toolbar popover (outside the block wrapper), so the class
+ * can't be nested under .shaped-gallery-block-editor. The double class beats
+ * core's .components-button colour without needing !important.
+ */
+.sp-shaped-gallery-toolbar-action.components-button {
+	color: #1e1e1e;
+	font-weight: 500;
+
+	svg {
+		color: $sp-shaped-gallery-primary;
+		fill: $sp-shaped-gallery-primary;
+	}
+
+	&:hover:not(:disabled),
+	&:focus:not(:disabled) {
+		color: #1e1e1e;
+	}
+}
+
+/* ---------- Layout Settings source row (Inspector) ---------- */
+.sp-shaped-gallery-layout-source {
+	margin-bottom: 16px;
+
+	&__label {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 13px;
+		color: $sp-shaped-gallery-gray-800;
+	}
+	&__preview {
+		overflow: hidden;
+		border: 1px solid $sp-shaped-gallery-border;
+		border-radius: 8px;
+		aspect-ratio: 248 / 157;
+	}
+}
+
+/* ---------- Inspector panel hint ---------- */
+.sp-shaped-gallery-panel-hint {
+	margin: 0;
+	font-size: 12px;
+	color: $sp-shaped-gallery-gray-700;
+}
+
+/* ---------- Inspector accent note (conditional guidance) ---------- */
+.sp-shaped-gallery-note {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 16px;
+
+	&__bar {
+		flex: none;
+		width: 1.5px;
+		background: $sp-shaped-gallery-primary;
+	}
+
+	&__text {
+		margin: 0;
+		font-size: 13px;
+		line-height: 20px;
+		color: $sp-shaped-gallery-gray-500;
+
+		strong {
+			font-weight: 500;
+		}
+	}
+
+	&__link,
+	&__text a {
+		color: $sp-shaped-gallery-blueberry;
+	}
+
+	&__text a {
+		text-decoration: underline;
+	}
+
+	&.is-italic &__text {
+		font-style: italic;
+	}
+}
+
+/* ---------- Inspector section label (centered title with flanking rules) ---------- */
+.sp-shaped-gallery-section-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 16px;
+
+	&__line {
+		flex: 1 1 0;
+		height: 1px;
+		background: $sp-shaped-gallery-brand-28;
+	}
+
+	&__text {
+		flex: none;
+		font-size: 13px;
+		font-weight: 500;
+		line-height: 20px;
+		color: $sp-shaped-gallery-gray-800;
+	}
+}
+
+/* ---------- Inspector preset cards (visual style picker, e.g. Search Bar Style) ---------- */
+.sp-shaped-gallery-preset-cards {
+	&__label {
+		display: block;
+		margin-bottom: 8px;
+		font-size: 13px;
+		line-height: 20px;
+		color: $sp-shaped-gallery-gray-800;
+	}
+
+	&__grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 7px;
+	}
+
+	&__card {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 78px;
+		height: 50px;
+		padding: 0 6px;
+		background: $sp-shaped-gallery-white;
+		border: 1px solid #b4acc1;
+		border-radius: 3px;
+		color: #776c8a;
+		cursor: pointer;
+
+		svg {
+			display: block;
+			width: 66px;
+			height: auto;
+		}
+
+		&:hover {
+			border-color: $sp-shaped-gallery-primary;
+		}
+
+		&.is-selected {
+			border-color: $sp-shaped-gallery-primary;
+			box-shadow: inset 0 0 0 1px $sp-shaped-gallery-primary;
+		}
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-primary;
+			outline-offset: 1px;
+		}
+	}
+}
+
+/* ---------- Inspector tab hint (shown when a feature-gated tab is inactive) ---------- */
+.sp-shaped-gallery-tab-hint {
+	margin: 0;
+	padding: 4px 0 8px;
+	font-size: 12px;
+	line-height: 18px;
+	color: $sp-shaped-gallery-gray-700;
+}
