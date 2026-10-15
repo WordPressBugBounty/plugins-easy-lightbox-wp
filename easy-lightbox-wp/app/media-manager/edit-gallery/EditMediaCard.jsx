@@ -95,7 +95,7 @@ export default function EditMediaCard({
 				)}
 				onClick={() => onRemove(item.id)}
 			>
-				<Icon icon={closeSmall} size={20} />
+				<Icon icon={closeSmall} size={14} />
 			</button>
 
 			<figcaption className="sp-shaped-gallery-eg-card__caption" title={item.title}>

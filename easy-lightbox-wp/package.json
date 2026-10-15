@@ -1,6 +1,6 @@
 {
 	"name": "shaped-gallery",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"description": "ShapedGallery — WordPress gallery plugin: visual layout picker, justified / grid / masonry layouts, future-proof media providers.",
 	"author": "ShapedPlugin LLC",
 	"license": "GPL-2.0-or-later",
@@ -14,6 +14,7 @@
 		"build:admin": "wp-scripts build app/admin/shaped-dashboard.js --output-path=dist/admin",
 		"build:front": "wp-scripts build app/frontend/shaped-layout.js --output-path=dist/frontend",
 		"build:lightbox": "wp-scripts build app/frontend/lightbox.js --output-path=dist/frontend",
+		"prebuild": "rm -rf dist",
 		"build": "npm run build:block && npm run build:admin && npm run build:front && npm run build:lightbox && npm run generate-json && npm run postbuild",
 		"generate-json": "node generate-json.js",
 		"postbuild": "find dist -name '*-rtl.css' -type f -delete && find dist -name '*.css.map' -type f -delete",

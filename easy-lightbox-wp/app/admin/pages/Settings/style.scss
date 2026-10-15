@@ -764,3 +764,67 @@
 		}
 	}
 }
+
+/* --- Pro modules ----------------------------------------------------------
+ * The banner and locked cards under the Free modules (Modules.jsx), after WP
+ * Carousel Free's Modules screen. Colours are the Pro ramp from `_brand.scss`
+ * (imported by admin.scss); the cards themselves are the ordinary module card,
+ * with the "PRO" badge (`components/pro`) sitting where the switch would. */
+.sp-shaped-gallery-settings__pro {
+	margin-top: 32px;
+}
+
+.sp-shaped-gallery-settings__pro-banner {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 16px;
+	padding: 20px 24px;
+	border: 1px solid $sp-shaped-gallery-pro-border;
+	border-radius: 15px;
+	background: $sp-shaped-gallery-pro-surface;
+}
+
+.sp-shaped-gallery-settings__pro-title {
+	margin: 0;
+	color: #1e1e1e;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 24px;
+}
+
+.sp-shaped-gallery-settings__pro-desc {
+	margin: 4px 0 0;
+	color: #4e4f52;
+	font-size: 14px;
+	line-height: 20px;
+}
+
+.sp-shaped-gallery-settings__pro-cta {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: 6px;
+	padding: 10px 18px;
+	border-radius: 5px;
+	background: $sp-shaped-gallery-pro;
+	color: #fff;
+	font-size: 14px;
+	font-weight: 500;
+	line-height: 20px;
+	text-decoration: none;
+
+	&:hover,
+	&:focus {
+		background: $sp-shaped-gallery-pro-deep;
+		color: #fff;
+		box-shadow: none;
+	}
+
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-pro-deep;
+		outline-offset: 2px;
+	}
+}

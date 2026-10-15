@@ -30,24 +30,6 @@ if ( ! defined( 'WPINC' ) ) {
 class LayoutRenderer {
 
 	/**
-	 * Providers whose `full` URL is an iframe embed player, not a media file.
-	 *
-	 * These DO play inline — the runtime swaps the poster for the provider iframe —
-	 * but they can never be a `<video src>`, so this list gates the two places that
-	 * would emit one: the SSR autoplaying player (an inline tile can only go live at
-	 * page load when it is a real, muteable file; N third-party iframes autoplaying
-	 * on load would be a performance footgun, so an embed stays click-to-play) and
-	 * the poster-less first-frame preview.
-	 *
-	 * Mirrors the `EMBED_PARAMS` keys in `app/frontend/embeds.js` — the two lists
-	 * must stay in sync; a mismatch means an embed renders a `<video>` pointing at an
-	 * HTML page, i.e. a blank tile.
-	 *
-	 * @var string[]
-	 */
-	private const EMBED_PROVIDERS = array( 'youtube' );
-
-	/**
 	 * Hidden SVG duotone filters collected while rendering items, keyed by id so
 	 * a palette shared by several images is emitted once. Emitted before the
 	 * gallery markup; the <img>s reference them via `filter: url(#id)`.
@@ -400,11 +382,19 @@ class LayoutRenderer {
 		$has_poster = $is_video && ! empty( $item['poster'] );
 		$src        = $has_poster ? $item['poster'] : ( $item['url'] ?? $item['full'] ?? '' );
 		$full       = $item['full'] ?? $src;
-		$width      = (int) ( $item['width'] ?? 0 );
-		$height     = (int) ( $item['height'] ?? 0 );
-		$alt        = $item['alt'] ?? '';
-		$caption    = $item['caption'] ?? '';
-		$dims       = ( $width && $height ) ? sprintf( 'width="%d" height="%d"', $width, $height ) : '';
+
+		// A provider embed's `full` is framed by the runtime, so it is held to the
+		// provider's own hosts here, before it reaches `data-video-src` (which is only
+		// attribute-escaped) or the lightbox anchor. Anything else becomes '' and the
+		// tile simply has nothing to play. See EmbedUrl.
+		if ( EmbedUrl::is_provider( (string) ( $item['provider'] ?? '' ) ) ) {
+			$full = EmbedUrl::sanitize( (string) $item['provider'], (string) $full );
+		}
+		$width   = (int) ( $item['width'] ?? 0 );
+		$height  = (int) ( $item['height'] ?? 0 );
+		$alt     = $item['alt'] ?? '';
+		$caption = $item['caption'] ?? '';
+		$dims    = ( $width && $height ) ? sprintf( 'width="%d" height="%d"', $width, $height ) : '';
 
 		// Video Play Mode: EVERY video plays in the tile under Inline — a file as a
 		// `<video>`, a provider embed as its iframe (the runtime builds both). Only a
@@ -742,7 +732,7 @@ class LayoutRenderer {
 	 * @return bool
 	 */
 	private function is_playable_file( array $item ): bool {
-		return ! in_array( (string) ( $item['provider'] ?? '' ), self::EMBED_PROVIDERS, true );
+		return ! EmbedUrl::is_provider( (string) ( $item['provider'] ?? '' ) );
 	}
 
 	/**

@@ -18,6 +18,14 @@
  * preloader / inline video), and styling by the `ImageVideoStyle` contributor's
  * `--sp-shaped-gallery-iv-*` custom properties (editor mirror:
  * `app/lib/style/image-video-vars.js`).
+ *
+ * What Pro adds to this panel is a closing note under both tabs (`ProNotice`
+ * with a feature list), not locked controls among the working ones: disabled rows
+ * in a panel the user is actively editing are noise. The note reads and writes
+ * nothing — this build has no watermark pipeline, protection runtime, hover
+ * animation, filter or overlay styling, and declares none of their keys. The list
+ * is what Pro's own panel (`shaped-gallery-pro/.../ImageVideoSettings.jsx`)
+ * actually does.
  */
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -32,6 +40,7 @@ import {
 	Spacing,
 	BoxShadow,
 	Divider,
+	ProNotice,
 } from '@shaped-gallery/components';
 
 /** Chrome autoplay policy — the external reference shown in the AutoPlay note. */
@@ -257,6 +266,16 @@ export default function ImageVideoSettings( { attributes, setAttributes } ) {
 				labels={ { general: __( 'Settings', 'easy-lightbox-wp' ) } }
 				GeneralTab={ SettingsTab }
 				StyleTab={ StyleTab }
+			/>
+
+			<ProNotice
+				showOffer
+				features={ [
+					__( 'Image Watermark', 'easy-lightbox-wp' ),
+					__( 'Right Click Protection', 'easy-lightbox-wp' ),
+					__( 'Hover Animations', 'easy-lightbox-wp' ),
+					__( 'Image Filter & Overlay', 'easy-lightbox-wp' ),
+				] }
 			/>
 		</ChildPanelBody>
 	);

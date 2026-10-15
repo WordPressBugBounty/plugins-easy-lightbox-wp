@@ -15,6 +15,27 @@
 export const isSelected = ( items, id ) => items.some( ( item ) => item.id === id );
 
 /**
+ * Whether an item is one the given media source browses or stages.
+ *
+ * Gates the details panel so it never shows an item from a different source — the
+ * library item left over from the Images tab must not sit beside a Pexels link on
+ * External Images. Library sources match on provider alone, so Images → Videos
+ * keeps the native "last clicked item stays in the sidebar" behaviour; an external
+ * source also matches on type, because external-images and external-video share a
+ * provider but are separate panes (the same rule the modal uses to list staged items).
+ *
+ * @param {?Object} item   MediaItem (or null).
+ * @param {?Object} source Media-source registry entry (or null).
+ * @return {boolean} True when the item belongs to the source.
+ */
+export const itemBelongsToSource = ( item, source ) => {
+	if ( ! item || ! source || item.provider !== source.provider ) {
+		return false;
+	}
+	return 'external' === source.kind ? item.type === source.type : true;
+};
+
+/**
  * Toggle an item in the selection, preserving order (appended on add).
  *
  * @param {Array}  items Current selection.

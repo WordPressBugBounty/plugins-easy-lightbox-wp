@@ -25,6 +25,9 @@ $sp-shaped-gallery-gray-400: #ccc;
 $sp-shaped-gallery-gray-300: #ddd;
 $sp-shaped-gallery-gray-200: #e0e0e0;
 $sp-shaped-gallery-gray-100: #f0f0f0;
+/* Gutenberg alert red (the modal's error text) and its wash, for failed states. */
+$sp-shaped-gallery-error: #cc1818;
+$sp-shaped-gallery-error-50: #fcf0f1;
 /* Change Layout popover's selected-state accent (Figma node 3011:54473, var
  * "primary/base"). This used to be the one place that deliberately did NOT take
  * the app-wide accent — it kept the design's blue while the brand was pink. The
@@ -309,6 +312,25 @@ $sp-shaped-gallery-white: #fff;
 			white-space: nowrap;
 			text-align: center;
 		}
+	}
+}
+
+/* A locked Pro layout card (`PRO_LAYOUTS`). The dimming and the hover pill are the
+ * shared teaser chrome (`components/pro/editor.scss`); what is the card's own is that
+ * its frame does NOT take the accent on hover — an accent edge reads as "this is
+ * selectable", and this card upgrades instead. */
+.sp-shaped-gallery-card.sp-shaped-gallery-pro-locked {
+	&:hover {
+		border-color: $sp-shaped-gallery-gray-200;
+	}
+
+	&.is-compact:hover {
+		border-color: $sp-shaped-gallery-gray-100;
+	}
+
+	&:focus-visible {
+		outline: 2px solid $sp-shaped-gallery-pro;
+		outline-offset: 2px;
 	}
 }
 
@@ -773,6 +795,24 @@ $sp-shaped-gallery-white: #fff;
 		font-size: 14px;
 		font-weight: 500;
 	}
+
+	/* A locked Pro source (a group's `proItems`). Dimmed at rest like a locked
+	 * layout card, with the "PRO" pill pushed to the right edge by the label's
+	 * `flex: 1`. The label is greyed by colour rather than opacity so it keeps
+	 * 4.5:1 (gray-700 is 4.6:1, §14) — the row is a live control that opens the
+	 * upgrade page. Hover keeps the neutral tint and never takes the active
+	 * accent, which would read as "this source can be selected". */
+	&__item.sp-shaped-gallery-pro-locked {
+		color: $sp-shaped-gallery-gray-700;
+
+		.sp-shaped-gallery-source__icon {
+			opacity: 0.5;
+		}
+
+		&:focus-visible {
+			outline-color: $sp-shaped-gallery-pro;
+		}
+	}
 }
 
 /* Tabs */
@@ -1036,20 +1076,281 @@ $sp-shaped-gallery-white: #fff;
 		white-space: nowrap;
 		border: 0;
 	}
+	/* Batch progress card: status header + one core ProgressBar + file rows. */
+	&__progress {
+		margin: 16px 0 0;
+		padding: 16px 16px 8px;
+		border: 1px solid $sp-shaped-gallery-gray-200;
+		border-radius: 8px;
+		background: $sp-shaped-gallery-white;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+		/* Core Spinner reads the components accent; take the brand. */
+		--wp-components-color-accent: #{$sp-shaped-gallery-primary};
+	}
+	&__progress-head {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+	&__status-icon {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		border-radius: 8px;
+		background: $sp-shaped-gallery-primary-50;
+		color: $sp-shaped-gallery-brand-strong;
+
+		svg {
+			fill: currentcolor;
+		}
+	}
+	&__progress.is-complete &__status-icon {
+		background: $sp-shaped-gallery-primary;
+		color: $sp-shaped-gallery-white;
+	}
+	&__progress.is-failed &__status-icon {
+		background: $sp-shaped-gallery-error-50;
+		color: $sp-shaped-gallery-error;
+	}
+	&__progress-text {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+	&__progress-label {
+		overflow: hidden;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 20px;
+		color: $sp-shaped-gallery-black;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	&__progress-detail {
+		font-size: 12px;
+		line-height: 16px;
+		font-variant-numeric: tabular-nums;
+		color: $sp-shaped-gallery-gray-700;
+	}
+	&__progress.is-failed &__progress-label {
+		color: $sp-shaped-gallery-error;
+	}
+
+	/* Done/total counter — the at-a-glance "2/5". */
+	&__counter {
+		display: inline-flex;
+		flex: none;
+		align-items: baseline;
+		font-variant-numeric: tabular-nums;
+		line-height: 1;
+	}
+	&__counter-done {
+		font-size: 20px;
+		font-weight: 600;
+		color: $sp-shaped-gallery-black;
+	}
+	&__counter-total {
+		font-size: 14px;
+		font-weight: 500;
+		color: $sp-shaped-gallery-gray-500;
+	}
+
 	&__queue {
-		margin: 12px 0 0;
-		padding: 0;
+		max-height: 232px;
+		margin: 12px -16px 0;
+		padding: 0 16px;
+		overflow-y: auto;
+		border-top: 1px solid $sp-shaped-gallery-gray-100;
 		list-style: none;
 	}
 	&__queue-item {
-		padding: 6px 0;
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		margin: 0;
+		padding: 10px 0;
 		font-size: 13px;
+
+		& + & {
+			border-top: 1px solid $sp-shaped-gallery-gray-100;
+		}
+	}
+	&__thumb {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		overflow: hidden;
+		border-radius: 6px;
+		background: $sp-shaped-gallery-gray-100;
+		color: $sp-shaped-gallery-gray-500;
+
+		img {
+			display: block;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+		svg {
+			fill: currentcolor;
+		}
+	}
+	&__file {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 0;
+	}
+	&__file-name {
+		overflow: hidden;
+		font-weight: 500;
+		line-height: 18px;
+		color: $sp-shaped-gallery-black;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	&__file-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 8px;
+		font-size: 12px;
+		line-height: 16px;
 		color: $sp-shaped-gallery-gray-700;
 	}
-	&__error {
-		margin: 12px 0 0;
-		font-size: 13px;
-		color: #cc1818;
+	&__file-size {
+		font-variant-numeric: tabular-nums;
+
+		&::after {
+			margin-left: 8px;
+			content: "\2022";
+			color: $sp-shaped-gallery-gray-400;
+		}
+	}
+	&__queue-item.is-failed &__file-status {
+		color: $sp-shaped-gallery-error;
+		overflow-wrap: anywhere;
+	}
+	&__file-percent {
+		flex: none;
+		min-width: 36px;
+		font-size: 12px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+		text-align: right;
+		color: $sp-shaped-gallery-brand-strong;
+	}
+	&__badge {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+
+		svg {
+			fill: currentcolor;
+		}
+		&.is-done {
+			background: $sp-shaped-gallery-primary;
+			color: $sp-shaped-gallery-white;
+		}
+		&.is-failed {
+			background: $sp-shaped-gallery-error-50;
+			color: $sp-shaped-gallery-error;
+		}
+	}
+}
+
+/*
+ * Core's ProgressBar ships a 160px hairline whose fill is the TEXT colour.
+ * Restyle the track/indicator (0,2,0 beats its single emotion class): a quiet
+ * grey track, a light-to-brand fill, and a soft sheen while bytes move.
+ */
+.sp-shaped-gallery-media-modal__upload .sp-shaped-gallery-upload__bar {
+	width: 100%;
+	height: 8px;
+	margin-top: 14px;
+	border-radius: 999px;
+	background-color: $sp-shaped-gallery-gray-100;
+
+	> div {
+		overflow: hidden;
+		border-radius: 999px;
+		background-color: $sp-shaped-gallery-primary;
+		background-image: linear-gradient(90deg, $sp-shaped-gallery-brand-grad-light, $sp-shaped-gallery-primary);
+		transition: width 0.3s ease-out;
+	}
+}
+.sp-shaped-gallery-upload__progress.is-uploading .sp-shaped-gallery-upload__bar > div::after {
+	position: absolute;
+	inset: 0;
+	content: "";
+	background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+	background-size: 200% 100%;
+	animation: sp-shaped-gallery-upload-sheen 1.6s linear infinite;
+}
+
+@keyframes sp-shaped-gallery-upload-sheen {
+	from {
+		background-position: 200% 0;
+	}
+	to {
+		background-position: -200% 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.sp-shaped-gallery-media-modal__upload .sp-shaped-gallery-upload__bar > div {
+		transition: none;
+	}
+	.sp-shaped-gallery-upload__progress.is-uploading .sp-shaped-gallery-upload__bar > div::after {
+		animation: none;
+	}
+}
+.sp-shaped-gallery-upload__spinner.components-spinner {
+	flex: none;
+	width: 16px;
+	height: 16px;
+	margin: 0 2px;
+}
+
+/* With a batch on screen the dropzone steps back to one compact row, so the
+ * progress card — the thing the user is watching — sits near the top. */
+.sp-shaped-gallery-media-modal__upload.has-progress .sp-shaped-gallery-upload__dropzone {
+	box-sizing: border-box;
+	flex-flow: row wrap;
+	gap: 8px 12px;
+	min-height: 0;
+	padding: 20px 16px;
+
+	.sp-shaped-gallery-upload__icon svg {
+		width: 24px;
+		height: 24px;
+	}
+	.sp-shaped-gallery-upload__title {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 600px) {
+	.sp-shaped-gallery-upload__dropzone {
+		min-height: 220px;
+	}
+	.sp-shaped-gallery-upload__progress {
+		padding: 12px 12px 4px;
+	}
+	.sp-shaped-gallery-upload__queue {
+		margin: 12px -12px 0;
+		padding: 0 12px;
 	}
 }
 
@@ -1085,10 +1386,13 @@ $sp-shaped-gallery-white: #fff;
 		color: $sp-shaped-gallery-gray-700;
 	}
 
-	/* Staged preview grid (below the link field) */
+	/* Staged preview grid (below the link field). Fixed tracks, not `1fr`: the
+	 * details panel opens beside this pane and takes 280px, and a stretching
+	 * track would re-flow into fewer, larger cards the moment one is picked. */
 	&__grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+		grid-template-columns: repeat(auto-fill, 156px);
+		justify-content: start;
 		gap: 16px;
 		margin: 24px 0 0;
 		padding: 0;
@@ -1101,6 +1405,10 @@ $sp-shaped-gallery-white: #fff;
 		overflow: hidden;
 		background: $sp-shaped-gallery-surface;
 		border: 1px solid $sp-shaped-gallery-border;
+		/* Only colour and the ring animate; no property that moves layout. */
+		transition:
+			border-color 0.18s ease,
+			box-shadow 0.18s ease;
 
 		img,
 		video {
@@ -1111,6 +1419,39 @@ $sp-shaped-gallery-white: #fff;
 		}
 		&.is-video {
 			background: #1e1e1e;
+		}
+		/* The card whose details are open in the side panel: a 2px ring, drawn as
+		 * the card's own 1px border in the brand colour plus a 1px spread shadow
+		 * outside it. The border box never changes and the shadow takes no layout
+		 * space, so picking a card cannot nudge the image or its neighbours, and
+		 * the ring sits flush against the image with no gap. The select button's
+		 * aria-pressed carries the state for assistive tech. */
+		&.is-active {
+			border-color: $sp-shaped-gallery-primary;
+			box-shadow: 0 0 0 1px $sp-shaped-gallery-primary;
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			transition: none;
+		}
+	}
+	/* Whole-card hit area that opens the details panel. The remove button comes
+	 * later in the DOM, so it paints above this. */
+	&__select {
+		position: absolute;
+		inset: 0;
+		display: block;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+
+		&:focus-visible {
+			outline: 2px solid $sp-shaped-gallery-blue;
+			outline-offset: -2px;
 		}
 	}
 	&__play {
@@ -1132,8 +1473,8 @@ $sp-shaped-gallery-white: #fff;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 22px;
-		height: 22px;
+		width: 20px;
+		height: 20px;
 		padding: 0;
 		border: 0;
 		border-radius: 50%;
@@ -1145,8 +1486,8 @@ $sp-shaped-gallery-white: #fff;
 		/* @wordpress/icons ship no `fill`, so the glyph renders black unless
 		 * it is told to follow the button's white `color`. */
 		svg {
-			width: 20px;
-			height: 20px;
+			width: 18px;
+			height: 18px;
 			fill: currentcolor;
 		}
 
@@ -1298,6 +1639,25 @@ $sp-shaped-gallery-white: #fff;
 		&:hover,
 		&:focus {
 			color: #e14d43;
+			outline: none;
+		}
+	}
+	/* Neutral, not the delete red: this only takes the item out of the gallery. */
+	&__remove-btn {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 0;
+		background: none;
+		border: none;
+		color: $sp-shaped-gallery-blueberry;
+		font-size: 13px;
+		text-decoration: underline;
+		cursor: pointer;
+		text-align: left;
+
+		&:hover,
+		&:focus {
+			color: darken($sp-shaped-gallery-blueberry, 15%);
 			outline: none;
 		}
 	}

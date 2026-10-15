@@ -163,7 +163,7 @@ final class GalleryOptions {
 
 		$c['imageTitle']             = ! empty( $c['imageTitle'] );
 		$c['imageDescription']       = ! empty( $c['imageDescription'] );
-		$c['imageTitleSource']       = self::enum( $c['imageTitleSource'] ?? null, array( 'title', 'caption' ), 'title' );
+		$c['imageTitleSource']       = self::enum( $c['imageTitleSource'] ?? null, array( 'title', 'caption' ), 'caption' );
 		$c['imageTitleTag']          = self::enum( $c['imageTitleTag'] ?? null, array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span' ), 'h4' );
 		$c['imageDescriptionSource'] = self::enum( $c['imageDescriptionSource'] ?? null, array( 'caption', 'description' ), 'caption' );
 		$c['displayStyle']           = self::enum( $c['displayStyle'] ?? null, array( 'classic', 'overlay' ), 'classic' );

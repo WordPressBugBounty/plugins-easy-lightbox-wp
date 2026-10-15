@@ -6,19 +6,24 @@
  * `{ desktop, tablet, mobile }` object and the active device (from
  * `useDeviceType`) is read/written, with an inline device switcher in the header.
  *
- * @param {Object}                                     props
- * @param {*}                                          [props.value]         Current value (overrides `attributes`).
- * @param {*}                                          [props.attributes]    Current value (attributesKey form).
- * @param {string}                                     [props.attributesKey] Attribute name to write.
- * @param {Function}                                   [props.setAttributes] setAttributes.
- * @param {Function}                                   [props.onChange]      Custom change handler.
- * @param {string}                                     [props.label]         Group label.
- * @param {Array<{label:string,value:string,icon?:*}>} props.items           Options; an `icon` renders the option as an icon (with `label` as its accessible name / tooltip).
- * @param {boolean}                                    [props.responsive]    Per-device value + device switcher.
- * @param {boolean}                                    [props.isBlock=true]  Full-width segmented layout.
+ * A `pro` item is WP Carousel Free's locked segment: labelled "<label> (Pro)",
+ * dimmed and disabled, and refused by `setValue` before anything is written — so it
+ * can never become the selected value, whichever way the click arrives.
+ *
+ * @param {Object}                                                  props
+ * @param {*}                                                       [props.value]         Current value (overrides `attributes`).
+ * @param {*}                                                       [props.attributes]    Current value (attributesKey form).
+ * @param {string}                                                  [props.attributesKey] Attribute name to write.
+ * @param {Function}                                                [props.setAttributes] setAttributes.
+ * @param {Function}                                                [props.onChange]      Custom change handler.
+ * @param {string}                                                  [props.label]         Group label.
+ * @param {Array<{label:string,value:string,icon?:*,pro?:boolean}>} props.items           Options; an `icon` renders the option as an icon (with `label` as its accessible name / tooltip). `pro` draws it as a locked Pro teaser.
+ * @param {boolean}                                                 [props.responsive]    Per-device value + device switcher.
+ * @param {boolean}                                                 [props.isBlock=true]  Full-width segmented layout.
  * @return {JSX.Element} Group.
  */
 import { memo } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	ToggleGroupControl,
 	ToggleGroupControlOption,
@@ -27,6 +32,7 @@ import {
 import { useDeviceType } from '@shaped-gallery/hooks';
 import Responsive from '../responsive';
 import '../shared.scss';
+import '../pro/editor.scss';
 
 function ButtonGroup( {
 	value,
@@ -52,6 +58,9 @@ function ButtonGroup( {
 	}
 
 	const setValue = ( next ) => {
+		if ( items.some( ( item ) => item.pro && item.value === next ) ) {
+			return;
+		}
 		if ( onChange ) {
 			onChange( next );
 			return;
@@ -82,8 +91,24 @@ function ButtonGroup( {
 				__nextHasNoMarginBottom
 				__next40pxDefaultSize
 			>
-				{ items.map( ( item ) =>
-					item.icon ? (
+				{ items.map( ( item ) => {
+					if ( item.pro ) {
+						return (
+							<ToggleGroupControlOption
+								key={ item.value }
+								value={ item.value }
+								label={ sprintf(
+									/* translators: %s: option name, e.g. "Number". */
+									__( '%s (Pro)', 'easy-lightbox-wp' ),
+									item.label
+								) }
+								className="is-pro"
+								disabled
+							/>
+						);
+					}
+
+					return item.icon ? (
 						<ToggleGroupControlOptionIcon
 							key={ item.value }
 							value={ item.value }
@@ -96,8 +121,8 @@ function ButtonGroup( {
 							value={ item.value }
 							label={ item.label }
 						/>
-					)
-				) }
+					);
+				} ) }
 			</ToggleGroupControl>
 		</div>
 	);

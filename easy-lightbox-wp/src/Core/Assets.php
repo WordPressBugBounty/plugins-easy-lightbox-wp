@@ -83,6 +83,17 @@ class Assets {
 			// only — `PatternLibrary::import()` is what refuses the id.
 			'patternsPremium'       => PatternLibrary::premium_active(),
 			'patternsUpgradeUrl'    => esc_url_raw( DashboardConfig::pro_url() ),
+			// Where every Pro teaser points (`app/components/pro/upgrade.js`): the
+			// locked layout cards, locked controls, Pro panels and Pro module cards.
+			// One key on the payload both bundles receive, so no surface spells the
+			// URL out.
+			'upgradeUrl'            => esc_url_raw( DashboardConfig::pro_url() ),
+			// The offer the inspector's upgrade link (`ProNotice` `showOffer`) and the
+			// dashboard's offer bar (`OfferBar`) name, the moment it ends — both
+			// leave an open screen then — and the bar's translated lead sentence, or
+			// an empty array once it has ended. Nested, so `wp_localize_script()`
+			// leaves both ints instead of casting to strings.
+			'proOffer'              => DashboardConfig::pro_offer(),
 		);
 	}
 

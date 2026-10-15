@@ -9,6 +9,12 @@
  * meta block, a divider, then label-left / control-right field rows (the same
  * shape WP core's own attachment details uses).
  *
+ * An external item (pasted image/video URL, YouTube) has no WP attachment behind it,
+ * so the panel switches to an external skin: its own heading, the host it lives on
+ * and a "View original" link instead of upload date / file size, and "Remove from
+ * gallery" instead of Edit Image / Delete permanently. The editable fields are the
+ * same — this is the only place to give a pasted image its alt text.
+ *
  * The wp.media logic (live meta fetch, Edit Image, Delete permanently) lives in
  * the shared `useAttachmentDetails` hook — this component is a skin over it. Two
  * scopes of change apply here:
@@ -19,10 +25,11 @@
  *   WP attachment via the hook; on a successful delete `onDelete` tells MediaModal
  *   to drop the item so no broken placeholder lingers.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { ExternalLink } from '@wordpress/components';
 import useAttachmentDetails from './useAttachmentDetails';
 import MediaThumb from './MediaThumb';
+import { isValidUrl } from './external';
 
 /**
  * A single label-left / control-right detail row.
@@ -46,14 +53,15 @@ function Field( { id, label, children } ) {
 
 /**
  * @param {Object}   props
- * @param {Object}   props.item     Active MediaItem (or null).
- * @param {boolean}  props.selected Whether the item is in the gallery selection. When
- *                                  false the panel shows a placeholder instead of details.
- * @param {Function} props.onUpdate Receives ( patch, id? ) and patches that MediaItem.
- * @param {Function} props.onDelete Receives ( id ) after a permanent delete succeeds.
+ * @param {Object}   props.item       Active MediaItem (or null).
+ * @param {boolean}  props.selected   Whether the item is in the gallery selection. When
+ *                                    false the panel shows a placeholder instead of details.
+ * @param {Function} props.onUpdate   Receives ( patch, id? ) and patches that MediaItem.
+ * @param {Function} props.onDelete   Receives ( id ) after a permanent delete succeeds.
+ * @param {Function} [props.onRemove] Receives ( id ) to drop an external item from the gallery.
  * @return {JSX.Element|null} Panel, or null when there is no active item.
  */
-export default function AttachmentDetails( { item, selected, onUpdate, onDelete } ) {
+export default function AttachmentDetails( { item, selected, onUpdate, onDelete, onRemove } ) {
 	const {
 		displayTitle,
 		uploadDate,
@@ -63,6 +71,8 @@ export default function AttachmentDetails( { item, selected, onUpdate, onDelete 
 		displayDimensions,
 		isLocalMedia,
 		isLocalImage,
+		isExternalMedia,
+		sourceHost,
 		imageCustomUrlEnabled,
 		copied,
 		copyUrl,
@@ -70,7 +80,14 @@ export default function AttachmentDetails( { item, selected, onUpdate, onDelete 
 		deleteImage,
 	} = useAttachmentDetails( item, { onUpdate, onDelete } );
 
-	const title = <h3 className="sp-shaped-gallery-details__title">{ __( 'Attachment Details', 'easy-lightbox-wp' ) }</h3>;
+	// Not "Attachment Details" for an external item: there is no attachment.
+	let heading = __( 'Attachment Details', 'easy-lightbox-wp' );
+	if ( isExternalMedia ) {
+		heading = 'video' === item.type
+			? __( 'Video Details', 'easy-lightbox-wp' )
+			: __( 'Image Details', 'easy-lightbox-wp' );
+	}
+	const title = <h3 className="sp-shaped-gallery-details__title">{ heading }</h3>;
 
 	// Details are shown only for an item that is actually in the gallery — mirrors
 	// the native Media Library, where deselecting empties the sidebar. With no
@@ -100,14 +117,39 @@ export default function AttachmentDetails( { item, selected, onUpdate, onDelete 
 
 			<div className="sp-shaped-gallery-details__meta">
 				{ displayTitle && <p className="sp-shaped-gallery-details__filename">{ displayTitle }</p> }
+				{ sourceHost && (
+					<p className="sp-shaped-gallery-details__source">
+						{ sprintf(
+							/* translators: %s: host name the external media is loaded from, e.g. images.pexels.com. */
+							__( 'Source: %s', 'easy-lightbox-wp' ),
+							sourceHost
+						) }
+					</p>
+				) }
 				{ uploadDate && <p className="sp-shaped-gallery-details__date">{ uploadDate }</p> }
 				{ fileSize && <p className="sp-shaped-gallery-details__filesize">{ fileSize }</p> }
 				{ displayDimensions && <p className="sp-shaped-gallery-details__dim">{ displayDimensions }</p> }
-				{ fileUrl && (
+				{ isExternalMedia && isValidUrl( item.url ) && (
+					<p className="sp-shaped-gallery-details__original">
+						<ExternalLink href={ item.url }>{ __( 'View original', 'easy-lightbox-wp' ) }</ExternalLink>
+					</p>
+				) }
+				{ ! isExternalMedia && fileUrl && (
 					<p className="sp-shaped-gallery-details__original">
 						{ __( 'Original image:', 'easy-lightbox-wp' ) }{ ' ' }
 						<ExternalLink href={ fileUrl }>{ originalFileName }</ExternalLink>
 					</p>
+				) }
+				{ isExternalMedia && onRemove && (
+					<div className="sp-shaped-gallery-details__actions">
+						<button
+							type="button"
+							className="sp-shaped-gallery-details__remove-btn"
+							onClick={ () => onRemove( item.id ) }
+						>
+							{ __( 'Remove from gallery', 'easy-lightbox-wp' ) }
+						</button>
+					</div>
 				) }
 				{ isLocalMedia && (
 					<div className="sp-shaped-gallery-details__actions">

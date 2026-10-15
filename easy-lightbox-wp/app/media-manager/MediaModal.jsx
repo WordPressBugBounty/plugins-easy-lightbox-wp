@@ -23,8 +23,8 @@ import AttachmentDetails from "./AttachmentDetails";
 import UploadPane from "./UploadPane";
 import MediaGrid from "./MediaGrid";
 import ExternalMediaPane from "./ExternalMediaPane";
-import { DEFAULT_SOURCE_ID, getSource } from "./media-sources.data";
-import { mergeSelection, patchItem, isSelected } from "./selection";
+import { DEFAULT_SOURCE_ID, allSources, getSource } from "./media-sources.data";
+import { mergeSelection, patchItem, isSelected, itemBelongsToSource } from "./selection";
 
 const TABS = [
 	{ id: "upload", label: __("Upload Files", "easy-lightbox-wp") },
@@ -99,6 +99,7 @@ export default function MediaModal({
 
 	const source = getSource(activeSource);
 	const isExternal = "add" === mode && "external" === source?.kind;
+	const isUploadTab = "add" === mode && !isExternal && "upload" === activeTab;
 	// The pane's variant drives its copy/validation; each embed provider gets its
 	// own variant.
 	const externalVariant = externalVariantFor(source);
@@ -108,11 +109,44 @@ export default function MediaModal({
 		(item) => item.provider === source?.provider && item.type === source?.type
 	);
 
+	// The panel follows the active source: a library item left over from the Images
+	// tab must not describe the Pexels link staged on External Images. Derived, not
+	// reset in a handler, so no tab switch can leave it pointing at the wrong item.
+	// Edit mode has no source of its own, so it keeps whatever is active.
+	const activeDetail = "add" !== mode || itemBelongsToSource(detail, source) ? detail : null;
+
 	// A completed upload merges straight into the selection, mirroring the
-	// native Media Library's "newly uploaded items are selected" behavior.
+	// native Media Library's "newly uploaded items are selected" behavior. The
+	// details panel is left alone here: the Upload tab stays focused on the
+	// upload and never opens Attachment Details mid-batch.
 	const onUploaded = (item) => {
 		setSelected((prev) => mergeSelection(prev, [item]));
-		setDetail(item);
+	};
+
+	// Every file in the batch succeeded: land on the Media Library tab, where
+	// the uploads already sit in the selection (merged by onUploaded), with the
+	// last one active — the native "upload, then library" hand-off. A batch with
+	// any failure never reaches here, so the user stays on the error.
+	const onUploadComplete = (uploaded) => {
+		const last = uploaded[uploaded.length - 1];
+		if (!last) {
+			return;
+		}
+		// The library grid filters by source type: if the whole batch is of the
+		// other type (e.g. videos uploaded under "Images"), browse the matching
+		// source so the new, selected items are actually on screen.
+		const types = new Set(uploaded.map((item) => item.type));
+		if (1 === types.size && !types.has(source?.type)) {
+			const match = allSources().find(
+				(entry) => !entry.kind && entry.provider === last.provider && entry.type === last.type
+			);
+			if (match) {
+				setActiveSource(match.id);
+			}
+		}
+		setActiveTab("library");
+		setAnchorId(last.id);
+		setDetail(last);
 	};
 
 	// The browser resolves modifier-aware selection against its visible list and
@@ -123,7 +157,11 @@ export default function MediaModal({
 	};
 
 	// External-images staging: add a pasted URL (deduped by url-as-id) / remove one.
-	const addExternalItem = (item) => setSelected((prev) => mergeSelection(prev, [item]));
+	// The new item becomes the active one so its details (alt text first) are right there.
+	const addExternalItem = (item) => {
+		setSelected((prev) => mergeSelection(prev, [item]));
+		setDetail(item);
+	};
 
 	const removeItem = (id) => {
 		setSelected((prev) => prev.filter((item) => item.id !== id));
@@ -205,6 +243,8 @@ export default function MediaModal({
 						key={activeSource}
 						variant={externalVariant}
 						items={externalItems}
+						activeId={activeDetail?.id}
+						onActivate={setDetail}
 						onAdd={addExternalItem}
 						onRemove={removeItem}
 					/>
@@ -243,7 +283,7 @@ export default function MediaModal({
 		}
 		return (
 			<div className="sp-shaped-gallery-media-modal__workspace" role="tabpanel">
-				<UploadPane onUploaded={onUploaded} />
+				<UploadPane onUploaded={onUploaded} onComplete={onUploadComplete} />
 			</div>
 		);
 	};
@@ -317,14 +357,16 @@ export default function MediaModal({
 						{/*
 						 * Match the native Media Library: the details panel only appears
 						 * once an item is active. With nothing selected there is no panel,
-						 * and the workspace spans the full width.
+						 * and the workspace spans the full width. The Upload tab never
+						 * shows it — that view is for uploading only.
 						 */}
-						{detail && (
+						{activeDetail && !isUploadTab && (
 							<AttachmentDetails
-								item={detail}
-								selected={isSelected(selected, detail.id)}
+								item={activeDetail}
+								selected={isSelected(selected, activeDetail.id)}
 								onUpdate={onUpdateDetail}
 								onDelete={onDeleteItem}
+								onRemove={removeItem}
 							/>
 						)}
 					</div>

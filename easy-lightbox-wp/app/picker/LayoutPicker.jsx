@@ -15,7 +15,7 @@
 import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { PickerLogoMark } from '@shaped-gallery/icons';
-import { LAYOUTS } from './layouts.data';
+import { LAYOUTS, PRO_LAYOUTS } from './layouts.data';
 import LayoutCard from './LayoutCard';
 
 /**
@@ -69,6 +69,11 @@ export default function LayoutPicker( { value, onApply, applyLabel } ) {
 						selected={ selected === layout.id }
 						onSelect={ setSelected }
 					/>
+				) ) }
+				{ /* After the real cards, never among them: locked, they upgrade
+				   rather than select (see LayoutCard). */ }
+				{ PRO_LAYOUTS.map( ( layout ) => (
+					<LayoutCard key={ layout.id } layout={ layout } />
 				) ) }
 			</div>
 		</div>

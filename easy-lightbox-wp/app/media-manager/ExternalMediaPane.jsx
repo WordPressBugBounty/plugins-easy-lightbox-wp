@@ -6,19 +6,19 @@
  *
  * One component serves every paste-URL source. A `variant` ('image' | 'video' |
  * 'youtube') selects the copy, the resolve step (async DOM probe for direct media
- * URLs, synchronous parse for YouTube) and the preview element. Staged items live
- * in the modal's selection; they are committed to the block only when the modal's
- * primary action fires.
+ * URLs, a parsed id plus a best-effort oEmbed orientation lookup for YouTube) and
+ * the preview element. Staged items live in the modal's selection; they are
+ * committed to the block only when the modal's primary action fires.
  */
 import { useState, useRef } from "@wordpress/element";
-import { __ } from "@wordpress/i18n";
+import { __, sprintf } from "@wordpress/i18n";
 import { Icon, link, closeSmall } from "@wordpress/icons";
 import {
 	isValidUrl,
 	makeExternalItem,
 	loadImage,
 	loadVideo,
-	makeYouTubeItem,
+	resolveYouTubeItem,
 } from "./external";
 import { isSelected } from "./selection";
 
@@ -64,22 +64,42 @@ const COPY = {
 		duplicate: __("That video has already been added.", "easy-lightbox-wp"),
 		failed: __("That YouTube URL could not be added.", "easy-lightbox-wp"),
 		remove: __("Remove video", "easy-lightbox-wp"),
-		resolve: (url) => {
-			const item = makeYouTubeItem(url);
-			return item ? Promise.resolve(item) : Promise.reject(new Error("invalid"));
-		},
+		resolve: resolveYouTubeItem,
 	},
 };
 
 /**
- * @param {Object}   props
- * @param {string}   [props.variant] Source variant — 'image' (default), 'video' or 'youtube'.
- * @param {Array}    props.items     Staged MediaItem[] for this source (preview grid).
- * @param {Function} props.onAdd     Commit a validated MediaItem.
- * @param {Function} props.onRemove  Remove a staged item by id.
+ * Failure copy shared by every variant — it describes the request, not the source.
+ */
+const SHARED_ERRORS = {
+	timeout: __("That link took too long to respond. Check it and try again.", "easy-lightbox-wp"),
+};
+
+/**
+ * Pick the message for a rejected `resolve`: `invalid` is variant copy, `timeout` is
+ * shared, and anything else (a failed probe, an odd status) falls back to the
+ * variant's `failed`.
+ *
+ * @param {Object} copy Variant copy.
+ * @param {string} code Rejection code (`Error#message`).
+ * @return {string} Message to show.
+ */
+const errorFor = (copy, code) => {
+	const messages = { invalid: copy.invalid, ...SHARED_ERRORS };
+	return messages[code] || copy.failed;
+};
+
+/**
+ * @param {Object}           props
+ * @param {string}           [props.variant]    Source variant — 'image' (default), 'video' or 'youtube'.
+ * @param {Array}            props.items        Staged MediaItem[] for this source (preview grid).
+ * @param {?(number|string)} [props.activeId]   Id of the item whose details are open (marks its card).
+ * @param {Function}         [props.onActivate] Receives the item when its card is picked, to open its details.
+ * @param {Function}         props.onAdd        Commit a validated MediaItem.
+ * @param {Function}         props.onRemove     Remove a staged item by id.
  * @return {JSX.Element} Pane.
  */
-export default function ExternalMediaPane({ variant = "image", items, onAdd, onRemove }) {
+export default function ExternalMediaPane({ variant = "image", items, activeId, onActivate, onAdd, onRemove }) {
 	const copy = COPY[variant] || COPY.image;
 	// Only a raw external video shows a <video> first-frame; image and the YouTube
 	// variant render an <img> from a provider thumb. Every variant except plain
@@ -123,7 +143,7 @@ export default function ExternalMediaPane({ variant = "image", items, onAdd, onR
 				focusInput();
 			})
 			.catch((err) => {
-				setError("invalid" === err.message ? copy.invalid : copy.failed);
+				setError(errorFor(copy, err.message));
 				setBusy(false);
 			});
 	};
@@ -192,25 +212,43 @@ export default function ExternalMediaPane({ variant = "image", items, onAdd, onR
 				{items.length > 0 && (
 					<ul className="sp-shaped-gallery-external__grid">
 						{items.map((item) => (
-							<li key={item.id} className={`sp-shaped-gallery-external__card${showsPlay ? " is-video" : ""}`}>
-								{usesVideoTile ? (
-									<video src={item.url} muted preload="metadata" playsInline />
-								) : (
-									<img
-										src={item.thumb || item.url}
-										alt={item.alt || ""}
-										loading="lazy"
-										decoding="async"
-									/>
-								)}
-								{showsPlay && <span className="sp-shaped-gallery-external__play" aria-hidden="true" />}
+							<li
+								key={item.id}
+								className={`sp-shaped-gallery-external__card${showsPlay ? " is-video" : ""}${
+									activeId === item.id ? " is-active" : ""
+								}`}
+							>
+								{/* A sibling of the remove button, not its parent: nested buttons are invalid. */}
+								<button
+									type="button"
+									className="sp-shaped-gallery-external__select"
+									aria-pressed={activeId === item.id}
+									aria-label={sprintf(
+										/* translators: %s: title or URL of the staged item. */
+										__("Show details for %s", "easy-lightbox-wp"),
+										item.title || item.url
+									)}
+									onClick={() => onActivate?.(item)}
+								>
+									{usesVideoTile ? (
+										<video src={item.url} muted preload="metadata" playsInline />
+									) : (
+										<img
+											src={item.thumb || item.url}
+											alt=""
+											loading="lazy"
+											decoding="async"
+										/>
+									)}
+									{showsPlay && <span className="sp-shaped-gallery-external__play" aria-hidden="true" />}
+								</button>
 								<button
 									type="button"
 									className="sp-shaped-gallery-external__remove"
 									aria-label={copy.remove}
 									onClick={() => onRemove(item.id)}
 								>
-									<Icon icon={closeSmall} size={20} />
+									<Icon icon={closeSmall} size={18} />
 								</button>
 							</li>
 						))}

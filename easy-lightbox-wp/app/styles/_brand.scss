@@ -116,3 +116,41 @@ $sp-shaped-gallery-brand-grad-dark: #0056a1;
  * lockup is inline SVG.
  */
 $sp-shaped-gallery-brand-ink: #0a223c;
+
+/*
+ * Pro ramp — the upgrade prompts' green (crown, "PRO" pill, "(Pro)" tag, upsell
+ * button), kept here so the teaser chrome has one source like the brand does.
+ *
+ * Copied from WP Carousel Free's teaser UI, which this plugin's Pro prompts follow,
+ * but NOT its exact greens: its pill `#11a10c` is 3.4:1 under the white "PRO" label
+ * and its chip icon `#4ab866` 2.5:1, both short of §14. These are the nearest steps
+ * that clear 4.5:1 on white AND on the chip surface, so a locked control's "(Pro)"
+ * tag is readable text, not just a colour cue.
+ *
+ *   pro         4.70:1 on white, 4.54:1 on --pro-surface
+ *   pro-deep    6.47:1 on white — hover under the same white label;
+ *               6.25:1 on --pro-surface — the inspector's offer pill
+ */
+$sp-shaped-gallery-pro: #128627;
+$sp-shaped-gallery-pro-deep: #0a6e08;
+/* Chip surface and hairline. Under text, only with `pro-deep` (or `pro`) on it. */
+$sp-shaped-gallery-pro-surface: #effff5;
+$sp-shaped-gallery-pro-border: #93dcac;
+
+/*
+ * Offer ramp — the dashboard offer bar (`admin/components/OfferBar.jsx`), and
+ * ONLY that bar. Read off the finalised top-banner design (variation 1k, "centred,
+ * tighter spacing"), which the pricing page's own bar follows, so the strip a user
+ * clicks reads as the one they land on.
+ *
+ * Contrast, measured on the flat night ground:
+ *
+ *   offer-gold   9.1:1 — the percent
+ *   offer-live   9.0:1 — the "open" dot (a cue beside text, never alone)
+ *   body text    9.4:1 — white at 75%, set in the component sheet; 6.5:1 for
+ *                the small "up to" at 60%
+ *   button rim   3.1:1 — white at 35%, the non-text boundary of "Get it now"
+ */
+$sp-shaped-gallery-offer-night: #0a233c;
+$sp-shaped-gallery-offer-gold: #ffb547;
+$sp-shaped-gallery-offer-live: #3cdc97;

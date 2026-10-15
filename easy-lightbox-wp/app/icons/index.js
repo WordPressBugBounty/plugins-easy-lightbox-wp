@@ -330,6 +330,121 @@ export const LayoutMasonry = layoutPreset( [
 	[ 100.05, 63.91, 34.7, 18.58 ],
 ] );
 
+/*
+ * The four Pro layouts — drawn here only as the artwork of their LOCKED picker
+ * cards (`PRO_LAYOUTS` in `app/picker/layouts.data.js`). This build has no renderer
+ * for any of them; the thumbnails are copied verbatim from ShapedGallery Pro so a
+ * card here is the same picture of the layout the user gets after upgrading.
+ */
+
+/**
+ * Metro — a promoted tile among small ones, which is the entire layout, so the
+ * thumbnail has to show a SPAN and not just a grid.
+ *
+ * Derived on a 4 x 4 subdivision of the shared band rather than the 3 x 3 the
+ * three presets above use, because a 2 x 2 span needs an even column count to
+ * read as a span at all: on a 3-wide grid it either fills two thirds of the row
+ * or looks like a rendering mistake. Cell 25.1 x 15.8, gutter 3.7, so
+ * 4*25.1 + 3*3.7 = 111.5 and 4*15.8 + 3*3.7 = 74.3 — the band exactly. A 2 x 2
+ * block is therefore 53.9 x 35.3.
+ *
+ * Two spans on opposite diagonals, each faced by a 2 x 2 cluster of single
+ * cells: that is the arrangement Pro's own Metro renderer produces, and drawing
+ * one span would have read as Grid-with-a-mistake rather than as Metro.
+ */
+export const LayoutMetro = layoutPreset( [
+	[ 23.25, 12.85, 53.9, 35.3 ],
+	[ 80.85, 12.85, 25.1, 15.8 ],
+	[ 109.65, 12.85, 25.1, 15.8 ],
+	[ 80.85, 32.35, 25.1, 15.8 ],
+	[ 109.65, 32.35, 25.1, 15.8 ],
+	[ 23.25, 51.85, 25.1, 15.8 ],
+	[ 52.05, 51.85, 25.1, 15.8 ],
+	[ 23.25, 71.35, 25.1, 15.8 ],
+	[ 52.05, 71.35, 25.1, 15.8 ],
+	[ 80.85, 51.85, 53.9, 35.3 ],
+] );
+
+/**
+ * Thumbnails — one stage over a strip of navigation thumbs. The relationship
+ * between the two IS the layout, so the stage takes the full width and both of
+ * the band's upper rows (22.3 + 3.7 + 22.3 = 48.3) and the strip takes the third.
+ *
+ * Four thumbs, on Metro's 25.1 column so the two Pro presets agree with each
+ * other: 4*25.1 + 3*3.7 = 111.5. Three thumbs would have sat on the 34.7 grid
+ * column and read as a bottom row of Grid.
+ */
+export const LayoutThumbnail = layoutPreset( [
+	[ 23.25, 12.85, 111.5, 48.3 ],
+	[ 23.25, 64.85, 25.1, 22.3 ],
+	[ 52.05, 64.85, 25.1, 22.3 ],
+	[ 80.85, 64.85, 25.1, 22.3 ],
+	[ 109.65, 64.85, 25.1, 22.3 ],
+] );
+
+/**
+ * Staggered — even columns with alternate ones pushed down, so the ragged top
+ * AND bottom edges are what distinguish it from Masonry (whose columns share a
+ * top edge) and from Grid.
+ *
+ * Four columns on Metro's 25.1, three tiles each. The offset is solved rather
+ * than guessed: an un-offset column starts at the band's top (12.85) and an
+ * offset one has to END at its bottom (87.15), so with an offset `d` and a tile
+ * height `h` at the shared 3.7 gutter, `d + 3h = 66.9`. `d = 8.7` — a shift
+ * plainly bigger than the gutter, so it reads as intent and not as a
+ * misalignment — gives `h = 19.4`, and the artwork then fills the band exactly
+ * with no tile hanging off the board.
+ */
+export const LayoutStaggered = layoutPreset( [
+	[ 23.25, 12.85, 25.1, 19.4 ],
+	[ 23.25, 35.95, 25.1, 19.4 ],
+	[ 23.25, 59.05, 25.1, 19.4 ],
+	[ 52.05, 21.55, 25.1, 19.4 ],
+	[ 52.05, 44.65, 25.1, 19.4 ],
+	[ 52.05, 67.75, 25.1, 19.4 ],
+	[ 80.85, 12.85, 25.1, 19.4 ],
+	[ 80.85, 35.95, 25.1, 19.4 ],
+	[ 80.85, 59.05, 25.1, 19.4 ],
+	[ 109.65, 21.55, 25.1, 19.4 ],
+	[ 109.65, 44.65, 25.1, 19.4 ],
+	[ 109.65, 67.75, 25.1, 19.4 ],
+] );
+
+/**
+ * Perspective Scrolling — the fan of receding columns, traced off Figma's own
+ * 248x157 frame for this preset rather than derived on the shared tile band
+ * (see this section's header comment for why this preset is the exception).
+ *
+ * `<g transform="scale(158/248)">` maps that frame onto this file's 158x100
+ * viewBox at the same ratio every other preset already assumes, so the path
+ * data below is the design's own coordinates, unedited. Inside it, one `<g>`
+ * carries the fill and the clip together: the fan's skewed quadrilaterals
+ * overshoot their own silhouette by design (that is what makes the columns
+ * read as receding rather than as flat rounded rects), so the clip is load-
+ * bearing, not decorative.
+ *
+ * That clip is exactly what broke once before — see this file's header — when
+ * the retired version of this artwork shipped it as bare `id="a"` and
+ * collided with `RadiusAllIcon`'s own. Reusing the shape without repeating the
+ * bug is why the id below is `shaped-`-prefixed.
+ */
+export const LayoutPerspective = (
+	<svg width="158" height="100" viewBox="0 0 158 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path className="sp-shaped-gallery-layout-icon-bg" fill={ PRESET_BG } d="M0 0h158v100H0z" />
+		<g transform="scale(0.637097)">
+			<g clipPath="url(#shaped-layout-perspective-clip)" fill={ PRESET_FG }>
+				<path d="m95.696 85.066-5.703 40.526a2.147 2.147 0 0 0 2.126 2.446h62.717a2.147 2.147 0 0 0 2.129-2.421l-5.228-40.527a2.15 2.15 0 0 0-2.13-1.872H97.822c-1.07 0-1.977.788-2.126 1.848m4.333-30.666-3.045 21.654A2.147 2.147 0 0 0 99.11 78.5h49.298a2.148 2.148 0 0 0 2.129-2.427l-2.855-21.655a2.15 2.15 0 0 0-2.128-1.867h-43.399a2.146 2.146 0 0 0-2.126 1.848m2.837-20.051-1.638 11.629a2.147 2.147 0 0 0 2.126 2.446h41.097c1.298 0 2.3-1.144 2.128-2.431l-1.555-11.63a2.15 2.15 0 0 0-2.128-1.862h-37.904c-1.07 0-1.977.788-2.126 1.848m-72.454 64.32L20.02 123.995a2.147 2.147 0 0 0 1.991 2.962l59.663-.146a2.146 2.146 0 0 0 2.108-1.768l4.513-25.181a2.147 2.147 0 0 0-2.113-2.526H32.399c-.871 0-1.656.526-1.987 1.332m13.706-33.012-9.419 22.82a2.147 2.147 0 0 0 1.985 2.966H87.98a2.15 2.15 0 0 0 2.113-1.765l4.128-22.82a2.147 2.147 0 0 0-2.112-2.528H46.103c-.87 0-1.653.524-1.985 1.327m5.528-5.453H93.53a2.15 2.15 0 0 0 2.112-1.761l4.279-23.41a2.147 2.147 0 0 0-2.112-2.532h-38.47c-.868 0-1.651.523-1.983 1.326l-9.693 23.408a2.147 2.147 0 0 0 1.983 2.969" />
+				<path d="M30.412 98.668 20.02 123.995a2.147 2.147 0 0 0 1.991 2.962l59.663-.146a2.146 2.146 0 0 0 2.108-1.768l4.513-25.181a2.147 2.147 0 0 0-2.113-2.526H32.399c-.871 0-1.656.526-1.987 1.332m13.706-33.012-9.419 22.82a2.147 2.147 0 0 0 1.985 2.966H87.98a2.15 2.15 0 0 0 2.113-1.765l4.128-22.82a2.147 2.147 0 0 0-2.112-2.528H46.103c-.87 0-1.653.524-1.985 1.327m5.528-5.453H93.53a2.15 2.15 0 0 0 2.112-1.761l4.279-23.41a2.147 2.147 0 0 0-2.112-2.532h-38.47c-.868 0-1.651.523-1.983 1.326l-9.693 23.408a2.147 2.147 0 0 0 1.983 2.969m167.942 38.465 10.393 25.327a2.147 2.147 0 0 1-1.991 2.962l-59.663-.146a2.145 2.145 0 0 1-2.108-1.768l-4.513-25.181a2.147 2.147 0 0 1 2.113-2.526h53.782c.871 0 1.656.526 1.987 1.332m-13.706-33.012 9.419 22.82a2.147 2.147 0 0 1-1.985 2.966H160.02a2.15 2.15 0 0 1-2.113-1.765l-4.129-22.82a2.147 2.147 0 0 1 2.113-2.528h46.006c.87 0 1.653.524 1.985 1.327m-5.529-5.453H154.47a2.15 2.15 0 0 1-2.112-1.761l-4.279-23.41a2.147 2.147 0 0 1 2.112-2.532h38.469c.869 0 1.652.523 1.984 1.326l9.693 23.408a2.147 2.147 0 0 1-1.984 2.969" />
+			</g>
+		</g>
+		<defs>
+			<clipPath id="shaped-layout-perspective-clip">
+				<path fill="#fff" d="M18.8 32.5h210.4v92H18.8z" />
+			</clipPath>
+		</defs>
+	</svg>
+);
+
 /* ------------------------------------------------------------------ *
  * Layout picker chrome (Figma 9:23119)
  *
@@ -416,6 +531,38 @@ export const youtubeIcon = (
 	</SVG>
 );
 
+/*
+ * ShapedGallery Pro's Vimeo, TikTok and Wistia marks
+ * (`shaped-gallery-pro/app/icons/index.js`), drawn as locked rows in the media
+ * modal's source list. Filled like the YouTube mark, and each centred in the same
+ * 24×24 box: Vimeo's 20×18 and TikTok's 20×20 artwork are translated in, and
+ * TikTok drops Pro's full-box clip path, which clipped nothing but would add a
+ * document-wide `id` to every modal that drew it.
+ */
+export const vimeoIcon = (
+	<SVG viewBox="0 0 24 24" fill="currentColor">
+		<Path
+			transform="translate(2 3)"
+			d="M17.08 0c-3.716 0-5.475 4.784-5.475 4.784l.286.416c.33-.196.724-.416 1.18-.416.497 0 .908.363.908 1.326 0 1.594-1.83 5.513-3.473 5.513-.73 0-1.059-1.18-1.532-3.309q-.239-.937-.852-4.786C7.743 1.15 7.472.199 6.124.199 3.034.2 0 4.487 0 4.487l.44.913c.33-.197.721-.418 1.297-.418 1.095 0 1.205 1.212 1.835 3.459l1.7 6.182C5.85 16.718 7.038 18 8.498 18c2.191 0 4.298-1.85 7.162-5.542 1.334-1.7 2.737-3.985 3.474-5.595C19.875 5.24 20 3.86 20 3.225 20 1.382 19.27 0 17.079 0"
+		/>
+	</SVG>
+);
+
+export const tiktokIcon = (
+	<SVG viewBox="0 0 24 24" fill="currentColor">
+		<Path
+			transform="translate(2 2)"
+			d="M14.932 4.115a5.22 5.22 0 0 1-1.25-3.539L10.529.5v13.493c-.85 3.783-6.324 2.796-5.776-1.053.306-1.758 2.195-2.84 3.873-2.228V7.495c-3.654-.636-7.117 2.272-7.08 5.978.32 8.036 11.845 8.037 12.165 0-.08-.288-.036-5.643-.047-6.095a8.53 8.53 0 0 0 4.79 1.281V5.337c-1.561 0-2.753-.415-3.522-1.222"
+		/>
+	</SVG>
+);
+
+export const wistiaIcon = (
+	<SVG viewBox="0 0 24 24" fill="currentColor">
+		<Path d="M11.261 14.057H8.364c-.91 0-1.762.227-2.387.909L2.17 19.34c2.785.17 5.682.17 7.728.17 10.398 0 12.045-6.25 12.102-9.375-.91 1.137-3.636 3.92-10.739 3.92M20.693 4c-.057.511-.34 2.727-6.59 2.727-5.058 0-7.103 0-12.103-.113l3.75 4.318c.739.852 1.761 1.136 2.898 1.193 1.25 0 2.954.057 3.182.057 6.988 0 9.943-3.239 9.943-5.568.056-1.25-.341-2.046-1.08-2.614" />
+	</SVG>
+);
+
 /**
  * Map of source-icon keys → icon elements. The media-source registry stays pure
  * data (string keys); presentation (MediaSidebar) resolves the element here.
@@ -426,6 +573,9 @@ export const SOURCE_ICONS = {
 	images: imagesIcon,
 	video: videoIcon,
 	youtube: youtubeIcon,
+	vimeo: vimeoIcon,
+	tiktok: tiktokIcon,
+	wistia: wistiaIcon,
 	link: linkIcon,
 };
 
@@ -1771,4 +1921,43 @@ export const TrashIcon = () => (
 	<SVG width={ 24 } height={ 24 } viewBox="0 0 24 24" aria-hidden="true">
 		<Path { ...stroke } d="M4 7h16M10 4h4a1 1 0 0 1 1 1v2H9V5a1 1 0 0 1 1-1M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M10 11v6M14 11v6" />
 	</SVG>
+);
+
+/* ------------------------------------------------------------------ *
+ * Pro teaser marks
+ *
+ * The crown is the one motif every upgrade prompt carries (locked layout card,
+ * "PRO" pill, locked panel title, Modules card badge) — the same crown WP Carousel
+ * Free uses, so the two ShapedPlugin products read alike. The sparkle is the bullet
+ * in a feature-list notice. Both paint with `currentColor`, so the Pro green is
+ * decided once in `_brand.scss` and never baked into the SVG.
+ * ------------------------------------------------------------------ */
+
+/**
+ * Crown — the Pro mark.
+ *
+ * @param {Object} props
+ * @param {number} [props.size] Rendered edge length in px.
+ * @return {JSX.Element} Icon.
+ */
+export const ProCrownIcon = ( { size = 16 } ) => (
+	<svg
+		width={ size }
+		height={ size }
+		viewBox="0 0 16 16"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		aria-hidden="true"
+		focusable="false"
+	>
+		<path
+			stroke="currentColor"
+			strokeWidth={ 1.185 }
+			d="M10.384 5.882c.18.329.478.572.842.648.322.068.652-.007.922-.203l.112-.092 1.396-1.279 1.159-1.062-.81 6.437H2.124l-.812-6.437 2.556 2.341c.288.264.666.373 1.035.295.364-.076.662-.32.841-.648l2.32-4.254 2.32 4.254Z"
+		/>
+		<path
+			fill="currentColor"
+			d="M13.851 14.873H2.274c-.373 0-.674-.369-.674-.824V12.24h12.925v1.81c0 .454-.301.823-.674.823Z"
+		/>
+	</svg>
 );

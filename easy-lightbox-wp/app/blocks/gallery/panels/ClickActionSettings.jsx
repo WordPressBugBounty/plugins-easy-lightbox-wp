@@ -35,10 +35,14 @@
  * The panel is universal — shown for every layout (module state permitting), and
  * mounted whenever it has something to show, since it owns the control that
  * decides whether a lightbox is used at all.
+ *
+ * Under the Lightbox note, a closing Pro note (`ProNotice` with a feature list)
+ * naming what Pro's viewer adds. It is shown only while the choice IS Lightbox,
+ * the one moment the user is thinking about the viewer.
  */
 import { createInterpolateElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { ChildPanelBody, ButtonGroup } from '@shaped-gallery/components';
+import { ChildPanelBody, ButtonGroup, ProNotice } from '@shaped-gallery/components';
 
 /**
  * Click Action Type — what a tile click does at all. "Lightbox" / "URL" are
@@ -136,6 +140,18 @@ export default function ClickActionSettings( { attributes, setAttributes } ) {
 						) }
 					</p>
 				</div>
+			) }
+
+			{ isLightbox && (
+				<ProNotice
+					showOffer
+					features={ [
+						__( 'Lightbox Icon on Hover', 'easy-lightbox-wp' ),
+						__( 'Image Title & Caption', 'easy-lightbox-wp' ),
+						__( 'Lightbox Toolbar (zoom, share, download)', 'easy-lightbox-wp' ),
+						__( 'Thumbnail Navigation', 'easy-lightbox-wp' ),
+					] }
+				/>
 			) }
 		</ChildPanelBody>
 	);

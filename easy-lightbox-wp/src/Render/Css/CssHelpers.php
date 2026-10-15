@@ -20,6 +20,43 @@ if ( ! defined( 'WPINC' ) ) {
 final class CssHelpers {
 
 	/**
+	 * Typography families whose generic fallback is `serif` (mirrors app/lib/font-stack.js).
+	 *
+	 * @var string[]
+	 */
+	private const SERIF_FAMILIES = array( 'georgia', 'times new roman', 'playfair display', 'merriweather' );
+
+	/**
+	 * Typography families whose generic fallback is `monospace`.
+	 *
+	 * @var string[]
+	 */
+	private const MONO_FAMILIES = array( 'courier new' );
+
+	/**
+	 * Typography families whose generic fallback is `sans-serif`.
+	 *
+	 * @var string[]
+	 */
+	private const SANS_FAMILIES = array(
+		'arial',
+		'helvetica',
+		'verdana',
+		'tahoma',
+		'trebuchet ms',
+		'roboto',
+		'open sans',
+		'lato',
+		'montserrat',
+		'poppins',
+		'inter',
+		'nunito',
+		'raleway',
+		'source sans pro',
+		'oswald',
+	);
+
+	/**
 	 * Join a flat property => value map into a CSS declaration string.
 	 *
 	 * Used to build the container's inline custom-property list, e.g.
@@ -280,6 +317,42 @@ final class CssHelpers {
 	}
 
 	/**
+	 * Complete a typography family with its generic fallback.
+	 *
+	 * The Typography control offers named faces (Roboto, Open Sans, Inter, …) but the
+	 * plugin fetches no web fonts, so on a visitor without one installed the declaration
+	 * `font-family: Roboto` matches nothing and the browser falls back to its DEFAULT
+	 * font — a serif — for a face that is sans-serif. Appending the family's generic
+	 * keeps the fallback in the same style as the face that was asked for. An installed
+	 * font still wins, so nothing changes for anyone who has it.
+	 *
+	 * A family outside the control's list (a stored custom value) and a value that is
+	 * already a stack (it carries a comma) are returned untouched.
+	 *
+	 * @param string $family Family as stored in the typography bundle.
+	 * @return string Family, with its generic fallback when it is one the control offers.
+	 */
+	public static function font_stack( string $family ): string {
+		$family = trim( $family );
+		$key    = strtolower( $family );
+
+		if ( '' === $family || false !== strpos( $family, ',' ) ) {
+			return $family;
+		}
+		if ( in_array( $key, self::SERIF_FAMILIES, true ) ) {
+			return $family . ', serif';
+		}
+		if ( in_array( $key, self::MONO_FAMILIES, true ) ) {
+			return $family . ', monospace';
+		}
+		if ( in_array( $key, self::SANS_FAMILIES, true ) ) {
+			return $family . ', sans-serif';
+		}
+
+		return $family;
+	}
+
+	/**
 	 * Emit the font face properties of a typography bundle.
 	 *
 	 * Family / weight / style / transform / decoration — none of which is
@@ -298,7 +371,7 @@ final class CssHelpers {
 		$vars = array();
 
 		$once = array(
-			'ff'  => $typo['family'] ?? '',
+			'ff'  => self::font_stack( (string) ( $typo['family'] ?? '' ) ),
 			'fw'  => $typo['fontWeight'] ?? '',
 			'fst' => ( ! empty( $typo['style'] ) && 'normal' !== $typo['style'] ) ? $typo['style'] : '',
 			'tt'  => ( ! empty( $typo['transform'] ) && 'none' !== $typo['transform'] ) ? $typo['transform'] : '',

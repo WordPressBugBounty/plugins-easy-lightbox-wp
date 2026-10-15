@@ -54,3 +54,6 @@ export { default as SpPopover } from './popover';
 export { default as PositionPicker } from './positionPicker';
 export { default as Modal } from './modal';
 export { default as SortableItem } from './sortableItem';
+
+/* Pro teasers — upgrade prompts and locked-control chrome (see ./pro). */
+export { ProBadge, ProCardBadge, ProTag, ProNotice, ProPanel, upgradeUrl, openUpgrade } from './pro';

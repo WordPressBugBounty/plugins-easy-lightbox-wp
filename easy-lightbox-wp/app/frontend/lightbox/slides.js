@@ -150,9 +150,14 @@ export function buildMedia( item, autoplay ) {
 		// The URL — and whether the provider's autoplay parameter rides along —
 		// comes from the shared embeds module, so the inline-video runtime and the
 		// viewer frame a provider identically.
+		const url = embedUrl( item.full, item.provider, autoplay );
+		if ( ! url ) {
+			// Not a safe player for this provider: the viewer's error state, not a frame.
+			return null;
+		}
 		const frame = document.createElement( 'iframe' );
 		frame.className = 'sp-shaped-gallery-lightbox__media';
-		frame.src = embedUrl( item.full, item.provider, autoplay );
+		frame.src = url;
 		frame.title = item.title || item.alt || '';
 		frame.setAttribute( 'allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen' );
 		frame.setAttribute( 'allowfullscreen', '' );

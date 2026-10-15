@@ -3,6 +3,158 @@
  * never from JS (see the header comment there).
  */
 
+/* --- offer bar --------------------------------------------------------------- */
+
+/*
+ * The Pro offer strip above the header (components/OfferBar.jsx).
+ *
+ * Ground, sizes, spacing and colours are the finalised top-banner design's
+ * variation 1k: a flat 48px navy strip, one centred line — dot and access message,
+ * a 1x16 hairline, the offer, an outlined "Get it now" — 16px between the groups
+ * and 10px from the dot to its text. Colours come from the offer ramp in
+ * `styles/_brand.scss`; the white washes are alpha over that ground and measured
+ * there too.
+ *
+ * Two departures from the design. Its type is Inter, which this screen does not
+ * load (§19: no external request), so the bar keeps the admin's system stack. And
+ * it reflows at this screen's own breakpoint (600, see admin.scss): the hairline
+ * only separates two messages sharing a line, so it goes, and the access message
+ * takes a row above the offer and its button.
+ */
+.sp-shaped-gallery-dash-offer {
+	flex: 0 0 auto;
+	width: 100%;
+	color: rgba(#fff, 0.75);
+	background: $sp-shaped-gallery-offer-night;
+	font-size: 14px;
+	line-height: 1.35;
+
+	&__inner {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px 16px;
+		align-items: center;
+		justify-content: center;
+		max-width: 1280px;
+		min-height: 50px;
+		margin: 0 auto;
+		padding: 9px 40px;
+	}
+
+	&__access,
+	&__deal {
+		min-width: 0;
+
+		strong {
+			color: #fff;
+			font-weight: 600;
+		}
+	}
+
+	&__access {
+		display: inline-flex;
+		gap: 10px;
+		align-items: center;
+	}
+
+	/* An 8px dot in a 3px halo of its own colour — "open", beside the words that say so. */
+	&__dot {
+		flex: 0 0 auto;
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: $sp-shaped-gallery-offer-live;
+		box-shadow: 0 0 0 3px rgba($sp-shaped-gallery-offer-live, 0.2);
+	}
+
+	&__divider {
+		flex: 0 0 auto;
+		width: 1px;
+		height: 16px;
+		background: rgba(#fff, 0.2);
+	}
+
+	&__deal {
+		small {
+			color: rgba(#fff, 0.6);
+			font-size: 12px;
+		}
+
+		strong {
+			color: $sp-shaped-gallery-offer-gold;
+			font-weight: 700;
+		}
+	}
+
+	/*
+	 * Compound with `-extlink`, which `ExternalLink` puts on the same anchor with a
+	 * blue `color` of equal single-class weight (see the links section below). The
+	 * focus ring is white, offset clear of the rim: the screen's accent ring would
+	 * be 3.6:1 on white but far less on this ground.
+	 */
+	&__button.sp-shaped-gallery-dash-extlink {
+		flex: 0 0 auto;
+		height: 30px;
+		padding: 0 14px;
+		border: 1px solid rgba(#fff, 0.35);
+		border-radius: var(--sp-shaped-gallery-dash-radius-sm);
+		color: #fff;
+		font-size: 14px;
+		font-weight: 600;
+		line-height: 1;
+		transition: background-color 0.14s, border-color 0.14s;
+
+		&:hover {
+			border-color: rgba(#fff, 0.7);
+			color: #fff;
+			background: rgba(#fff, 0.08);
+		}
+
+		&:focus {
+			box-shadow: none;
+		}
+
+		&:focus-visible {
+			outline: 2px solid #fff;
+			outline-offset: 2px;
+		}
+	}
+
+	@media (max-width: 1024px) {
+		&__inner {
+			padding-inline: 20px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		&__inner {
+			gap: 8px 12px;
+			padding: 10px 16px;
+		}
+
+		&__access {
+			flex-basis: 100%;
+			justify-content: center;
+			text-align: center;
+		}
+
+		&__divider {
+			display: none;
+		}
+
+		&__access,
+		&__deal {
+			font-size: 13px;
+		}
+
+		&__button.sp-shaped-gallery-dash-extlink {
+			height: 28px;
+			padding-inline: 12px;
+			font-size: 13px;
+		}
+	}
+}
+
 /* --- nav --------------------------------------------------------------------- */
 
 .sp-shaped-gallery-dash-nav {
@@ -12,6 +164,7 @@
 	 * whatever space is left over. The help menu still gets the rest of the row via
 	 * its own `margin-inline-start: auto` (see HeaderBar's admin.scss).
 	 */
+	position: relative;
 	display: flex;
 	flex: 0 0 auto;
 	margin-inline-start: 44px;
@@ -64,20 +217,23 @@
 
 		&.is-active {
 			color: var(--sp-shaped-gallery-dash-accent-strong);
-
-			/*
-			 * A static bar, per the design. A measured sliding indicator would need
-			 * resize and webfont re-measure handling for no visible gain.
-			 */
-			&::after {
-				content: '';
-				position: absolute;
-				inset-inline: 0;
-				bottom: -1px;
-				height: 2px;
-				background: var(--sp-shaped-gallery-dash-accent);
-			}
 		}
+	}
+
+	/*
+	 * The active underline: one bar for the whole nav, placed by TabNav under the
+	 * active link and slid to the next one, as in the sibling dashboard (WP
+	 * Carousel Free, 0.3s ease on left and width). `bottom: -1px` lays it over the
+	 * header's 1px border, where the per-link bar used to sit, since the nav is as
+	 * tall as its links. The reduced-motion rule in admin.scss makes it jump.
+	 */
+	&__indicator {
+		position: absolute;
+		bottom: -1px;
+		height: 2px;
+		background: var(--sp-shaped-gallery-dash-accent);
+		pointer-events: none;
+		transition: left 0.3s ease, width 0.3s ease;
 	}
 }
 

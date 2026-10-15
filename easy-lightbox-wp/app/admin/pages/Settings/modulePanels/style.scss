@@ -696,3 +696,10 @@
 		border-radius: 0;
 	}
 }
+
+/* --- Pro note -------------------------------------------------------------
+ * The Lightbox drawer closes its groups with a Pro feature card (`ProNotice`,
+ * `panel.proNotice`), set off from the last row like a group of its own. */
+.sp-shaped-gallery-module-panel__pro-notice {
+	margin-top: 24px;
+}

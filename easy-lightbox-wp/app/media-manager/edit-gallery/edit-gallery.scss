@@ -437,36 +437,40 @@ $sp-shaped-gallery-white: #fff;
 	}
 
 	/* Remove-from-gallery button — top-right, always visible (the corner is
-	 * free: nothing else is drawn over the thumbnail). Same red disc as the
-	 * external pane's staged-tile remove (`.sp-shaped-gallery-external__remove`
-	 * in chrome.scss) so "remove" reads the same everywhere in the manager. */
+	 * free: nothing else is drawn over the thumbnail). Same small grey disc as
+	 * ShapedGallery Pro's Edit Gallery card, so the control looks identical
+	 * whichever build is active. */
 	&__remove {
 		position: absolute;
-		top: 6px;
-		right: 6px;
+		top: 8px;
+		right: 8px;
 		z-index: 3;
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		box-sizing: border-box;
-		width: 24px;
-		height: 24px;
+		width: 18px;
+		height: 18px;
 		padding: 0;
-		color: $sp-shaped-gallery-white;
-		background: #e02d2d;
-		border: 0;
+		color: $sp-shaped-gallery-black;
+		background: rgba(255, 255, 255, 0.92);
+		border: 1px solid rgba(0, 0, 0, 0.15);
 		border-radius: 50%;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 		cursor: pointer;
 
+		/* The glyph is sized here, not by `Icon size=` alone: an 18px icon in an
+		 * 18px box leaves no room for the border and clips. */
 		svg {
-			width: 20px;
-			height: 20px;
+			width: 14px;
+			height: 14px;
 			fill: currentcolor;
 		}
 
 		&:hover {
-			background: #c41f1f;
+			color: #b32d2e;
+			background: $sp-shaped-gallery-white;
+			border-color: #b32d2e;
 		}
 		&:focus-visible {
 			outline: 2px solid $sp-shaped-gallery-blue;

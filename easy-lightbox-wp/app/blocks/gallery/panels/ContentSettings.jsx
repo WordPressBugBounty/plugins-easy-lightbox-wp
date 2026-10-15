@@ -99,7 +99,7 @@ function SettingsTab( { attributes, setAttributes } ) {
 				<>
 					<SelectField
 						label={ __( 'Image Title Source', 'easy-lightbox-wp' ) }
-						value={ content.imageTitleSource ?? 'title' }
+						value={ content.imageTitleSource ?? 'caption' }
 						onChange={ ( value ) => update( 'imageTitleSource', value ) }
 						items={ [
 							{ label: __( 'Attachment Title', 'easy-lightbox-wp' ), value: 'title' },

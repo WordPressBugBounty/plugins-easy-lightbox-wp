@@ -3,7 +3,16 @@
  *
  * Data, not code branches — mirrors `picker/layouts.data.js`. The sidebar, its
  * active state, and the query the grid runs are all derived from this array.
- * Every entry is wired and actionable — there are no locked teasers.
+ * Every entry in a group's `items` is wired and actionable.
+ *
+ * A group's `proItems` are ShapedGallery Pro's extra sources (ids, labels and
+ * icons are Pro's own, `shaped-gallery-pro/app/media-manager/media-sources.data.js`),
+ * drawn after the real rows as locked rows that open the upgrade page instead of
+ * switching source — the media-modal twin of `PRO_LAYOUTS`. They are a separate
+ * list, never `items` with a flag, for the same reason: `allSources()` and
+ * `getSource()` read `items` only, so the modal can never make one the active
+ * source, and this build has no provider to back it (`GET /media` has no
+ * `vimeo` / `tiktok` / `wistia` branch).
  *
  * Adding a real source later is one registry entry plus a provider class — and a
  * future "Connect & Import" group (Dropbox, Google Photos, …) drops in here as
@@ -67,6 +76,26 @@ export const MEDIA_SOURCE_GROUPS = [
 				provider: "youtube",
 				type: "video",
 				kind: "external",
+			},
+		],
+		proItems: [
+			{
+				id: "vimeo",
+				label: __("Vimeo", "easy-lightbox-wp"),
+				icon: "vimeo",
+				pro: true,
+			},
+			{
+				id: "tiktok",
+				label: __("TikTok", "easy-lightbox-wp"),
+				icon: "tiktok",
+				pro: true,
+			},
+			{
+				id: "wistia",
+				label: __("Wistia", "easy-lightbox-wp"),
+				icon: "wistia",
+				pro: true,
 			},
 		],
 	},

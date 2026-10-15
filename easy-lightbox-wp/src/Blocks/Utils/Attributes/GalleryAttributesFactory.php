@@ -128,7 +128,7 @@ class GalleryAttributesFactory {
 			'content' => Attributes::object(
 				array(
 					'imageTitle'             => false,
-					'imageTitleSource'       => 'title',
+					'imageTitleSource'       => 'caption',
 					'imageTitleTag'          => 'h4',
 					'imageDescription'       => false,
 					'imageDescriptionSource' => 'caption',

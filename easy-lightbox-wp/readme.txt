@@ -4,9 +4,9 @@ Tags: image gallery, photo gallery, masonry gallery, video gallery, lightbox
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL-2.0-or-later
-License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Create responsive image, photo and video galleries with justified, grid and masonry layouts, one-click Ready Patterns and a built-in lightbox.
 
@@ -15,6 +15,8 @@ Create responsive image, photo and video galleries with justified, grid and maso
 Create beautiful image galleries with ShapedGallery's visual layout picker. Build justified, grid, masonry and video galleries without writing a line of code. It's made for photographers, designers, bloggers, agencies and anyone who wants a fast, responsive gallery on their WordPress website.
 
 ShapedGallery makes building a photo gallery simple. Pick a layout, add images from your Media Library, style it in the live preview, and publish. What you see in the editor is what your visitors get, on desktop, tablet and mobile.
+
+[__Live Demo__](https://shapedgallery.com/patterns/) | [__Documentation__](https://docs.shapedgallery.com/) | [__Support__](https://shapedgallery.com/contact-us/) | [__Upgrade to Pro!__](https://shapedgallery.com/pricing/?ref=1)
 
 ### The Fast, Block-First WordPress Gallery Plugin
 
@@ -124,6 +126,8 @@ Elementor is on by default. Turn on the others in **ShapedGallery → Settings �
 * Multisite support
 * Translation-ready and accessible, with full keyboard support
 
+https://www.youtube.com/watch?v=2AtuzGa0pkE
+
 
 == Installation ==
 
@@ -201,6 +205,21 @@ No. Existing `litebox` links, image sets and the automatic lightbox on WordPress
 Easy Lightbox is now ShapedGallery: a full photo and video gallery builder, from the same team, on this same plugin listing. Your existing lightbox keeps working exactly as it does today — the `litebox` links, image sets and automatic WordPress gallery lightbox are all carried over, and nothing on your site changes until you choose to build a gallery. Requires WordPress 6.8 and PHP 8.1; sites below either are not offered this update and keep running 1.1.4.
 
 == Changelog ==
+
+= 1.2.1 - Oct 15, 2026 =
+* Security: YouTube embed links are held to YouTube's own hosts before a gallery tile or the lightbox frames them.
+* New: The Upload tab shows each batch's progress and hands finished uploads to the Media Library.
+* New: Images and videos added by link get their own details panel.
+* New: Pro layouts, video sources and options are listed in the editor and dashboard, with links to upgrade.
+* Change: Image Title Source now defaults to the attachment caption, so a gallery that never set it shows captions instead of attachment titles.
+* Fix: An external link that stalls now times out instead of staying on "Adding…".
+* Fix: YouTube Shorts added by link are sized as portrait.
+* Fix: A missing font falls back to a matching generic family instead of the browser default.
+* Fix: The Order control's Random setting now shows on the editor canvas.
+* Fix: The details panel no longer shows an item from another media source.
+* Fix: The image under a Classic title or description keeps its rounded corners.
+* Fix: Opening a long dashboard page keeps the navigation in view.
+* Fix: The alt-text help links to the W3C guidance.
 
 = 1.2.0 - Oct 06, 2026 =
 * New: Responsive justified, grid and masonry photo and video galleries from your Media Library, with a visual layout picker.

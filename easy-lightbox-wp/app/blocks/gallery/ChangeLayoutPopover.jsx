@@ -19,7 +19,7 @@
 import { Popover } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { getRandomId } from '@shaped-gallery/controls';
-import { LAYOUTS } from '@shaped-gallery/picker';
+import { LAYOUTS, PRO_LAYOUTS } from '@shaped-gallery/picker';
 import LayoutCard from '@shaped-gallery/picker/LayoutCard';
 
 export default function ChangeLayoutPopover( { value, onApply, children } ) {
@@ -70,6 +70,9 @@ export default function ChangeLayoutPopover( { value, onApply, children } ) {
 									compact
 									onSelect={ select }
 								/>
+							) ) }
+							{ PRO_LAYOUTS.map( ( layout ) => (
+								<LayoutCard key={ layout.id } layout={ layout } compact />
 							) ) }
 						</div>
 					</div>

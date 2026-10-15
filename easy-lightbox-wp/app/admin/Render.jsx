@@ -1,5 +1,6 @@
 /**
- * Dashboard shell: header chrome + hash router over the four routes.
+ * Dashboard shell: header chrome + hash router over the four routes. The Pro offer
+ * bar sits above the header on every route, and only while the offer runs.
  *
  * PHP redirects the Manage / Settings / About Us submenu slugs to this page plus a hash, so
  * `location.hash` is the authoritative route; the mount node's `data-route` is only
@@ -11,6 +12,7 @@ import { ConfigProvider } from './ConfigContext';
 import { resolveConfig } from './config';
 import { DEFAULT_ROUTE, ROUTES, parseHash, resolveRoute } from './routes';
 import { syncSidebarActive } from './sidebar-sync';
+import OfferBar from './components/OfferBar';
 import HeaderBar from './components/HeaderBar';
 import FooterBar from './components/FooterBar';
 import SupportBubble from './components/SupportBubble';
@@ -76,6 +78,12 @@ export default function Render( { route: dataRoute, config: rawConfig } ) {
 
 	// Route change: reset scroll, move focus to the new screen (announcing it), and
 	// re-light the matching WP sidebar item. Focus is not stolen on first paint.
+	//
+	// The focus must not scroll. A `<main>` taller than the viewport (About Us) is
+	// scrolled into view by a plain focus(), which lines its top up with the
+	// viewport's and pushes the offer bar and the tabs off-screen — undoing the
+	// scrollTo above on exactly the routes long enough to need it. Every route
+	// opens at the top, with the nav in view.
 	useEffect( () => {
 		syncSidebarActive( route, config.sidebarMenu );
 
@@ -85,7 +93,7 @@ export default function Render( { route: dataRoute, config: rawConfig } ) {
 		}
 
 		window.scrollTo( { top: 0 } );
-		mainRef.current?.focus();
+		mainRef.current?.focus( { preventScroll: true } );
 	}, [ route, config.sidebarMenu ] );
 
 	const Page = PAGES[ route ] || GettingStarted;
@@ -98,6 +106,7 @@ export default function Render( { route: dataRoute, config: rawConfig } ) {
 					reverseOrder={ false }
 					containerClassName="sp-shaped-gallery-dash-toaster"
 				/>
+				<OfferBar />
 				<HeaderBar route={ route } onNavigate={ navigate } />
 
 				<main className="sp-shaped-gallery-dash__body" ref={ mainRef } tabIndex={ -1 }>

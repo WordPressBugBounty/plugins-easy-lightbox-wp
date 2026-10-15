@@ -33,6 +33,7 @@ import {
 	contentStyle,
 } from '@shaped-gallery/lib/style';
 import { useDeviceType } from '@shaped-gallery/hooks';
+import { applyOrder, mergeEditedItems, newOrderSeed, RANDOM_ORDER } from '@shaped-gallery/lib/item-order';
 import { fetchMediaItems } from '@shaped-gallery/media-manager/normalize';
 import { useMeasuredLayout } from './useMeasuredLayout';
 import { useImageSources } from './useImageSources';
@@ -48,6 +49,7 @@ import {
 	swappedMediaIds,
 	unresolvedMediaIds,
 	applyMedia,
+	itemKey,
 } from './image-blocks';
 
 /** Only images are insertable; the appender is hidden (media is added via the modals). */
@@ -68,16 +70,27 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 		columns,
 		horizontalGap,
 		verticalGap,
+		order,
 	} = attributes;
 	const containerRef = useRef( null );
 	const device = useDeviceType();
+
+	/*
+	 * The Order control. `items` stays the author's order (the single source of truth
+	 * the modals, the drag handles and `save` all read); Random is a VIEW over it, dealt
+	 * by the same seeded shuffle the renderer uses so the canvas can show the effect. The
+	 * seed is drawn when Random is chosen, not on every render, or the tiles would
+	 * reshuffle under the author's cursor on each keystroke.
+	 */
+	const seed = useMemo( () => newOrderSeed(), [ order ] ); // eslint-disable-line react-hooks/exhaustive-deps
+	const shownItems = useMemo( () => applyOrder( items, order, seed ), [ items, order, seed ] );
 
 	const gh = resolveResponsive( horizontalGap, device ) || 20;
 	const gv = resolveResponsive( verticalGap, device ) || 20;
 	const cols = resolveResponsive( columns, device ) || 4;
 
 	// The controlled value handed to the editor. Seeded from items[] once.
-	const [ blocks, setBlocks ] = useState( () => itemsToImageBlocks( items, [] ) );
+	const [ blocks, setBlocks ] = useState( () => itemsToImageBlocks( shownItems, [] ) );
 	// Latest blocks, read inside effects/callbacks without re-subscribing.
 	const blocksRef = useRef( blocks );
 	blocksRef.current = blocks;
@@ -86,11 +99,11 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 	// rebuild the blocks so the inner blocks catch up. Our own mirror-back leaves
 	// the signatures equal, so this is a no-op for changes we originated.
 	useEffect( () => {
-		if ( itemsSignature( items ) !== blocksSignature( blocksRef.current ) ) {
-			setBlocks( itemsToImageBlocks( items, blocksRef.current ) );
+		if ( itemsSignature( shownItems ) !== blocksSignature( blocksRef.current ) ) {
+			setBlocks( itemsToImageBlocks( shownItems, blocksRef.current ) );
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ items ] );
+	}, [ shownItems ] );
 
 	// State for the media top-up below; declared up here because `syncFromEditor`
 	// is what fills `swapped`.
@@ -108,8 +121,12 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 		setBlocks( nextBlocks );
 		// Noted BEFORE the mirror-back, which is the only moment the old media and
 		// the new are both in hand (see the top-up effect below).
-		swappedMediaIds( nextBlocks, items ).forEach( ( id ) => swapped.current.add( id ) );
-		const nextItems = blocksToItems( nextBlocks, items );
+		swappedMediaIds( nextBlocks, shownItems ).forEach( ( id ) => swapped.current.add( id ) );
+		const nextShown = blocksToItems( nextBlocks, shownItems );
+		// Under Random the editor hands back the SHUFFLED list; writing that to `items`
+		// would make the shuffle permanent, so the edit is folded into the stored order.
+		const nextItems =
+			RANDOM_ORDER === order ? mergeEditedItems( items, shownItems, nextShown, itemKey ) : nextShown;
 		if ( itemsSignature( nextItems ) !== itemsSignature( items ) ) {
 			setAttributes( { items: nextItems } );
 		}
@@ -199,7 +216,7 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 
 	useMeasuredLayout( containerRef, {
 		layout,
-		items,
+		items: shownItems,
 		rowHeightMode,
 		maxRowHeight,
 		gh,
@@ -284,9 +301,9 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 	 * tile the drag moved.
 	 */
 	const tileContext = useMemo( () => {
-		const { tiles, byKey } = tileEntries( blocks, items );
+		const { tiles, byKey } = tileEntries( blocks, shownItems );
 		return { content: attributes.content || {}, tiles, byKey, sources };
-	}, [ blocks, items, attributes.content, sources ] );
+	}, [ blocks, shownItems, attributes.content, sources ] );
 
 	// Defensive: the parent shows a Placeholder while items[] is empty, so this
 	// component normally only mounts with images present.

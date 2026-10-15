@@ -88,6 +88,41 @@ export const LightboxModuleMark = () => (
 	</svg>
 );
 
+/*
+ * ShapedGallery Pro's two module marks, copied verbatim from Pro, for the locked
+ * Pro cards under the Free modules (see `Modules.jsx`) — the card shows the same
+ * tile the user gets after upgrading.
+ */
+export const WatermarkModuleMark = () => (
+	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+		<path d="M0 3a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3z" fill="url(#shaped-gallery-module-mark-watermark)" />
+		<path d="M18.554 12a6.555 6.555 0 1 0-13.109 0 6.555 6.555 0 0 0 13.11 0m.892 0a7.446 7.446 0 1 1-14.892 0 7.446 7.446 0 0 1 14.891 0" fill="#fff" />
+		<path d="m11.197 16.326-3.522-3.521a1.137 1.137 0 0 1 0-1.609l.355-.354a.445.445 0 1 1 .63.63l-.355.354a.247.247 0 0 0 0 .349l3.521 3.521a.246.246 0 0 0 .349 0l3.521-3.521a.246.246 0 0 0 0-.348l-.354-.355a.446.446 0 0 1 .63-.63l.354.354a1.137 1.137 0 0 1 0 1.609l-3.521 3.521a1.137 1.137 0 0 1-1.608 0" fill="#fff" />
+		<path d="M13.368 10.69c0-.5-.17-.985-.483-1.376L12 8.207l-.885 1.107a2.2 2.2 0 0 0-.483 1.377c0 .494.4.895.895.895h.946a.896.896 0 0 0 .895-.895m.828 0c0 .952-.772 1.723-1.723 1.724h-.946a1.723 1.723 0 0 1-1.723-1.723c0-.689.235-1.356.665-1.894l.903-1.13a.804.804 0 0 1 1.192-.07l.063.07.904 1.13a3.04 3.04 0 0 1 .665 1.894" fill="#fff" />
+		<defs>
+			<linearGradient id="shaped-gallery-module-mark-watermark" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+				<stop stopColor="#97abff" />
+				<stop offset="1" stopColor="#123597" />
+			</linearGradient>
+		</defs>
+	</svg>
+);
+
+export const ImageProtectionModuleMark = () => (
+	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+		<path d="M0 3a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3z" fill="url(#shaped-gallery-module-mark-image-protection)" />
+		<path d="M16.995 13.446q0 .3-.094.577a6.8 6.8 0 0 1-1.768 2.734c-1.045.99-2.215 1.524-3.134 1.81-.918-.287-2.088-.82-3.132-1.81a6.8 6.8 0 0 1-1.77-2.734 1.8 1.8 0 0 1-.092-.577V8.092c1.11-.298 2.17-.729 3.16-1.29q.98-.556 1.835-1.26.854.704 1.833 1.26l.405.22a13.5 13.5 0 0 0 2.757 1.07zm.828-5.618a.49.49 0 0 0-.29-.444l-.078-.026a12.7 12.7 0 0 1-2.834-1.07l-.38-.206a12 12 0 0 1-1.97-1.394.414.414 0 0 0-.543 0q-.903.789-1.97 1.394a12.7 12.7 0 0 1-3.213 1.276.485.485 0 0 0-.368.47v5.618q0 .434.137.841l.116.317a7.6 7.6 0 0 0 1.868 2.753c1.21 1.147 2.565 1.737 3.584 2.04l.058.013q.09.012.178-.014c1.019-.302 2.373-.892 3.583-2.039a7.6 7.6 0 0 0 1.985-3.07l.032-.101q.105-.361.105-.74z" fill="#fff" />
+		<path d="M14.768 12.318a2.768 2.768 0 1 0-5.536 0 2.768 2.768 0 0 0 5.536 0m.827 0a3.596 3.596 0 1 1-7.191 0 3.596 3.596 0 0 1 7.191 0" fill="#fff" />
+		<path d="M12.904 11.242a.414.414 0 0 1 .61.56l-1.465 1.591a.413.413 0 0 1-.596.013l-.955-.954a.414.414 0 0 1 .585-.585l.65.649z" fill="#fff" />
+		<defs>
+			<linearGradient id="shaped-gallery-module-mark-image-protection" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+				<stop stopColor="#3b2667" />
+				<stop offset="1" stopColor="#bc78ec" />
+			</linearGradient>
+		</defs>
+	</svg>
+);
+
 export const ImageCustomUrlModuleMark = () => (
 	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
 		<path d="M0 3a3 3 0 0 1 3-3h18a3 3 0 0 1 3 3v18a3 3 0 0 1-3 3H3a3 3 0 0 1-3-3z" fill="url(#shaped-gallery-module-mark-icu)" />

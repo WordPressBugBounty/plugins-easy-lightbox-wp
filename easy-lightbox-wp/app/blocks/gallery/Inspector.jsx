@@ -6,9 +6,13 @@
  *      the active layout via the `layoutControls()` seam (columns vs. row
  *      height, …); the rest (gaps, order, click action, ajax toggle) are
  *      universal and shared across every layout.
- *   2..N Universal panels — Image & Video, Content, Image Click Action, Ajax
- *      Pagination, Advanced. These work across all layouts; the seam keeps them
+ *   2. Ajax Pagination  — only while Layout Settings' "Ajax Pagination" toggle
+ *      is on, and directly under it, next to the toggle that revealed it.
+ *   3..N Universal panels — Image & Video, Content, Image Click Action,
+ *      Advanced. These work across all layouts; the seam keeps them
  *      extensible so any could take layout-specific controls later.
+ *   +  Image Filter & Search — a locked Pro teaser (`ProPanel`), mounted where
+ *      Pro mounts its working panel so both inspectors share one shape.
  *
  * Built from the shared `@shaped-gallery/components` control library — the
  * responsive controls own per-device read/write internally, so this panel stays
@@ -31,6 +35,7 @@ import ContentSettings from './panels/ContentSettings';
 import ClickActionSettings from './panels/ClickActionSettings';
 import AjaxPaginationSettings from './panels/AjaxPaginationSettings';
 import AdvancedSettings from './panels/AdvancedSettings';
+import ProImageFilterSearch from './panels/ProImageFilterSearch';
 
 /**
  * @param {Object}   props
@@ -114,6 +119,14 @@ export default function Inspector( { attributes, setAttributes } ) {
 				/>
 			</ChildPanelBody>
 
+			{ /* Ajax Pagination panel — shown only when the Layout Settings
+			   "Ajax Pagination" toggle is enabled, and mounted straight under that
+			   panel so it opens next to the toggle that revealed it rather than
+			   four panels further down. */ }
+			{ ajaxPagination?.enable && (
+				<AjaxPaginationSettings attributes={ attributes } setAttributes={ setAttributes } />
+			) }
+
 			{ /* Universal panels — shared across every layout; each owns editor UI
 			   + attribute writes only. Where a panel's rendering has landed, the
 			   consumers are named in that panel's own header (see ./panels/*). */ }
@@ -126,11 +139,9 @@ export default function Inspector( { attributes, setAttributes } ) {
 			   one-way door; it reveals the Lightbox note when relevant. */ }
 			<ClickActionSettings attributes={ attributes } setAttributes={ setAttributes } />
 
-			{ /* Ajax Pagination panel — shown only when the Layout Settings
-			   "Ajax Pagination" toggle is enabled. */ }
-			{ ajaxPagination?.enable && (
-				<AjaxPaginationSettings attributes={ attributes } setAttributes={ setAttributes } />
-			) }
+			{ /* Locked Pro teaser — where Pro mounts its working panel. Writes nothing
+			   (see the panel's own header). */ }
+			<ProImageFilterSearch />
 
 			<AdvancedSettings attributes={ attributes } setAttributes={ setAttributes } />
 		</InspectorControls>

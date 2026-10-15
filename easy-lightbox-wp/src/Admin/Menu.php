@@ -25,7 +25,8 @@ if ( ! defined( 'WPINC' ) ) {
  * The visible top-level submenu is deliberately just Dashboard and Settings —
  * Manage Galleries, Add New Gallery and About Us stay registered (they are still
  * real, reachable pages) but are hidden via `remove_submenu_page()` in
- * {@see register_menu()}.
+ * {@see register_menu()} — plus "Upgrade to Pro" last, an external link styled as
+ * the green pill WP Carousel Free's menu carries.
  */
 class Menu {
 
@@ -40,6 +41,7 @@ class Menu {
 	public function hooks(): void {
 		add_action( 'admin_menu', array( $this, 'register_menu' ) );
 		add_action( 'admin_head', array( $this, 'print_menu_icon_styles' ) );
+		add_action( 'admin_footer', array( $this, 'print_upgrade_link_target' ) );
 	}
 
 	/**
@@ -128,6 +130,19 @@ class Menu {
 		remove_submenu_page( self::SLUG, self::SLUG );
 		remove_submenu_page( self::SLUG, GalleryEditor::new_url_slug() );
 		remove_submenu_page( self::SLUG, Dashboard::ABOUT_SLUG );
+
+		// Last, and an EXTERNAL link: a slug with no callback and no matching file is
+		// printed by core as the href itself, so the row goes straight to the
+		// comparison page with no redirect screen of ours in between. The span is
+		// the hook the pill styles and the new-tab script find it by — its href is
+		// a URL a filter could change, its class is not.
+		add_submenu_page(
+			self::SLUG,
+			__( 'Upgrade to Pro', 'easy-lightbox-wp' ),
+			'<span class="sp-shaped-gallery-menu-upgrade">' . esc_html__( 'Upgrade to Pro', 'easy-lightbox-wp' ) . '</span>',
+			self::CAPABILITY,
+			DashboardConfig::pro_url()
+		);
 	}
 
 	/**
@@ -172,8 +187,37 @@ class Menu {
 				height: 20px;
 				padding: 6px 0 0;
 			}
+			#adminmenu .sp-shaped-gallery-menu-upgrade {
+				display: inline-flex;
+				align-items: center;
+				gap: 5px;
+				padding: 6px 16px 6px;
+				border-radius: 3px;
+				background: <?php echo esc_attr( DashboardConfig::PRO_ACCENT ); ?>;
+				color: #fff;
+				font-weight: 600;
+			}
 		</style>
 		<?php
+	}
+
+	/**
+	 * Open the menu's "Upgrade to Pro" row in a new tab.
+	 *
+	 * Core prints submenu links with no `target`, and the row leaves the site, so an
+	 * unsaved settings draft or post would otherwise be navigated away from. Printed
+	 * only for a user who can see the row; a missing row makes it a no-op.
+	 *
+	 * @return void
+	 */
+	public function print_upgrade_link_target(): void {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+
+		wp_print_inline_script_tag(
+			"document.querySelectorAll( '#adminmenu .sp-shaped-gallery-menu-upgrade' ).forEach( function ( label ) { var link = label.closest( 'a' ); if ( link ) { link.target = '_blank'; link.rel = 'noopener noreferrer'; } } );"
+		);
 	}
 
 	/**

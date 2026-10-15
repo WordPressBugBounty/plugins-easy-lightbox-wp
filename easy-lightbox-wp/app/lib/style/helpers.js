@@ -14,6 +14,8 @@
  * exposes only per-panel `*Style()` builders.
  */
 
+import { fontStack } from '../font-stack';
+
 /** Every breakpoint slot a responsive var occupies, in fallback order. */
 const SLOTS = [ '', '-t', '-m' ];
 
@@ -155,7 +157,7 @@ export function spacingVars( vars, name, bundle, device ) {
  */
 export function typographyVars( vars, prefix, typo = {}, scalars = {}, device = 'desktop' ) {
 	const once = {
-		ff: typo?.family,
+		ff: fontStack( typo?.family ),
 		fw: typo?.fontWeight,
 		fst: typo?.style && 'normal' !== typo.style ? typo.style : '',
 		tt: typo?.transform && 'none' !== typo.transform ? typo.transform : '',

@@ -17,7 +17,8 @@ export const FIRST_FRAME_FRAGMENT = '#t=0.1';
 
 /**
  * Providers whose `url`/`full` is an iframe player PAGE rather than a media file.
- * The mirror of `LayoutRenderer::EMBED_PROVIDERS` — keep the two in sync.
+ * The mirror of the provider keys in `EmbedUrl::HOSTS` (src/Render/EmbedUrl.php) and of
+ * `EMBED_PARAMS` in `app/frontend/embeds.js` — keep the three in sync.
  *
  * @type {string[]}
  */

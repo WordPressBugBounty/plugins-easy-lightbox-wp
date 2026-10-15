@@ -16,6 +16,7 @@
 import { useState, useRef, useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { normalizeAttachment } from './normalize';
+import { externalHost } from './external';
 
 /**
  * Lazily load core's `media-grid` script, which defines the Edit Image frame
@@ -173,6 +174,10 @@ export default function useAttachmentDetails( item, { onUpdate, onDelete } = {} 
 	const originalFileName = attachmentData?.filename || fileNameFromUrl( fileUrl );
 	const isLocalMedia = item?.provider === 'media_library';
 	const isLocalImage = isLocalMedia && item?.type === 'image';
+	// Anything that is not a Media Library attachment (pasted URL, YouTube): no
+	// upload date, file size, Edit Image or Delete — those act on a WP attachment.
+	const isExternalMedia = !! item && ! isLocalMedia;
+	const sourceHost = isExternalMedia ? externalHost( item.url || fileUrl ) : '';
 
 	let displayDimensions = '';
 	if ( item?.width && item?.height ) {
@@ -392,6 +397,8 @@ export default function useAttachmentDetails( item, { onUpdate, onDelete } = {} 
 		displayDimensions,
 		isLocalMedia,
 		isLocalImage,
+		isExternalMedia,
+		sourceHost,
 		imageCustomUrlEnabled,
 		copied,
 		copyUrl,

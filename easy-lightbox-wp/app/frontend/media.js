@@ -90,13 +90,17 @@ function armPreloader( box ) {
  * @param {string}            src      File or embed URL (`data-video-src`).
  * @param {string}            provider Provider id (`data-video-provider`).
  * @param {?HTMLImageElement} poster   The poster image being replaced, if any.
- * @return {HTMLElement} Player element.
+ * @return {?HTMLElement} Player element, or null when an embed's URL is not a safe player.
  */
 function buildPlayer( doc, src, provider, poster ) {
 	if ( isEmbedProvider( provider ) ) {
+		const url = embedUrl( src, provider, true );
+		if ( ! url ) {
+			return null;
+		}
 		const frame = doc.createElement( 'iframe' );
 		frame.className = 'sp-shaped-gallery__img';
-		frame.src = embedUrl( src, provider, true );
+		frame.src = url;
 		frame.title = 'Video player';
 		frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
 		frame.allowFullscreen = true;
@@ -135,6 +139,10 @@ function playInline( trigger ) {
 		figure.dataset.videoProvider || '',
 		trigger.querySelector( 'img' )
 	);
+	if ( ! player ) {
+		// An embed URL that failed the allow-list: leave the poster in place.
+		return;
+	}
 
 	trigger.replaceWith( player );
 	// The tile is now the player; a second activation would have nothing to swap.

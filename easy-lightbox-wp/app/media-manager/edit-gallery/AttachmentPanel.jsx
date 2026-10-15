@@ -131,7 +131,12 @@ export default function AttachmentPanel({ item, onUpdate, onDelete }) {
 					onChange={setField("alt")}
 				/>
 				<p className="sp-shaped-gallery-eg-field__help">
-					<a className="sp-shaped-gallery-eg-link" href="#" onClick={(event) => event.preventDefault()}>
+					<a
+						className="sp-shaped-gallery-eg-link"
+						href="https://www.w3.org/WAI/tutorials/images/decision-tree/"
+						target="_blank"
+						rel="noreferrer noopener"
+					>
 						{__("Learn how to describe the purpose of the image.", "easy-lightbox-wp")}
 					</a>{" "}
 					{__("Leave empty if the image is purely decorative.", "easy-lightbox-wp")}

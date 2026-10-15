@@ -12,7 +12,14 @@
  *
  * Every row writes one key of the module draft (`useModuleDraft`), which the panel's
  * Save then persists to the `lightbox` branch of `shaped_gallery_settings`.
+ *
+ * Under the groups, what ShapedGallery Pro's viewer adds (`panel.proNotice`, PHP's
+ * copy): a feature list closed by a text-only upgrade link, the same note the block
+ * inspector's panels end with. Pro's options are listed, not drawn as disabled rows
+ * — a drawer of switches the user cannot flip is noise around the two they can. The
+ * note reads and writes nothing, so Save and Reset behave exactly as without it.
  */
+import { ProNotice } from '@shaped-gallery/components';
 import ModuleOptionGroups from './ModuleOptionGroups';
 import { SHARED_RENDERERS } from './rowControls';
 
@@ -42,20 +49,30 @@ const CONTROLS = {
 
 /**
  * @param {Object}   props
- * @param {Object}   props.panel Localized panel copy (`groups`).
+ * @param {Object}   props.panel Localized panel copy (`groups`, `proNotice`).
  * @param {Object}   props.draft Current draft.
  * @param {Function} props.set   Draft writer.
  * @return {JSX.Element} Options body.
  */
 export default function LightboxOptions( { panel, draft, set } ) {
 	return (
-		<ModuleOptionGroups
-			panel={ panel }
-			controls={ CONTROLS }
-			renderers={ SHARED_RENDERERS }
-			draft={ draft }
-			set={ set }
-			defaults={ LIGHTBOX_DEFAULTS }
-		/>
+		<>
+			<ModuleOptionGroups
+				panel={ panel }
+				controls={ CONTROLS }
+				renderers={ SHARED_RENDERERS }
+				draft={ draft }
+				set={ set }
+				defaults={ LIGHTBOX_DEFAULTS }
+			/>
+			{ !! panel.proNotice?.features?.length && (
+				<ProNotice
+					title={ panel.proNotice.title }
+					subtitle={ panel.proNotice.subtitle }
+					features={ panel.proNotice.features }
+					className="sp-shaped-gallery-module-panel__pro-notice"
+				/>
+			) }
+		</>
 	);
 }

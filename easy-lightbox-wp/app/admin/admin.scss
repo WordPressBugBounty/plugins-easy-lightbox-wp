@@ -29,6 +29,13 @@
 @import "pages/Settings/modulePanels/style";
 
 /*
+ * The dashboard ground, in Sass as well as a custom property: the page under the
+ * SPA (see the `body` rule at the end) sits outside `.sp-shaped-gallery-dash`, so it
+ * cannot read the property, and the two must not drift.
+ */
+$sp-shaped-gallery-dash-bg: #fafafa;
+
+/*
  * Element reset for headings and paragraphs.
  *
  * `:where()` is load-bearing, not cosmetic. WordPress core sets `p { margin: 1em 0 }`
@@ -130,7 +137,7 @@
 	--sp-shaped-gallery-dash-accent-deep: #{$sp-shaped-gallery-brand-deep}; /* button hover: 7.0:1 on white. */
 	--sp-shaped-gallery-dash-accent-tint: #{$sp-shaped-gallery-brand-tint};
 	--sp-shaped-gallery-dash-surface: #fff;
-	--sp-shaped-gallery-dash-bg: #fafafa;
+	--sp-shaped-gallery-dash-bg: #{$sp-shaped-gallery-dash-bg};
 	--sp-shaped-gallery-dash-border: #ddd;
 	--sp-shaped-gallery-dash-border-soft: #e2e2e2;
 	--sp-shaped-gallery-dash-text: #1e1e1e;
@@ -375,6 +382,23 @@
  */
 #wpfooter {
 	display: none;
+}
+
+/*
+ * The SPA fills the viewport (`min-height` above), but the page can run longer: a
+ * side menu taller than the window scrolls the whole document, and core keeps 65px
+ * of `#wpbody-content` padding for the footer hidden above. Both used to show
+ * core's grey under FooterBar, a second ground that read as a section break. The
+ * page takes the dashboard's ground instead, and the reserved padding goes with
+ * the footer it was for. `body.wp-admin` outranks core's bare `body` rule without
+ * `!important`; same dashboard-only scoping as above.
+ */
+body.wp-admin {
+	background: $sp-shaped-gallery-dash-bg;
+}
+
+#wpbody-content {
+	padding-bottom: 0;
 }
 
 /*

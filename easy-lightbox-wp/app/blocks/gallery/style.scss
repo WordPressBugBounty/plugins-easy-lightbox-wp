@@ -88,6 +88,24 @@
 		overflow: hidden;
 	}
 
+	/* ---- Image corner radius under a Classic caption ----
+	 * The item's radius rounds the whole TILE, which is the image alone only while
+	 * nothing flows beside it. A Classic title / description sits above or below the
+	 * frame inside the same tile, so the corners on that side belong to the caption
+	 * box and the image's own corners stayed square — Border Radius' bottom values
+	 * (or the top ones, with the caption above) did nothing visible. The frame takes
+	 * the same radius so the image is what rounds; the item keeps its own for its
+	 * border, shadow and the caption's outer edge. Scoped to the Classic case so a
+	 * bordered tile with no flowing caption keeps its single, concentric curve. */
+	.sp-shaped-gallery__item:has(> .sp-shaped-gallery__content.is-classic) .sp-shaped-gallery__frame {
+		border-radius: var(--sp-shaped-gallery-iv-radius, 4px);
+		transition: border-radius 400ms ease;
+	}
+	.sp-shaped-gallery__item:has(> .sp-shaped-gallery__content.is-classic):hover .sp-shaped-gallery__frame,
+	.sp-shaped-gallery__item:has(> .sp-shaped-gallery__content.is-classic):focus-within .sp-shaped-gallery__frame {
+		border-radius: var(--sp-shaped-gallery-iv-radius-hover, var(--sp-shaped-gallery-iv-radius, 4px));
+	}
+
 	/* ---- Media element (image / video) ----
 	 * Keyed on the element rather than `.sp-shaped-gallery__img` so the editor's
 	 * `core/image` inner blocks — which carry core's own classes — get the identical
@@ -199,12 +217,10 @@
 
 			.sp-shaped-gallery__title {
 				color: var(--sp-shaped-gallery-ct-ttl-color, #fff);
-				text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6), 0 2px 6px rgba(0, 0, 0, 0.4);
 			}
 
 			.sp-shaped-gallery__desc {
 				color: var(--sp-shaped-gallery-ct-desc-color, rgba(255, 255, 255, 0.95));
-				text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 			}
 		}
 

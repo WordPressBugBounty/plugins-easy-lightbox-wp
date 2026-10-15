@@ -51,7 +51,9 @@ export function titleFor( item = {}, content = {} ) {
 	if ( ! content.imageTitle ) {
 		return '';
 	}
-	const value = 'caption' === content.imageTitleSource ? item.caption : item.title;
+	// Caption is the default source (GalleryAttributesFactory), so only an explicit
+	// `title` reads the attachment title — an absent key resolves as it does in PHP.
+	const value = 'title' === content.imageTitleSource ? item.title : item.caption;
 	return String( value ?? '' ).trim() ? String( value ) : '';
 }
 

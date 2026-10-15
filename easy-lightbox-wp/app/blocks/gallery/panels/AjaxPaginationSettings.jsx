@@ -22,6 +22,12 @@
  *
  * The feature's enable toggle lives in Layout Settings (per the design); this
  * panel configures it and stays layout-independent.
+ *
+ * Pro's extra pagination modes are listed in a closing note under both tabs
+ * (`ProNotice` with a feature list), not drawn as locked controls among the
+ * working ones: disabled rows in a panel the user is actively editing are noise.
+ * The note writes nothing — this build stores no `ajaxPagination.type` and its
+ * pagination runtime only knows Load More.
  */
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -29,6 +35,7 @@ import {
 	ChildPanelBody,
 	TabControls,
 	ButtonGroup,
+	ProNotice,
 	SPRangeControl,
 	InputControl,
 	Typography,
@@ -245,6 +252,15 @@ export default function AjaxPaginationSettings( { attributes, setAttributes } ) 
 				labels={ { general: __( 'Settings', 'easy-lightbox-wp' ) } }
 				GeneralTab={ SettingsTab }
 				StyleTab={ StyleTab }
+			/>
+
+			<ProNotice
+				showOffer
+				features={ [
+					__( 'Number Pagination', 'easy-lightbox-wp' ),
+					__( 'Infinity Load (on scroll)', 'easy-lightbox-wp' ),
+					__( 'Page Number Styling', 'easy-lightbox-wp' ),
+				] }
 			/>
 		</ChildPanelBody>
 	);

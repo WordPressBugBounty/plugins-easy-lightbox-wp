@@ -144,11 +144,14 @@ class Admin {
 	}
 
 	/**
-	 * Add "Galleries" and "Getting Started" quick links on the plugins screen.
+	 * Add a "Getting Started" quick link on the plugins screen, and a "Go Pro" link
+	 * after Deactivate that names the current Pro offer while it runs.
 	 *
-	 * The second link is deliberately in place of an activation redirect: it is
+	 * Getting Started is deliberately in place of an activation redirect: it is
 	 * discoverable at the same moment, with none of the bulk-activation, WP-CLI and
-	 * network-activation guard code a redirect would need.
+	 * network-activation guard code a redirect would need. There is no "Galleries"
+	 * link beside it: the plugin's own admin menu already leads there, and a row of
+	 * links reads as clutter next to core's own.
 	 *
 	 * @param array $links Existing links.
 	 * @return array
@@ -157,16 +160,65 @@ class Admin {
 		$custom = array(
 			sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( admin_url( 'admin.php?page=' . Menu::SLUG ) ),
-				esc_html__( 'Galleries', 'easy-lightbox-wp' )
-			),
-			sprintf(
-				'<a href="%s">%s</a>',
 				esc_url( Dashboard::page_url() ),
 				esc_html__( 'Getting Started', 'easy-lightbox-wp' )
 			),
 		);
 
-		return array_merge( $custom, $links );
+		$links = array_merge( $custom, $links );
+
+		// Last, after Deactivate: the one link on the row that leaves the site, so it
+		// opens in a new tab. Inline style because the plugins screen loads no
+		// stylesheet of ours; the colour is the shared Pro accent.
+		$links['go_pro'] = sprintf(
+			'<a href="%1$s" target="_blank" rel="noopener noreferrer" style="color:%2$s;font-weight:700;">%3$s%4$s</a>',
+			esc_url( DashboardConfig::pro_url() ),
+			esc_attr( DashboardConfig::PRO_ACCENT ),
+			esc_html__( 'Go Pro', 'easy-lightbox-wp' ),
+			self::offer_badge( DashboardConfig::pro_offer() )
+		);
+
+		return $links;
+	}
+
+	/**
+	 * The "Go Pro" link's offer pill, or '' when there is no offer to name.
+	 *
+	 * The inspector's pill (`ProNotice` `showOffer`) in PHP: the same copy, the same
+	 * colours, from the same schedule ({@see DashboardConfig::pro_offer()}), so this
+	 * row stops naming a discount at the moment the editor does. It goes inside the
+	 * link, so the row keeps one click target and the offer is part of its name.
+	 * Inline styles for the reason the link has them; `inline-block` because an
+	 * atomic inline does not inherit its parent's text decoration, so the link's
+	 * hover underline stops at the words.
+	 *
+	 * Decided when the screen renders. The plugins screen loads no script of ours,
+	 * so one left open across the cutoff keeps the pill until it is reloaded; the
+	 * editor, which stays open for long stretches, also checks the end on its own
+	 * clock.
+	 *
+	 * Pure, so the verifier can run it against fixed moments.
+	 *
+	 * @param array<string,int> $offer {@see DashboardConfig::pro_offer()}'s shape.
+	 * @return string Markup, escaped.
+	 */
+	public static function offer_badge( array $offer ): string {
+		if ( empty( $offer['percent'] ) ) {
+			return '';
+		}
+
+		return sprintf(
+			' <span style="display:inline-block;padding:0 6px;border:1px solid %1$s;border-radius:9999px;background:%2$s;color:%3$s;font-size:11px;font-weight:600;line-height:16px;white-space:nowrap;">%4$s</span>',
+			esc_attr( DashboardConfig::PRO_BORDER ),
+			esc_attr( DashboardConfig::PRO_SURFACE ),
+			esc_attr( DashboardConfig::PRO_ACCENT_DEEP ),
+			esc_html(
+				sprintf(
+					/* translators: %d: discount percentage for new customers, e.g. 75. */
+					__( 'Up to %d%% off', 'easy-lightbox-wp' ),
+					(int) $offer['percent']
+				)
+			)
+		);
 	}
 }

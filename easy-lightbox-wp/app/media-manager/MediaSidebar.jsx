@@ -1,12 +1,18 @@
 /**
  * Left sidebar of the media modal: gallery actions + the data-driven media-source
- * list ("Add media from"). Every source in the registry is wired and actionable —
- * there are no locked teasers. New source groups (e.g. a future Connect & Import)
- * appear automatically from the registry — no change here.
+ * list ("Add media from"). Every source in a group's `items` is wired and
+ * actionable. New source groups (e.g. a future Connect & Import) appear
+ * automatically from the registry — no change here.
+ *
+ * A group's `proItems` follow its real rows as locked Pro rows, the layout
+ * picker's treatment: dimmed, a crown chip at the right edge, and a click that
+ * opens the upgrade page in a new tab instead of switching source. They never
+ * call `onSelectSource`, are never `is-active`, and carry no `aria-current`.
  */
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { SOURCE_ICONS } from '@shaped-gallery/icons';
+import { ProCardBadge, openUpgrade } from '@shaped-gallery/components';
 import { MEDIA_SOURCE_GROUPS } from './media-sources.data';
 
 /**
@@ -45,6 +51,29 @@ export default function MediaSidebar( { mode, onSelectMode, activeSource, onSele
 		);
 	};
 
+	// A Pro source: upgrades rather than selects, whatever the modal's state.
+	const renderProSource = ( item ) => (
+		<li key={ item.id }>
+			<button
+				type="button"
+				className="sp-shaped-gallery-source__item sp-shaped-gallery-pro-locked"
+				data-source={ item.id }
+				aria-label={ sprintf(
+					/* translators: %s: media source name, e.g. "Vimeo". */
+					__( '%s — available in Pro (opens the upgrade page in a new tab)', 'easy-lightbox-wp' ),
+					item.label
+				) }
+				onClick={ openUpgrade }
+			>
+				<span className="sp-shaped-gallery-source__icon">
+					<Icon icon={ SOURCE_ICONS[ item.icon ] } size={ 20 } />
+				</span>
+				<span className="sp-shaped-gallery-source__label">{ item.label }</span>
+				<ProCardBadge isInline />
+			</button>
+		</li>
+	);
+
 	return (
 		<nav className="sp-shaped-gallery-media-modal__sidebar" aria-label={ __( 'Media sources', 'easy-lightbox-wp' ) }>
 			<div className="sp-shaped-gallery-source__group">
@@ -68,7 +97,10 @@ export default function MediaSidebar( { mode, onSelectMode, activeSource, onSele
 			{ MEDIA_SOURCE_GROUPS.map( ( group ) => (
 				<div className="sp-shaped-gallery-source__group" key={ group.id }>
 					<h3 className="sp-shaped-gallery-source__heading">{ group.label }</h3>
-					<ul className="sp-shaped-gallery-source__list">{ group.items.map( renderSource ) }</ul>
+					<ul className="sp-shaped-gallery-source__list">
+						{ group.items.map( renderSource ) }
+						{ ( group.proItems || [] ).map( renderProSource ) }
+					</ul>
 				</div>
 			) ) }
 		</nav>

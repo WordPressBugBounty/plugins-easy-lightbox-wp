@@ -387,6 +387,7 @@ class DashboardConfig {
 				'docsLabel'   => __( 'Docs', 'easy-lightbox-wp' ),
 				'items'       => self::module_items(),
 				'panels'      => self::module_panels(),
+				'pro'         => self::pro_modules(),
 			),
 		);
 	}
@@ -442,6 +443,63 @@ class DashboardConfig {
 	}
 
 	/**
+	 * ShapedGallery Pro's modules, listed under the Free ones as locked cards.
+	 *
+	 * WP Carousel Free's Modules treatment: a short banner, then each Pro module as an
+	 * ordinary card with a "PRO" badge where its switch would be. The card has no
+	 * switch at all, so there is nothing to save — and `ModuleRegistry::sanitize()`
+	 * keeps only this build's own keys, so a crafted request cannot store one either.
+	 *
+	 * Only the two modules that are real features this build lacks. Pro's third,
+	 * Lazy Load, is a switch over something this build already does unconditionally
+	 * (`GalleryOptions::lazy_load_active()`), so advertising it would sell a Free user
+	 * what they already have.
+	 *
+	 * Copy is Pro's own (`shaped-gallery-pro/src/Admin/DashboardConfig.php`), so a
+	 * card reads exactly as the module the user gets after upgrading. The cards carry
+	 * no gear: there are no options here to open, and a preview of options the user
+	 * cannot set is the same noise the inspector and the Lightbox drawer dropped.
+	 *
+	 * @return array<string,mixed>
+	 */
+	private static function pro_modules(): array {
+		$modules = array(
+			'watermark'        => array(
+				__( 'Watermark', 'easy-lightbox-wp' ),
+				__( 'Add customizable watermarks to gallery images to boost brand identity and prevent unauthorized use.', 'easy-lightbox-wp' ),
+			),
+			'image-protection' => array(
+				__( 'Image Protection', 'easy-lightbox-wp' ),
+				__( 'Secure images with right-click blocks, drag prevention.', 'easy-lightbox-wp' ),
+			),
+		);
+
+		$items = array();
+		foreach ( $modules as $key => list( $name, $description ) ) {
+			$items[] = array(
+				'key'         => $key,
+				'name'        => $name,
+				'description' => $description,
+				'docsAria'    => sprintf(
+					/* translators: %s: module name, e.g. "Watermark". */
+					__( '%s documentation', 'easy-lightbox-wp' ),
+					$name
+				),
+				'url'         => self::docs( 'guide/features/' . $key ),
+			);
+		}
+
+		return array(
+			'title'        => __( 'Unlock Powerful Features with Pro!', 'easy-lightbox-wp' ),
+			'description'  => __( 'Protect your work and brand every image with the Pro modules.', 'easy-lightbox-wp' ),
+			'badge'        => __( 'PRO', 'easy-lightbox-wp' ),
+			'upgradeLabel' => __( 'Upgrade to Pro', 'easy-lightbox-wp' ),
+			'upgradeUrl'   => self::pro_url(),
+			'items'        => $items,
+		);
+	}
+
+	/**
 	 * The settings panel behind a module's gear, keyed by module.
 	 *
 	 * Copy, row ORDER and every dropdown's options only — which control a row carries
@@ -451,6 +509,13 @@ class DashboardConfig {
 	 * can reword and reorder but never invent a control.
 	 *
 	 * Lightbox has a panel; the other modules' gears stay inert until they do.
+	 *
+	 * Lightbox lists only the rows this build can store. What Pro's viewer adds is
+	 * `proNotice` — a title, a lead-in and a feature list drawn under the groups as
+	 * one note — rather than locked rows among the working ones: a drawer of
+	 * switches the user cannot flip is noise around the two they can. Each feature
+	 * is one of Pro's real `Modules\Lightbox` options, so the note promises nothing
+	 * the upgrade does not deliver.
 	 *
 	 * Help strings are this file's, not the design's: the design marks WHICH rows
 	 * carry an info affordance without spelling out its text, and an affordance with
@@ -477,6 +542,19 @@ class DashboardConfig {
 								'help'  => __( 'Show the position of the current image, for example 3 / 12.', 'easy-lightbox-wp' ),
 							),
 						),
+					),
+				),
+				'proNotice'  => array(
+					'title'    => __( 'Unlock Pro Features!', 'easy-lightbox-wp' ),
+					'subtitle' => __( 'Get 20+ lightbox options with ShapedGallery Pro, including:', 'easy-lightbox-wp' ),
+					'features' => array(
+						__( 'Light & Dark Themes', 'easy-lightbox-wp' ),
+						__( 'Slider AutoPlay & Loop', 'easy-lightbox-wp' ),
+						__( 'Transition Effects', 'easy-lightbox-wp' ),
+						__( 'Image Title & Caption', 'easy-lightbox-wp' ),
+						__( 'Lightbox Toolbar (zoom, share, download)', 'easy-lightbox-wp' ),
+						__( 'Thumbnail Navigation', 'easy-lightbox-wp' ),
+						__( 'Right Click Protection', 'easy-lightbox-wp' ),
 					),
 				),
 			),
@@ -552,17 +630,182 @@ class DashboardConfig {
 	/**
 	 * Where an upgrade prompt sends the user.
 	 *
-	 * The free/pro comparison page rather than a checkout link: this is reached
-	 * from a locked pattern card, where the question the user has is what Pro
-	 * adds, not which plan to buy. Public for the same reason
-	 * {@see self::block_docs_url()} is — the block editor payload needs it
-	 * outside the dashboard config.
+	 * The pricing page, the destination WP Carousel Free's "Upgrade to Pro"
+	 * prompts use too: every surface that links here (locked layout cards and
+	 * controls, Pro panels, Pro module cards, locked pattern cards, the admin
+	 * menu row and the plugins-screen link) is already labelled as an upgrade,
+	 * so the user arriving has decided to look at plans. Each locked control
+	 * already shows what Pro adds in place, which is what a comparison page
+	 * would have repeated.
+	 *
+	 * The ONE place the URL is spelled: the block and dashboard bundles read it
+	 * from the shared payload (`upgradeUrl`, `patternsUpgradeUrl`) and PHP calls
+	 * this method. Public for the same reason {@see self::block_docs_url()} is —
+	 * the block editor payload needs it outside the dashboard config.
 	 *
 	 * @return string
 	 */
 	public static function pro_url(): string {
-		return 'https://shapedplugin.com/shaped-gallery/free-vs-pro/';
+		return 'https://shapedgallery.com/pricing/';
 	}
+
+	/**
+	 * The scheduled Pro offer: what the block inspector's upgrade link, the plugins
+	 * screen's "Go Pro" link and the dashboard's offer bar name, and the exact
+	 * moment all three stop.
+	 *
+	 * `ends` is that moment as ISO 8601 WITH its offset — the offer is over at, not
+	 * after, it. A bare date would leave open whose midnight ends it, and a badge
+	 * that outlives the offer by even a few hours is a price claim the pricing page
+	 * no longer honours. Midnight in Dhaka (UTC+6) ends the last day earlier than any
+	 * zone west of it, so if the store's own cutoff is anywhere from UTC+6 westward
+	 * the badge never outlasts the discount.
+	 *
+	 * `lead` names the campaign: a key of {@see self::offer_leads()}, whose sentence
+	 * the dashboard's offer bar opens with. A slug rather than the sentence, because
+	 * a constant cannot hold a translated string — so a new campaign's wording is
+	 * one entry there and one slug here, and the bar never outlives its campaign
+	 * with the last one's words.
+	 *
+	 * Public so the verifier can run the shipped schedule against fixed moments
+	 * instead of today's clock. Read it through {@see self::pro_offer()}.
+	 *
+	 * @var array{percent:int,ends:string,lead:string}
+	 */
+	public const PRO_OFFER = array(
+		'percent' => 75,
+		// End of 31 January 2027, Dhaka time. '' for an offer with no end.
+		'ends'    => '2027-02-01T00:00:00+06:00',
+		// '' for a bar that names the discount alone.
+		'lead'    => 'early_bird',
+	);
+
+	/**
+	 * The sentences an offer can open with, keyed by the slug `PRO_OFFER['lead']`
+	 * names.
+	 *
+	 * Translated here, in the one place the offer is decided, and published as
+	 * `proOffer.lead`; the bar only interpolates the tags. Keep every sentence a
+	 * claim about access or timing — the discount has its own line, filled from
+	 * `percent`, so no lead may spell a number.
+	 *
+	 * @return array<string,string>
+	 */
+	public static function offer_leads(): array {
+		return array(
+			/* translators: Keep the <strong> tags around the lead-in. */
+			'early_bird' => __( '<strong>Exclusive early-bird</strong> Pro access is open', 'easy-lightbox-wp' ),
+		);
+	}
+
+	/**
+	 * The Pro offer as it stands right now, or an empty array once it has ended.
+	 *
+	 * The ONE place the discount is spelled, for the reason {@see self::pro_url()}
+	 * is the one place the URL is: `Core\Assets::localize_data()` publishes it as
+	 * `proOffer`, and `app/` only fills an "Up to %d%% off" template from it. It is
+	 * decided here rather than in the bundle so the claim retires itself — a site
+	 * that never updates stops naming a discount the moment it ends.
+	 *
+	 * The end goes to the editor too (`endsAt`), because this only runs when the
+	 * page loads: an editor left open across the cutoff hides the badge on its own
+	 * clock (`app/components/pro/upgrade.js`) rather than at the next reload.
+	 *
+	 * Nothing is fetched to decide it. Asking a remote server for the offer on
+	 * every editor load is the call home WordPress.org guideline 7 forbids without
+	 * consent, and would put a price claim in the hands of untrusted data (§4b).
+	 *
+	 * "Up to" stays in the copy whatever the number becomes: the top rate is one
+	 * plan's, for eligible new customers, and the pricing page carries the rest.
+	 *
+	 * @return array<string,int|string> `percent`, plus `endsAt` (Unix seconds) when the offer ends and `lead` when it names one; empty once it has ended.
+	 */
+	public static function pro_offer(): array {
+		return self::active_offer( self::PRO_OFFER, time() );
+	}
+
+	/**
+	 * An offer reduced to what the editor reads, if it still holds at `$now`.
+	 *
+	 * Pure, so the verifier can walk it across its end. Fails CLOSED: a percent
+	 * outside 1–99, or an `ends` that is not a real ISO 8601 moment with an offset,
+	 * hides the badge — a missing badge costs a click, a wrong one costs the user's
+	 * trust. A `lead` that is not a key of {@see self::offer_leads()} drops only
+	 * the sentence: the discount is still true, so a typo costs a line of copy
+	 * rather than the offer.
+	 *
+	 * @param array<string,mixed> $offer `percent` (int), `ends` (ISO 8601 with offset, or '' for none) and optional `lead` (slug).
+	 * @param int                 $now   Unix seconds.
+	 * @return array<string,int|string>
+	 */
+	public static function active_offer( array $offer, int $now ): array {
+		$percent = $offer['percent'] ?? null;
+		$ends    = $offer['ends'] ?? '';
+		$slug    = $offer['lead'] ?? '';
+		$leads   = self::offer_leads();
+
+		if ( ! is_int( $percent ) || $percent < 1 || $percent > 99 ) {
+			return array();
+		}
+
+		// Strict: `isset( $leads[ $slug ] )` would cast `true` to 1 and a float to an int.
+		$lead = is_string( $slug ) && in_array( $slug, array_keys( $leads ), true ) ? $leads[ $slug ] : '';
+
+		if ( '' === $ends ) {
+			return array( 'percent' => $percent ) + ( '' === $lead ? array() : array( 'lead' => $lead ) );
+		}
+
+		$end = is_string( $ends ) ? \DateTimeImmutable::createFromFormat( \DateTimeInterface::ATOM, $ends ) : false;
+
+		// The round trip rejects what createFromFormat() silently rolls over
+		// (2027-02-30 → March 2), a missing or `Z` offset, and trailing text.
+		if ( ! $end || $end->format( \DateTimeInterface::ATOM ) !== $ends || $now >= $end->getTimestamp() ) {
+			return array();
+		}
+
+		return array(
+			'percent' => $percent,
+			'endsAt'  => $end->getTimestamp(),
+		) + ( '' === $lead ? array() : array( 'lead' => $lead ) );
+	}
+
+	/**
+	 * The Pro green, for the two upgrade links PHP prints outside any bundle — the
+	 * admin menu's "Upgrade to Pro" row and the plugins screen's "Go Pro" link,
+	 * neither of which loads a stylesheet of ours.
+	 *
+	 * The PHP twin of `$sp-shaped-gallery-pro` in `app/styles/_brand.scss`, where
+	 * the value and its contrast (4.70:1 under white text) are decided; change both
+	 * together.
+	 *
+	 * @var string
+	 */
+	public const PRO_ACCENT = '#128627';
+
+	/**
+	 * The rest of the Pro ramp, for the plugins screen's offer pill
+	 * ({@see Admin::offer_badge()}): text, chip surface and hairline. PHP twins of
+	 * `$sp-shaped-gallery-pro-deep`, `-pro-surface` and `-pro-border`, where the
+	 * values and the pill's contrast (6.25:1) are decided; `verify-dashboard.php`
+	 * fails if any of these drifts from `_brand.scss`.
+	 *
+	 * @var string
+	 */
+	public const PRO_ACCENT_DEEP = '#0a6e08';
+
+	/**
+	 * See {@see self::PRO_ACCENT_DEEP}.
+	 *
+	 * @var string
+	 */
+	public const PRO_SURFACE = '#effff5';
+
+	/**
+	 * See {@see self::PRO_ACCENT_DEEP}.
+	 *
+	 * @var string
+	 */
+	public const PRO_BORDER = '#93dcac';
 
 	/**
 	 * Dashboard banner: the block-first pitch and its two ways in.
@@ -659,7 +902,7 @@ class DashboardConfig {
 			array(
 				'id'    => 'x',
 				'label' => 'X',
-				'url'   => 'https://twitter.com/shapedplugin',
+				'url'   => 'https://x.com/shapedplugin',
 			),
 			array(
 				'id'    => 'wordpress',
@@ -980,6 +1223,16 @@ class DashboardConfig {
 					$config['settingsPage'][ $section ]['items'] ?? array()
 				);
 			}
+		}
+
+		// The Pro module cards carry docs links like the Free ones, and the banner an
+		// upgrade href of its own.
+		if ( isset( $config['settingsPage']['modules']['pro'] ) && is_array( $config['settingsPage']['modules']['pro'] ) ) {
+			$pro               = $config['settingsPage']['modules']['pro'];
+			$pro['items']      = self::harden_url_items( $pro['items'] ?? array() );
+			$pro['upgradeUrl'] = esc_url_raw( (string) ( $pro['upgradeUrl'] ?? '' ) );
+
+			$config['settingsPage']['modules']['pro'] = $pro;
 		}
 
 		$config['helpCenter']['items'] = self::harden_url_items( $config['helpCenter']['items'] ?? array() );

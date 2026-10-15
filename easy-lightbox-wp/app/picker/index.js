@@ -1,2 +1,2 @@
 export { default } from './LayoutPicker';
-export { LAYOUTS } from './layouts.data';
+export { LAYOUTS, PRO_LAYOUTS } from './layouts.data';

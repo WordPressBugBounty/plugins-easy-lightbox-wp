@@ -1,0 +1,468 @@
+/**
+ * Pro teaser chrome — badge, "(Pro)" tag, notices, locked panel title, locked
+ * controls. Shapes and timings follow WP Carousel Free's teaser UI
+ * (`wp-carousel-free/blocks/components/pro/editor.scss`); colours are this
+ * plugin's own, from the Pro ramp in `_brand.scss` (§14 — WP Carousel's greens
+ * fall short of 4.5:1).
+ *
+ * Editor + dashboard only, imported by the components that use it.
+ */
+
+@import "../../styles/brand";
+
+$sp-shaped-gallery-pro-text: #1e1e1e;
+$sp-shaped-gallery-pro-muted: #4a5257;
+/* How far a locked control is dimmed — WP Carousel's resting value. */
+$sp-shaped-gallery-pro-dim: 0.6;
+
+/* The crown, as a mask so it takes `background-color` from the ramp instead of a
+ * hex baked into a data URI. */
+$sp-shaped-gallery-pro-crown: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23000' stroke-width='1.185' d='M10.384 5.882c.18.329.478.572.842.648.322.068.652-.007.922-.203l.112-.092 1.396-1.279 1.159-1.062-.81 6.437H2.124l-.812-6.437 2.556 2.341c.288.264.666.373 1.035.295.364-.076.662-.32.841-.648l2.32-4.254 2.32 4.254Z'/%3E%3Cpath d='M13.851 14.873H2.274c-.373 0-.674-.369-.674-.824V12.24h12.925v1.81c0 .454-.301.823-.674.823Z'/%3E%3C/svg%3E");
+
+/* ── Badge ──────────────────────────────────────────────────────────────── */
+
+/* Default placement: centred over a locked card, resting just below centre and
+ * rising into place as it fades in — the card's hover supplies the settled
+ * transform (see `.sp-shaped-gallery-pro-locked`). */
+.sp-shaped-gallery-pro-badge {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 5;
+	opacity: 0;
+	visibility: hidden;
+	transform: translate(-50%, -10%);
+	transition:
+		opacity 0.3s ease,
+		transform 0.3s ease,
+		visibility 0.3s;
+	pointer-events: none;
+
+	/*
+	 * Text and crown in `pro-deep` on the chip surface, 6.25:1 — the pair the
+	 * inspector's offer pill and the plugins-screen badge already use. WP Carousel's
+	 * lighter chip green measured 2.4:1 under this 10-11px label (see `_brand.scss`).
+	 */
+	&__pill {
+		align-items: center;
+		background: $sp-shaped-gallery-pro-surface;
+		border: 0.8px solid $sp-shaped-gallery-pro-border;
+		border-radius: 9999px;
+		color: $sp-shaped-gallery-pro-deep;
+		display: inline-flex;
+		flex-shrink: 0;
+		font-size: 11px;
+		font-weight: 600;
+		gap: 3px;
+		justify-content: center;
+		line-height: 13px;
+		padding: 3px 6px 3px 6px;
+		white-space: nowrap;
+
+		svg {
+			flex: none;
+		}
+	}
+
+	&.is-inline {
+		position: static;
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+	}
+
+	/* Small size (`isSmall`): the layout picker corner and the media source rows. */
+	&.is-small &__pill {
+		gap: 2px;
+		padding: 2px 5px;
+		font-size: 10px;
+	}
+
+	/* `hoverLabel`: the two faces share one grid cell, so the pill is as wide as
+	 * the wider face at rest and on hover — no width jump. The resting face (crown
+	 * + "PRO") slides up and out as "Upgrade" slides up into place, both easing on
+	 * the standard curve and cross-fading; the pill clips whatever is in transit. */
+	&.has-hover-label &__pill {
+		overflow: hidden;
+	}
+
+	&__roll {
+		display: grid;
+		gap: inherit;
+	}
+
+	&__label,
+	&__hover-label {
+		display: inline-flex;
+		grid-area: 1 / 1;
+		align-items: center;
+		justify-content: center;
+		gap: inherit;
+		transition:
+			transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+			opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	&__hover-label {
+		opacity: 0;
+		transform: translateY(100%);
+	}
+}
+
+.sp-shaped-gallery-pro-locked:is(:hover, :focus-visible) .sp-shaped-gallery-pro-badge.has-hover-label {
+	.sp-shaped-gallery-pro-badge__label {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+
+	.sp-shaped-gallery-pro-badge__hover-label {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+/* Reduced motion: a plain cross-fade, no travel. */
+@media (prefers-reduced-motion: reduce) {
+	.sp-shaped-gallery-pro-badge__label,
+	.sp-shaped-gallery-pro-badge__hover-label,
+	.sp-shaped-gallery-pro-locked:is(:hover, :focus-visible) .sp-shaped-gallery-pro-badge.has-hover-label .sp-shaped-gallery-pro-badge__label {
+		transform: none;
+	}
+}
+
+/* ── Locked card ───────────────────────────────────────────────────────── */
+
+/* Any card that opens the upgrade page instead of selecting. The artwork dims a
+ * little at rest and further on hover, which is when the pill appears over it. */
+.sp-shaped-gallery-pro-locked {
+	position: relative;
+
+	.sp-shaped-gallery-card__figure {
+		opacity: $sp-shaped-gallery-pro-dim;
+		transition: opacity 0.2s ease;
+	}
+
+	&:hover,
+	&:focus-visible {
+		.sp-shaped-gallery-card__figure {
+			opacity: 0.35;
+		}
+
+		/* The hover pill only — an in-flow pill (the corner badge) stays put. */
+		.sp-shaped-gallery-pro-badge:not(.is-inline) {
+			opacity: 1;
+			visibility: visible;
+			transform: translate(-50%, -50%);
+		}
+	}
+}
+
+/* Corner-badge variant (`ProCardBadge`) — the full-size layout picker cards.
+ * Marked as Pro at rest rather than on hover: artwork and label stay dimmed and
+ * the small "PRO" pill sits in the card's corner. On hover/focus the pill fades
+ * out and the upgrade overlay fades in over the whole card, title included, so
+ * there is one call to action at a time.
+ * The hover dimming above is switched off; the overlay is the hover feedback. The
+ * label rests at 0.55, not WP Carousel's 0.35 — the card is a live control (it
+ * opens the upgrade page), so its visible text keeps 4.5:1 (§14); 0.35 would be
+ * about 2.4:1. */
+.sp-shaped-gallery-pro-locked.has-corner-badge {
+	.sp-shaped-gallery-card__figure,
+	&:hover .sp-shaped-gallery-card__figure,
+	&:focus-visible .sp-shaped-gallery-card__figure {
+		opacity: 0.35;
+	}
+
+	.sp-shaped-gallery-card__label {
+		opacity: 0.55;
+	}
+
+	&:hover,
+	&:focus-visible {
+		.sp-shaped-gallery-pro-card-badge {
+			opacity: 0;
+		}
+
+		.sp-shaped-gallery-pro-card-overlay {
+			opacity: 1;
+		}
+
+		.sp-shaped-gallery-pro-card-overlay__button {
+			transform: none;
+		}
+	}
+}
+
+/* The corner holds `ProBadge`'s small pill, which carries its own chrome. */
+.sp-shaped-gallery-pro-card-badge {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	z-index: 5;
+	display: inline-flex;
+	line-height: 0;
+	pointer-events: none;
+	transition: opacity 0.2s ease;
+
+	/* In a row's flow (a locked media-source row); the row's flex layout places it. */
+	&.is-inline {
+		position: static;
+		flex: none;
+	}
+}
+
+/* The hover overlay: a soft dark scrim over the whole card with one compact button
+ * in the middle. It fades in while the button settles up from 4px below, a short,
+ * quiet motion; under reduced motion only the fade remains. */
+.sp-shaped-gallery-pro-card-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 4;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba($sp-shaped-gallery-pro-text, 0.45);
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	pointer-events: none;
+
+	&__button {
+		padding: 6px 12px;
+		border-radius: 4px;
+		background: $sp-shaped-gallery-pro;
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
+		color: #fff;
+		font-size: 12px;
+		font-weight: 500;
+		line-height: 16px;
+		white-space: nowrap;
+		transform: translateY(4px);
+		transition: transform 0.2s ease;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&__button {
+			transform: none;
+			transition: none;
+		}
+	}
+}
+
+/* ── "(Pro)" tag ───────────────────────────────────────────────────────── */
+
+.sp-shaped-gallery-pro-tag {
+	margin-left: 4px;
+	color: $sp-shaped-gallery-pro;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 1;
+	text-decoration: none;
+	white-space: nowrap;
+
+	&:is(a):hover,
+	&:is(a):focus,
+	&:is(a):active {
+		color: $sp-shaped-gallery-pro-deep;
+		text-decoration: underline;
+		box-shadow: none;
+	}
+}
+
+/* ── Locked switch row (Toggle `onlyPro`) ──────────────────────────────── */
+
+/* Only the label dims — the "(Pro)" tag beside it stays at full strength, since
+ * it is the one live part of the row. */
+.sp-shaped-gallery-toggle.is-pro {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+
+	.sp-shaped-gallery-toggle__pro-label {
+		display: inline-flex;
+		align-items: center;
+
+		.sp-shaped-gallery-control__title {
+			opacity: $sp-shaped-gallery-pro-dim;
+		}
+	}
+
+	.components-toggle-control {
+		opacity: $sp-shaped-gallery-pro-dim;
+		pointer-events: none;
+	}
+
+	/* The row is already dimmed, so core's washed-out disabled track border reads
+	 * as a second, paler outline on top of it. */
+	.components-form-toggle.is-disabled .components-form-toggle__track {
+		border-color: $sp-shaped-gallery-pro-text;
+	}
+}
+
+/* ── Locked option in a segmented control (ButtonGroup item `pro`) ─────── */
+
+.sp-shaped-gallery-button-group .components-toggle-group-control button.is-pro {
+	opacity: $sp-shaped-gallery-pro-dim;
+	cursor: not-allowed;
+}
+
+/* ── Notices ───────────────────────────────────────────────────────────── */
+
+/* The closing line at the foot of a working panel. */
+.sp-shaped-gallery-pro-notice.is-inline {
+	margin: 16px 0 0;
+	padding: 14px 16px;
+	border: 0.75px solid $sp-shaped-gallery-brand-22;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+	background:
+		radial-gradient(circle at 118% -17%, $sp-shaped-gallery-brand-tint 0%, rgba($sp-shaped-gallery-brand-tint, 0) 64%),
+		#fff;
+	color: $sp-shaped-gallery-pro-text;
+	font-size: 13px;
+	line-height: 20px;
+
+	.sp-shaped-gallery-pro-notice__link {
+		color: $sp-shaped-gallery-pro;
+		font-weight: 600;
+		text-decoration: none;
+		white-space: nowrap;
+
+		&:is(a):hover,
+		&:is(a):focus {
+			color: $sp-shaped-gallery-pro-deep;
+			text-decoration: underline;
+			box-shadow: none;
+		}
+	}
+}
+
+/* The feature card — a locked panel's whole body. */
+.sp-shaped-gallery-pro-notice.is-card {
+	padding: 20px 16px 16px;
+	border: 0.75px solid $sp-shaped-gallery-brand-22;
+	border-radius: 8px;
+	background:
+		radial-gradient(circle at 118% -17%, $sp-shaped-gallery-brand-tint 0%, rgba($sp-shaped-gallery-brand-tint, 0) 64%),
+		#fff;
+	color: $sp-shaped-gallery-pro-text;
+	margin-bottom: 16px;
+
+	.sp-shaped-gallery-pro-notice__title {
+		margin: 0;
+		color: $sp-shaped-gallery-brand-strong;
+		font-size: 16px;
+		font-weight: 500;
+		line-height: 1.2;
+	}
+
+	.sp-shaped-gallery-pro-notice__subtitle {
+		margin: 10px 0 0;
+		color: $sp-shaped-gallery-pro-muted;
+		font-size: 12px;
+		line-height: 1.5;
+	}
+
+	.sp-shaped-gallery-pro-notice__list {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		margin: 12px 0 0;
+		padding: 0;
+		list-style: none;
+
+		/* A plain dot, not an icon: the items are option names, and a decorative
+		 * glyph per line read as ornament rather than as a list. */
+		li {
+			position: relative;
+			margin: 0;
+			padding-left: 14px;
+			color: #2f2f2f;
+			font-size: 12px;
+			line-height: 18px;
+
+			&::before {
+				content: "";
+				position: absolute;
+				top: 7px;
+				left: 2px;
+				width: 4px;
+				height: 4px;
+				border-radius: 50%;
+				background: $sp-shaped-gallery-brand-strong;
+			}
+		}
+	}
+
+	/* Text only: no fill, border or icon, so a note at the foot of a working panel
+	 * reads as information rather than as a second call to action. The offer pill
+	 * (`__offer`) is the one exception, and it carries a price, not chrome. A flex
+	 * row that wraps, so a long translation drops the pill to its own line instead
+	 * of clipping it in a 280px sidebar. */
+	.sp-shaped-gallery-pro-notice__button {
+		display: inline-flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 4px 8px;
+		margin-top: 12px;
+		color: $sp-shaped-gallery-pro;
+		font-size: 13px;
+		font-weight: 600;
+		line-height: 20px;
+		text-decoration: none;
+
+		.sp-shaped-gallery-pro-notice__button-text {
+			font-size: 14px;
+		}
+
+		/* The underline goes on the words only: set on the link, it would run under
+		 * the pill too, since a flex item inherits its container's decoration. */
+		&:is(a):hover,
+		&:is(a):focus {
+			color: $sp-shaped-gallery-pro-deep;
+			box-shadow: none;
+
+			.sp-shaped-gallery-pro-notice__button-text {
+				text-decoration: underline;
+			}
+		}
+
+		&:is(a):focus-visible {
+			outline: 2px solid $sp-shaped-gallery-pro-deep;
+			outline-offset: 2px;
+		}
+	}
+
+	/* The current offer, inside the link (`ProNotice` `showOffer`). Text is
+	 * `pro-deep` on the chip surface, 6.25:1, so the 11px label clears §14 with room;
+	 * the `PRO` pill's green would not. Static — no pulse or shimmer, which would
+	 * pull the eye off the controls above on every visit. */
+	.sp-shaped-gallery-pro-notice__offer {
+		display: inline-flex;
+		align-items: center;
+		padding: 1px 7px;
+		border: 0.75px solid $sp-shaped-gallery-pro-border;
+		border-radius: 9999px;
+		background: $sp-shaped-gallery-pro-surface;
+		color: $sp-shaped-gallery-pro-deep;
+		font-size: 11px;
+		font-weight: 600;
+		line-height: 16px;
+		white-space: nowrap;
+	}
+}
+
+/* ── Locked panel title ────────────────────────────────────────────────── */
+
+/* The crown sits inline, straight after the title text. */
+.components-panel__body.sp-shaped-gallery-panel-pro > .components-panel__body-title button::after {
+	content: "";
+	display: inline-block;
+	flex-shrink: 0;
+	width: 12px;
+	height: 12px;
+	margin-left: 6px;
+	vertical-align: middle;
+	background-color: $sp-shaped-gallery-pro;
+	mask: $sp-shaped-gallery-pro-crown center / 12px no-repeat;
+}
