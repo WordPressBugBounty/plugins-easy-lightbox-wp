@@ -171,9 +171,9 @@ class BlocksInit {
 				'nonce'    => wp_create_nonce( 'wp_rest' ),
 				'lightbox' => LightboxModule::frontend_config(),
 				'i18n'     => array(
-					'loading'  => __( 'Loading more images…', 'easy-lightbox-wp' ),
-					'loaded'   => __( 'More images loaded.', 'easy-lightbox-wp' ),
-					'error'    => __( 'Could not load more images. Please try again.', 'easy-lightbox-wp' ),
+					'loading'    => __( 'Loading more images…', 'easy-lightbox-wp' ),
+					'loaded'     => __( 'More images loaded.', 'easy-lightbox-wp' ),
+					'error'      => __( 'Could not load more images. Please try again.', 'easy-lightbox-wp' ),
 					/*
 					 * The viewer's control labels — exactly the set
 					 * `app/frontend/lightbox.js` looks up, so a translator is never
@@ -181,7 +181,7 @@ class BlocksInit {
 					 * own English for any key missing here, which is what keeps a
 					 * stale translation from blanking a button's accessible name.
 					 */
-					'lightbox' => array(
+					'lightbox'   => array(
 						'dialog'   => __( 'Image lightbox', 'easy-lightbox-wp' ),
 						'close'    => __( 'Close', 'easy-lightbox-wp' ),
 						'previous' => __( 'Previous image', 'easy-lightbox-wp' ),
@@ -189,6 +189,13 @@ class BlocksInit {
 						'error'    => __( 'This image could not be loaded.', 'easy-lightbox-wp' ),
 						/* translators: 1: current image number, 2: total number of images. */
 						'counter'  => __( '%1$d / %2$d', 'easy-lightbox-wp' ),
+					),
+					// The video popup's labels — exactly the set
+					// `app/frontend/video-popup.js` looks up, with the same English
+					// fallback for a missing key.
+					'videoPopup' => array(
+						'dialog' => __( 'Video player', 'easy-lightbox-wp' ),
+						'close'  => __( 'Close video', 'easy-lightbox-wp' ),
 					),
 				),
 			)

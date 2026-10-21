@@ -19,7 +19,10 @@ import { effectiveRowHeight } from '@shaped-gallery/lib/style';
  * @param {Array}  options.items         MediaItem[]. Watched, not read: the ratios
  *                                       come off each tile's own `data-w`/`data-h`
  *                                       (see the reflow), but an add / remove /
- *                                       reorder still has to re-measure.
+ *                                       reorder still has to re-measure. Not enough
+ *                                       on its own for inner-block tiles, which can
+ *                                       mount a commit later — see the
+ *                                       MutationObserver in the effect.
  * @param {string} options.rowHeightMode Justified row-height mode ('auto'|'custom').
  * @param {number} options.maxRowHeight  Justified custom target row height.
  * @param {number} options.gh            Horizontal gap (px, resolved for device).
@@ -247,11 +250,44 @@ export function useMeasuredLayout(
 	useEffect( () => {
 		reflow();
 		const box = containerRef.current;
-		if ( ! box || typeof ResizeObserver === 'undefined' ) {
+		if ( ! box ) {
 			return undefined;
 		}
-		const ro = new ResizeObserver( reflow );
-		ro.observe( box );
-		return () => ro.disconnect();
+
+		/*
+		 * Two things can invalidate the geometry without this component rendering
+		 * again, so there are two observers.
+		 *
+		 * The ResizeObserver covers the container's own width changing.
+		 *
+		 * The MutationObserver covers the TILE SET changing underneath the hook. In the
+		 * editable preview each tile is an inner block, and an `items` change from
+		 * outside the canvas (the media modal's Add, Edit Gallery) reaches the editor
+		 * through `useBlockSync`, which mints new clientIds for every inner block — so
+		 * the block list unmounts every tile and mounts fresh ones, in a LATER commit
+		 * than the one that ran this effect. The `items` dependency therefore reflowed
+		 * the tiles about to be thrown away, and their replacements arrived with no
+		 * inline geometry inside a container still `is-measured` and still pinned to
+		 * the old height. On masonry that is CSS multi-column under a fixed height,
+		 * which overflows sideways: every column past the pinned height spilled to the
+		 * right of the canvas as a horizontal scrollbar. Nothing woke the hook either —
+		 * the container's height is the inline one written above, so it did not resize.
+		 * The first Add only escaped because a never-measured container has no pinned
+		 * height: it grew as the tiles flowed in, and that growth was a resize.
+		 *
+		 * `childList` on the container alone: tiles are its direct children, and
+		 * everything `reflow` writes is a style or a class, never a child, so it cannot
+		 * trigger itself. The frontend runtime needs no equivalent — it inserts its own
+		 * tiles (Load More) and calls `reflow` after; here Gutenberg does the inserting,
+		 * so the DOM is the only witness.
+		 */
+		const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver( reflow ) : null;
+		const mo = typeof MutationObserver !== 'undefined' ? new MutationObserver( reflow ) : null;
+		ro?.observe( box );
+		mo?.observe( box, { childList: true } );
+		return () => {
+			ro?.disconnect();
+			mo?.disconnect();
+		};
 	}, [ reflow, containerRef ] );
 }

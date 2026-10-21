@@ -141,7 +141,7 @@ class Menu {
 			__( 'Upgrade to Pro', 'easy-lightbox-wp' ),
 			'<span class="sp-shaped-gallery-menu-upgrade">' . esc_html__( 'Upgrade to Pro', 'easy-lightbox-wp' ) . '</span>',
 			self::CAPABILITY,
-			DashboardConfig::pro_url()
+			DashboardConfig::pro_url( DashboardConfig::PRO_FROM_MENU )
 		);
 	}
 

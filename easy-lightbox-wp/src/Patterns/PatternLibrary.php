@@ -139,32 +139,6 @@ class PatternLibrary {
 	private const TIMEOUT = 20;
 
 	/**
-	 * Whether the catalogue may show patterns this build cannot insert.
-	 *
-	 * OFF for 1.0, and this constant is the whole switch. Flip it to `true` on the
-	 * day ShapedGallery Pro is on sale and the locked cards, the Pro badge and the
-	 * tier pills all come back on their own — every one of them was already
-	 * conditional on a premium row EXISTING, so removing the rows removed the
-	 * chrome. Nothing was deleted to turn this off, which is the property that
-	 * makes turning it back on a one-line change rather than a revert.
-	 *
-	 * That flip is NOT for the WordPress.org build. It must be false in anything
-	 * distributed there, so `build-zip.js` reads this line and refuses to package
-	 * otherwise: turning it on is a decision about a build distributed some other
-	 * way, never something that reaches the .org zip by being forgotten.
-	 * `verify-patterns.php` pins the value, `verify-package.php` pins the packager's
-	 * guard, so neither the switch nor its enforcement can go quiet on its own.
-	 *
-	 * Presentation only. {@see self::import()} refuses a premium id in either
-	 * state, so this decides what to ADVERTISE and never what to enforce — which
-	 * is also why it is a constant and not a filter. A hook here would read as a
-	 * display preference and behave as a licence bypass.
-	 *
-	 * @var bool
-	 */
-	public const SHOW_LOCKED_PATTERNS = false;
-
-	/**
 	 * Most favourites a site may store.
 	 *
 	 * The option is written from an authenticated editor request, so this is a
@@ -312,16 +286,16 @@ class PatternLibrary {
 
 		/*
 		 * The gate, and it is HERE rather than in the editor because this is the
-		 * only half that enforces anything: the library does not draw a row it may
-		 * not insert ({@see self::restrict()}), but the request is what has to be
-		 * refused. It also runs before the outbound call, so a refused id never
-		 * costs the provider a request or bumps its import counter.
+		 * only half that enforces anything: the library draws a premium row as a
+		 * locked card with an upgrade link instead of Insert ({@see ./tier.js}),
+		 * but the request is what has to be refused. It also runs before the
+		 * outbound call, so a refused id never costs the provider a request or
+		 * bumps its import counter.
 		 *
-		 * The lookup is against the RESTRICTED catalogue, so it answers both
-		 * questions in one pass: a premium row and an unsupported-layout row are
-		 * alike absent from it. The `pro` re-check underneath is not redundant —
-		 * it is what still refuses a premium id on the day SHOW_LOCKED_PATTERNS is
-		 * flipped back on and those rows return to the manifest.
+		 * The lookup is against the RESTRICTED catalogue ({@see self::restrict()}):
+		 * a free row on a layout this build cannot render is absent from it, so it
+		 * is refused as not offered. A premium row IS in it — on any layout, as a
+		 * teaser — so the `pro` check underneath is what refuses it.
 		 */
 		if ( ! self::premium_active() ) {
 			$manifest = $this->manifest();
@@ -589,16 +563,18 @@ class PatternLibrary {
 	 * Two rules, both of them consequences of the serving site publishing ONE
 	 * catalogue to both builds:
 	 *
-	 * 1. **A layout this build cannot render is dropped.** `GalleryOptions::LAYOUTS`
-	 *    is an allow-list that FORGIVES: an imported `metro` pattern comes back
-	 *    through `GalleryOptions::enum()` as the DEFAULT layout with every
-	 *    metro-only attribute discarded. It renders — as something else — with no
-	 *    error anywhere, which is the worst outcome a demo pattern can have,
-	 *    because nothing about the result looks broken enough to report. Offering
-	 *    the card is the defect; refusing it is not a limitation.
-	 * 2. **A premium row is dropped while {@see self::SHOW_LOCKED_PATTERNS} is
-	 *    off.** {@see self::import()} refuses the id either way; this is what stops
-	 *    the library advertising cards it is going to refuse.
+	 * 1. **A FREE row on a layout this build cannot render is dropped.**
+	 *    `GalleryOptions::LAYOUTS` is an allow-list that FORGIVES: an imported
+	 *    `metro` pattern comes back through `GalleryOptions::enum()` as the
+	 *    DEFAULT layout with every metro-only attribute discarded. It renders — as
+	 *    something else — with no error anywhere, which is the worst outcome a demo
+	 *    pattern can have, because nothing about the result looks broken enough to
+	 *    report. Offering an insertable card for it is the defect.
+	 * 2. **A premium row is kept, on any layout.** It is drawn as a locked teaser
+	 *    with an upgrade link ({@see ./tier.js}) — the same treatment the layout
+	 *    picker gives a Pro layout — and {@see self::import()} refuses its id, so
+	 *    it can never reach rule 1's failure. That is also why a Pro-only layout
+	 *    (Metro, Thumbnails, …) still shows up here: every row in it is premium.
 	 *
 	 * The facet lists are then rebuilt from the rows that SURVIVED. Filtering the
 	 * grid and leaving the sidebar alone would ship a `Metro 6` chip whose only
@@ -611,9 +587,8 @@ class PatternLibrary {
 	 * @return array<string,mixed> The catalogue this build may show.
 	 */
 	private function restrict( array $manifest ): array {
-		$layouts  = self::supported_layouts();
-		$show_pro = self::premium_active() || self::SHOW_LOCKED_PATTERNS;
-		$groups   = isset( $manifest['patterns'] ) && is_array( $manifest['patterns'] )
+		$layouts = self::supported_layouts();
+		$groups  = isset( $manifest['patterns'] ) && is_array( $manifest['patterns'] )
 			? $manifest['patterns']
 			: array();
 
@@ -621,14 +596,15 @@ class PatternLibrary {
 		$category_count = array();
 
 		foreach ( $groups as $slug => $rows ) {
-			if ( ! is_array( $rows ) || ! in_array( (string) $slug, $layouts, true ) ) {
+			if ( ! is_array( $rows ) ) {
 				continue;
 			}
 
-			$offerable = array();
+			$renderable = in_array( (string) $slug, $layouts, true );
+			$offerable  = array();
 
 			foreach ( $rows as $row ) {
-				if ( ! $show_pro && ! empty( $row['pro'] ) ) {
+				if ( ! $renderable && empty( $row['pro'] ) ) {
 					continue;
 				}
 
@@ -763,6 +739,16 @@ class PatternLibrary {
 			}
 		}
 
+		/*
+		 * The row's position in the provider's drag order across the WHOLE
+		 * catalogue. The grouped shape keeps each group in order but cannot say
+		 * how groups interleave, so `list.js#curatedOrder` sorts the flattened
+		 * list on this. Cast, not `absint()`, as the category ids are; anything
+		 * unusable is 0, which an older provider omitting the key also gets and
+		 * which sorts after every positioned row.
+		 */
+		$order = isset( $item['order'] ) && is_numeric( $item['order'] ) ? (int) $item['order'] : 0;
+
 		return array(
 			'ID'       => $id,
 			'name'     => sanitize_text_field( (string) ( $item['name'] ?? '' ) ),
@@ -775,6 +761,7 @@ class PatternLibrary {
 			// matching the grid under it.
 			'layout'   => $group,
 			'category' => array_values( array_unique( $categories ) ),
+			'order'    => max( 0, $order ),
 		);
 	}
 

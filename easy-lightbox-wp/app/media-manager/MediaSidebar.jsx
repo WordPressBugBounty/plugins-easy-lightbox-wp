@@ -6,13 +6,15 @@
  *
  * A group's `proItems` follow its real rows as locked Pro rows, the layout
  * picker's treatment: dimmed, a crown chip at the right edge, and a click that
- * opens the upgrade page in a new tab instead of switching source. They never
+ * opens the upgrade page in a new tab instead of switching source — under the
+ * media gallery's own campaign tag (`openMediaUpgrade()`), not the layout cards'
+ * (`openUpgrade()`), so the reports tell the two apart. They never
  * call `onSelectSource`, are never `is-active`, and carry no `aria-current`.
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { SOURCE_ICONS } from '@shaped-gallery/icons';
-import { ProCardBadge, openUpgrade } from '@shaped-gallery/components';
+import { ProCardBadge, openMediaUpgrade } from '@shaped-gallery/components';
 import { MEDIA_SOURCE_GROUPS } from './media-sources.data';
 
 /**
@@ -63,7 +65,7 @@ export default function MediaSidebar( { mode, onSelectMode, activeSource, onSele
 					__( '%s — available in Pro (opens the upgrade page in a new tab)', 'easy-lightbox-wp' ),
 					item.label
 				) }
-				onClick={ openUpgrade }
+				onClick={ openMediaUpgrade }
 			>
 				<span className="sp-shaped-gallery-source__icon">
 					<Icon icon={ SOURCE_ICONS[ item.icon ] } size={ 20 } />

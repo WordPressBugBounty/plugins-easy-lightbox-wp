@@ -12,4 +12,4 @@ export { default as ProCardBadge } from './ProCardBadge';
 export { default as ProTag } from './ProTag';
 export { default as ProNotice } from './ProNotice';
 export { default as ProPanel } from './ProPanel';
-export { upgradeUrl, openUpgrade } from './upgrade';
+export { upgradeUrl, openUpgrade, openMediaUpgrade } from './upgrade';

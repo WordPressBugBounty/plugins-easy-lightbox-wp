@@ -165,7 +165,7 @@ final class GalleryOptions {
 		$c['imageDescription']       = ! empty( $c['imageDescription'] );
 		$c['imageTitleSource']       = self::enum( $c['imageTitleSource'] ?? null, array( 'title', 'caption' ), 'caption' );
 		$c['imageTitleTag']          = self::enum( $c['imageTitleTag'] ?? null, array( 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span' ), 'h4' );
-		$c['imageDescriptionSource'] = self::enum( $c['imageDescriptionSource'] ?? null, array( 'caption', 'description' ), 'caption' );
+		$c['imageDescriptionSource'] = self::enum( $c['imageDescriptionSource'] ?? null, array( 'caption', 'description' ), 'description' );
 		$c['displayStyle']           = self::enum( $c['displayStyle'] ?? null, array( 'classic', 'overlay' ), 'classic' );
 		$c['position']               = self::enum( $c['position'] ?? null, array( 'top', 'bottom' ), 'bottom' );
 		$c['alignment']              = self::enum( $c['alignment'] ?? null, array( 'left', 'center', 'right' ), 'left' );
@@ -337,17 +337,36 @@ final class GalleryOptions {
 	}
 
 	/**
-	 * Whether videos play inline (in the tile) rather than in the lightbox popup.
+	 * Whether videos play inline (in the tile) rather than in the video popup.
 	 *
-	 * Shared by the markup (an inline video gets no lightbox link, so the delegated
-	 * lightbox handler never fires for it) and the frontend runtime (which swaps the
-	 * poster for a playing `<video>` on click).
+	 * Shared by the markup (an inline video gets a click-to-play button, never a
+	 * lightbox link) and the frontend runtime (which swaps the poster for a playing
+	 * `<video>` on click).
 	 *
 	 * @param array<string,mixed> $attrs Normalized attributes.
 	 * @return bool
 	 */
 	public static function video_inline( array $attrs ): bool {
 		return 'inline' === ( $attrs['imageVideo']['videoPlayMode'] ?? 'inline' );
+	}
+
+	/**
+	 * Whether videos play in the video popup rather than in the tile.
+	 *
+	 * Video Play Mode alone decides it. The popup is the Image & Video runtime's own
+	 * player (`app/frontend/media.js`), not the lightbox: it answers to neither the
+	 * click action nor the Lightbox module, so a Popup video opens the same way on a
+	 * gallery whose images open the lightbox, follow a URL or do nothing — and a
+	 * video appended by Load More plays exactly as one rendered with the page.
+	 *
+	 * Shared by the markup (the video's click-to-play button and the container's
+	 * `data-video`) and the runtime that reads it.
+	 *
+	 * @param array<string,mixed> $attrs Normalized attributes.
+	 * @return bool
+	 */
+	public static function video_popup( array $attrs ): bool {
+		return 'popup' === ( $attrs['imageVideo']['videoPlayMode'] ?? 'inline' );
 	}
 
 	/**

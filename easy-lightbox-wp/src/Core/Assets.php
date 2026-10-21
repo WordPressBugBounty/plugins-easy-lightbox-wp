@@ -82,12 +82,20 @@ class Assets {
 			// card with an upgrade link instead of an Insert button. Presentation
 			// only — `PatternLibrary::import()` is what refuses the id.
 			'patternsPremium'       => PatternLibrary::premium_active(),
-			'patternsUpgradeUrl'    => esc_url_raw( DashboardConfig::pro_url() ),
+			'patternsUpgradeUrl'    => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_BLOCK ) ),
 			// Where every Pro teaser points (`app/components/pro/upgrade.js`): the
-			// locked layout cards, locked controls, Pro panels and Pro module cards.
-			// One key on the payload both bundles receive, so no surface spells the
-			// URL out.
-			'upgradeUrl'            => esc_url_raw( DashboardConfig::pro_url() ),
+			// locked layout cards and locked controls. One key on the payload both
+			// bundles receive, so no surface spells the URL out. Tagged for the block
+			// editor here; the dashboard bundle re-tags it in `enqueue_admin_bundle()`.
+			'upgradeUrl'            => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_BLOCK ) ),
+			// The media gallery modal's locked source tabs (`openMediaUpgrade()`),
+			// counted apart from the layout cards. Block editor only — the modal is
+			// never drawn on a dashboard screen, so the dashboard needs no re-tag.
+			'mediaUpgradeUrl'       => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_MEDIA ) ),
+			// The Pro note's own link (`ProNotice`): the "Upgrade to Pro" inside an
+			// inspector panel, counted apart from the canvas teasers. Re-tagged by
+			// the dashboard bundle too, whose Lightbox panel draws the same note.
+			'noticeUrl'             => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_INSPECTOR ) ),
 			// The offer the inspector's upgrade link (`ProNotice` `showOffer`) and the
 			// dashboard's offer bar (`OfferBar`) name, the moment it ends — both
 			// leave an open screen then — and the bar's translated lead sentence, or
@@ -161,16 +169,27 @@ class Assets {
 			array_merge(
 				self::localize_data(),
 				array(
-					'context'   => 'admin',
+					'context'    => 'admin',
+					// The same teasers, clicked on a dashboard screen, so the campaign
+					// reports tell them from the block editor's. No dashboard surface
+					// reads `upgradeUrl` today, but one added later must not be counted
+					// as the block editor's.
+					'upgradeUrl' => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_MODULES ) ),
+					// The Lightbox gear panel's Pro note, which sits under Settings →
+					// Modules — not the block inspector the shared payload tags it for.
+					'noticeUrl'  => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_MODULES ) ),
+					// The offer bar's own link (`OfferBar`): the campaign strip over
+					// every dashboard screen, counted apart from the teasers.
+					'offerUrl'   => esc_url_raw( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_OFFER_BAR ) ),
 					// Through Settings::get(), not get_option(): the SPA seeds its draft
 					// from this, so it needs every key present and correctly typed even
 					// before the option has ever been written.
-					'settings'  => Settings::get(),
+					'settings'   => Settings::get(),
 					// What "Reset to Default" restores. Shipped from here so the screen
 					// never has to treat its own JS mirror as authoritative — a default
 					// changed in PHP would otherwise keep restoring the old value.
-					'defaults'  => Settings::screen_defaults(),
-					'dashboard' => DashboardConfig::localize(),
+					'defaults'   => Settings::screen_defaults(),
+					'dashboard'  => DashboardConfig::localize(),
 				)
 			)
 		);

@@ -179,14 +179,12 @@ class LayoutRenderer {
 			'style'        => $this->style_engine->container_style( $attrs ),
 		);
 
-		// Video Play Mode — the runtime only needs to know about INLINE playback
-		// (swap the poster for a playing <video> on click); Popup is the absence of
-		// the flag and is already served by the delegated lightbox handler.
-		if ( GalleryOptions::video_inline( $attrs ) ) {
-			$container_attrs['data-video'] = 'inline';
-		}
+		// Video Play Mode — what the runtime does with a click on a video's play
+		// button: swap a playing <video> into the tile (inline), or open it in the
+		// video popup (popup). Every video carries the same button either way.
+		$container_attrs['data-video'] = GalleryOptions::video_popup( $attrs ) ? 'popup' : 'inline';
 
-		// AutoPlay governs the popup path too: the lightbox autoplays a video slide
+		// AutoPlay governs the popup too: the popup's player starts on its own
 		// unless this opt-out is present (absence = the `true` default, so the flag
 		// only reaches the DOM when it changes behaviour).
 		if ( empty( $attrs['imageVideo']['autoplay'] ) ) {
@@ -399,10 +397,12 @@ class LayoutRenderer {
 		// Video Play Mode: EVERY video plays in the tile under Inline — a file as a
 		// `<video>`, a provider embed as its iframe (the runtime builds both). Only a
 		// real file can ship ALREADY playing though, so autoplay upgrades a file tile
-		// to a live muted player and leaves an embed click-to-play.
+		// to a live muted player and leaves an embed click-to-play. Under Popup every
+		// video is click-to-play, and the click opens the video popup instead.
 		$playable        = $this->is_playable_file( $item );
 		$plays_inline    = $is_video && GalleryOptions::video_inline( $attrs );
 		$autoplay_inline = $plays_inline && $playable && ! empty( $iv['autoplay'] );
+		$pops_up         = $is_video && GalleryOptions::video_popup( $attrs );
 
 		$figure_attrs = array(
 			'class'      => 'sp-shaped-gallery__item' . ( $is_video ? ' sp-shaped-gallery__item--video' : '' ) . $this->shape_class( $item ),
@@ -459,16 +459,18 @@ class LayoutRenderer {
 			$img = '<span class="sp-shaped-gallery__playicon" aria-hidden="true"></span>' . $img;
 		}
 
-		// Click-to-play inline video: a REAL button so the tile is keyboard-operable
-		// (§14) and distinct from `.sp-shaped-gallery__link`, which the delegated
-		// lightbox handler binds. The runtime reads the file off the figure.
-		if ( $plays_inline && ! $autoplay_inline ) {
+		// Click-to-play video, inline or popup: a REAL button so the tile is
+		// keyboard-operable (§14) and distinct from `.sp-shaped-gallery__link`, which
+		// the delegated lightbox handler binds. The runtime reads the file off the
+		// figure and the mode off the container; a popup button says it opens one.
+		if ( ( $plays_inline && ! $autoplay_inline ) || $pops_up ) {
 			$figure_attrs['data-video-src'] = $full;
 			// The provider tells the runtime WHICH player to build (iframe vs video);
 			// it recognizes the embed ids itself, so no flag is duplicated here.
 			$figure_attrs['data-video-provider'] = (string) ( $item['provider'] ?? '' );
 			$img                                 = sprintf(
-				'<button type="button" class="sp-shaped-gallery__play" aria-label="%s">%s</button>',
+				'<button type="button" class="sp-shaped-gallery__play"%s aria-label="%s">%s</button>',
+				$pops_up ? ' aria-haspopup="dialog"' : '',
 				esc_attr(
 					'' !== trim( (string) ( $item['title'] ?? '' ) )
 						/* translators: %s: video title. */
@@ -479,10 +481,11 @@ class LayoutRenderer {
 			);
 		}
 
-		// Click behaviour. An inline video owns its own click (the runtime swaps in a
-		// player), so it never becomes a lightbox link — which also keeps the
-		// delegated lightbox handler from firing for it, with no JS-side exception.
-		$click = $plays_inline ? 'none' : $attrs['clickAction'];
+		// Click behaviour. A video's click belongs to Video Play Mode alone — the
+		// runtime swaps in a player or opens the popup — so a video never becomes a
+		// lightbox or URL link, which also keeps the delegated lightbox handler from
+		// firing for it, with no JS-side exception. The lightbox is images only.
+		$click = $is_video ? 'none' : $attrs['clickAction'];
 		if ( 'lightbox' === $click ) {
 			// The anchor wraps the image, so the whole tile is the trigger. It stays a
 			// real link to the full-size file, which is what the viewer's click handler

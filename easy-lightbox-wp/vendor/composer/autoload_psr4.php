@@ -6,6 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'ShapedPlugin\\ShapedGallery\\Tests\\' => array($baseDir . '/tests/php'),
     'ShapedPlugin\\ShapedGallery\\' => array($baseDir . '/src'),
 );

@@ -25,6 +25,7 @@ import { useRef, useState, useEffect, useMemo } from '@wordpress/element';
 import { useInnerBlocksProps, BlockContextProvider } from '@wordpress/block-editor';
 import { __ } from '@wordpress/i18n';
 import { resolveResponsive } from '@shaped-gallery/lib/layout-math';
+import { resolveResponsiveNumber } from '@shaped-gallery/lib/responsive';
 import {
 	geometryStyle,
 	effectiveRowHeight,
@@ -34,6 +35,7 @@ import {
 } from '@shaped-gallery/lib/style';
 import { useDeviceType } from '@shaped-gallery/hooks';
 import { applyOrder, mergeEditedItems, newOrderSeed, RANDOM_ORDER } from '@shaped-gallery/lib/item-order';
+import { firstWindowSize } from '@shaped-gallery/lib/ajax-window';
 import { fetchMediaItems } from '@shaped-gallery/media-manager/normalize';
 import { useMeasuredLayout } from './useMeasuredLayout';
 import { useImageSources } from './useImageSources';
@@ -85,25 +87,39 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 	const seed = useMemo( () => newOrderSeed(), [ order ] ); // eslint-disable-line react-hooks/exhaustive-deps
 	const shownItems = useMemo( () => applyOrder( items, order, seed ), [ items, order, seed ] );
 
-	const gh = resolveResponsive( horizontalGap, device ) || 20;
-	const gv = resolveResponsive( verticalGap, device ) || 20;
+	/*
+	 * Ajax Pagination: the canvas draws the first window only — the tiles a visitor
+	 * first sees, sized by the desktop Show Per View exactly as the renderer's
+	 * `$window` is (`firstWindowSize()`). Only those become inner blocks, so a drag,
+	 * a delete or a duplicate on the canvas reaches the first page and nothing past
+	 * it; `syncFromEditor` re-appends the rest untouched. Reordering across pages
+	 * stays with the Edit Gallery modal, which always lists every item.
+	 */
+	const windowSize = firstWindowSize( attributes );
+	const pageItems = useMemo( () => shownItems.slice( 0, windowSize ), [ shownItems, windowSize ] );
+
+	// Resolved exactly as the frontend runtime resolves them, so a 0 gap stays 0
+	// rather than falling through to the default (§18).
+	const gh = resolveResponsiveNumber( horizontalGap, device, 20 );
+	const gv = resolveResponsiveNumber( verticalGap, device, 20 );
 	const cols = resolveResponsive( columns, device ) || 4;
 
 	// The controlled value handed to the editor. Seeded from items[] once.
-	const [ blocks, setBlocks ] = useState( () => itemsToImageBlocks( shownItems, [] ) );
+	const [ blocks, setBlocks ] = useState( () => itemsToImageBlocks( pageItems, [] ) );
 	// Latest blocks, read inside effects/callbacks without re-subscribing.
 	const blocksRef = useRef( blocks );
 	blocksRef.current = blocks;
 
-	// External items[] change (media modal add/remove, Edit Gallery reorder) →
-	// rebuild the blocks so the inner blocks catch up. Our own mirror-back leaves
-	// the signatures equal, so this is a no-op for changes we originated.
+	// External items[] change (media modal add/remove, Edit Gallery reorder) or a new
+	// Show Per View → rebuild the blocks so the inner blocks catch up. Our own
+	// mirror-back leaves the signatures equal, so this is a no-op for changes we
+	// originated.
 	useEffect( () => {
-		if ( itemsSignature( shownItems ) !== blocksSignature( blocksRef.current ) ) {
-			setBlocks( itemsToImageBlocks( shownItems, blocksRef.current ) );
+		if ( itemsSignature( pageItems ) !== blocksSignature( blocksRef.current ) ) {
+			setBlocks( itemsToImageBlocks( pageItems, blocksRef.current ) );
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ shownItems ] );
+	}, [ pageItems ] );
 
 	// State for the media top-up below; declared up here because `syncFromEditor`
 	// is what fills `swapped`.
@@ -121,8 +137,10 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 		setBlocks( nextBlocks );
 		// Noted BEFORE the mirror-back, which is the only moment the old media and
 		// the new are both in hand (see the top-up effect below).
-		swappedMediaIds( nextBlocks, shownItems ).forEach( ( id ) => swapped.current.add( id ) );
-		const nextShown = blocksToItems( nextBlocks, shownItems );
+		swappedMediaIds( nextBlocks, pageItems ).forEach( ( id ) => swapped.current.add( id ) );
+		// The blocks hold the first window only; the items past it were never on the
+		// canvas, so they follow the edited page unchanged rather than being dropped.
+		const nextShown = [ ...blocksToItems( nextBlocks, pageItems ), ...shownItems.slice( windowSize ) ];
 		// Under Random the editor hands back the SHUFFLED list; writing that to `items`
 		// would make the shuffle permanent, so the edit is folded into the stored order.
 		const nextItems =
@@ -216,7 +234,7 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 
 	useMeasuredLayout( containerRef, {
 		layout,
-		items: shownItems,
+		items: pageItems,
 		rowHeightMode,
 		maxRowHeight,
 		gh,
@@ -301,9 +319,9 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 	 * tile the drag moved.
 	 */
 	const tileContext = useMemo( () => {
-		const { tiles, byKey } = tileEntries( blocks, shownItems );
+		const { tiles, byKey } = tileEntries( blocks, pageItems );
 		return { content: attributes.content || {}, tiles, byKey, sources };
-	}, [ blocks, shownItems, attributes.content, sources ] );
+	}, [ blocks, pageItems, attributes.content, sources ] );
 
 	// Defensive: the parent shows a Placeholder while items[] is empty, so this
 	// component normally only mounts with images present.
@@ -312,8 +330,8 @@ export default function EditableGalleryPreview( { attributes, setAttributes } ) 
 	}
 
 	// The pagination bar is a sibling of the grid (matching the frontend) and
-	// follows it. It is a static preview — the editor keeps ALL images visible and
-	// editable (no SSR-style windowing), so the bar previews the control only.
+	// follows it. It is a static preview — the grid shows the first window (above),
+	// and the bar previews the control only.
 	return (
 		<>
 			<GalleryTileContext.Provider value={ tileContext }>

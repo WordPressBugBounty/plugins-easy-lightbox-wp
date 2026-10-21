@@ -17,12 +17,16 @@
  * Built from the shared `@shaped-gallery/components` control library — the
  * responsive controls own per-device read/write internally, so this panel stays
  * declarative. Each universal panel is a self-contained module under ./panels/.
+ *
+ * Every panel sits in one `PanelAccordion`, so only one is open at a time:
+ * opening a panel closes the one that was open.
  */
 import { InspectorControls } from '@wordpress/block-editor';
 import { Suspense } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import {
 	ChildPanelBody,
+	PanelAccordion,
 	SPRangeControl,
 	SelectField,
 	Toggle,
@@ -57,93 +61,95 @@ export default function Inspector( { attributes, setAttributes } ) {
 
 	return (
 		<InspectorControls>
-			{ /* Renders directly under Gutenberg's block card: docs link and the
-			   gallery's permanent shortcode (gallery CPT only). */ }
-			<GalleryInfo />
+			<PanelAccordion>
+				{ /* Renders directly under Gutenberg's block card: docs link and the
+				   gallery's permanent shortcode (gallery CPT only). */ }
+				<GalleryInfo />
 
-			<ChildPanelBody
-				title={ __( 'Layout Settings', 'easy-lightbox-wp' ) }
-				initialOpen={ true }
-			>
-				<LayoutSource layout={ layout } />
+				<ChildPanelBody
+					title={ __( 'Layout Settings', 'easy-lightbox-wp' ) }
+					initialOpen={ true }
+				>
+					<LayoutSource layout={ layout } />
 
-				<Suspense fallback={ null }>
-					<LayoutControls attributes={ attributes } setAttributes={ setAttributes } />
-				</Suspense>
+					<Suspense fallback={ null }>
+						<LayoutControls attributes={ attributes } setAttributes={ setAttributes } />
+					</Suspense>
 
-				<SPRangeControl
-					label={ __( 'Horizontal Gap', 'easy-lightbox-wp' ) }
-					attributesKey="horizontalGap"
-					attributes={ horizontalGap }
-					setAttributes={ setAttributes }
-					responsive
-					units={ [ 'px', '%', 'em' ] }
-					globalSteps
-					sideAxisIcon="horizontal"
-					min={ 0 }
-					max={ 60 }
-					defaultValue={ { desktop: 15, tablet: 15, mobile: 15 } }
-				/>
-				<SPRangeControl
-					label={ __( 'Vertical Gap', 'easy-lightbox-wp' ) }
-					attributesKey="verticalGap"
-					attributes={ verticalGap }
-					setAttributes={ setAttributes }
-					responsive
-					units={ [ 'px', '%', 'em' ] }
-					globalSteps
-					sideAxisIcon="vertical"
-					min={ 0 }
-					max={ 60 }
-					defaultValue={ { desktop: 15, tablet: 15, mobile: 15 } }
-				/>
+					<SPRangeControl
+						label={ __( 'Horizontal Gap', 'easy-lightbox-wp' ) }
+						attributesKey="horizontalGap"
+						attributes={ horizontalGap }
+						setAttributes={ setAttributes }
+						responsive
+						units={ [ 'px', '%', 'em' ] }
+						globalSteps
+						sideAxisIcon="horizontal"
+						min={ 0 }
+						max={ 60 }
+						defaultValue={ { desktop: 15, tablet: 15, mobile: 15 } }
+					/>
+					<SPRangeControl
+						label={ __( 'Vertical Gap', 'easy-lightbox-wp' ) }
+						attributesKey="verticalGap"
+						attributes={ verticalGap }
+						setAttributes={ setAttributes }
+						responsive
+						units={ [ 'px', '%', 'em' ] }
+						globalSteps
+						sideAxisIcon="vertical"
+						min={ 0 }
+						max={ 60 }
+						defaultValue={ { desktop: 15, tablet: 15, mobile: 15 } }
+					/>
 
-				<SelectField
-					label={ __( 'Order', 'easy-lightbox-wp' ) }
-					attributesKey="order"
-					attributes={ order }
-					setAttributes={ setAttributes }
-					items={ [
-						{ label: __( 'Default', 'easy-lightbox-wp' ), value: 'default' },
-						{ label: __( 'Random', 'easy-lightbox-wp' ), value: 'random' },
-					] }
-					flexStyle={ true }
-				/>
+					<SelectField
+						label={ __( 'Order', 'easy-lightbox-wp' ) }
+						attributesKey="order"
+						attributes={ order }
+						setAttributes={ setAttributes }
+						items={ [
+							{ label: __( 'Default', 'easy-lightbox-wp' ), value: 'default' },
+							{ label: __( 'Random', 'easy-lightbox-wp' ), value: 'random' },
+						] }
+						flexStyle={ true }
+					/>
 
-				<Toggle
-					label={ __( 'Ajax Pagination', 'easy-lightbox-wp' ) }
-					checked={ !! ajaxPagination?.enable }
-					onChange={ ( v ) =>
-						setAttributes( { ajaxPagination: { ...ajaxPagination, enable: v } } )
-					}
-				/>
-			</ChildPanelBody>
+					<Toggle
+						label={ __( 'Ajax Pagination', 'easy-lightbox-wp' ) }
+						checked={ !! ajaxPagination?.enable }
+						onChange={ ( v ) =>
+							setAttributes( { ajaxPagination: { ...ajaxPagination, enable: v } } )
+						}
+					/>
+				</ChildPanelBody>
 
-			{ /* Ajax Pagination panel — shown only when the Layout Settings
-			   "Ajax Pagination" toggle is enabled, and mounted straight under that
-			   panel so it opens next to the toggle that revealed it rather than
-			   four panels further down. */ }
-			{ ajaxPagination?.enable && (
-				<AjaxPaginationSettings attributes={ attributes } setAttributes={ setAttributes } />
-			) }
+				{ /* Ajax Pagination panel — shown only when the Layout Settings
+				   "Ajax Pagination" toggle is enabled, and mounted straight under that
+				   panel so it opens next to the toggle that revealed it rather than
+				   four panels further down. */ }
+				{ ajaxPagination?.enable && (
+					<AjaxPaginationSettings attributes={ attributes } setAttributes={ setAttributes } />
+				) }
 
-			{ /* Universal panels — shared across every layout; each owns editor UI
-			   + attribute writes only. Where a panel's rendering has landed, the
-			   consumers are named in that panel's own header (see ./panels/*). */ }
-			<ImageVideoSettings attributes={ attributes } setAttributes={ setAttributes } />
+				{ /* Universal panels — shared across every layout; each owns editor UI
+				   + attribute writes only. Where a panel's rendering has landed, the
+				   consumers are named in that panel's own header (see ./panels/*). */ }
+				<ImageVideoSettings attributes={ attributes } setAttributes={ setAttributes } />
 
-			<ContentSettings attributes={ attributes } setAttributes={ setAttributes } />
+				<ContentSettings attributes={ attributes } setAttributes={ setAttributes } />
 
-			{ /* Image Click Action — always mounted. It owns the Click Action Type
-			   control itself, so gating it on that value would make "None" a
-			   one-way door; it reveals the Lightbox note when relevant. */ }
-			<ClickActionSettings attributes={ attributes } setAttributes={ setAttributes } />
+				{ /* Image Click Action — always mounted. It owns the Click Action Type
+				   control itself, so gating it on that value would make "None" a
+				   one-way door; it reveals the Lightbox note when relevant. */ }
+				<ClickActionSettings attributes={ attributes } setAttributes={ setAttributes } />
 
-			{ /* Locked Pro teaser — where Pro mounts its working panel. Writes nothing
-			   (see the panel's own header). */ }
-			<ProImageFilterSearch />
+				{ /* Locked Pro teaser — where Pro mounts its working panel. Writes nothing
+				   (see the panel's own header). */ }
+				<ProImageFilterSearch />
 
-			<AdvancedSettings attributes={ attributes } setAttributes={ setAttributes } />
+				<AdvancedSettings attributes={ attributes } setAttributes={ setAttributes } />
+			</PanelAccordion>
 		</InspectorControls>
 	);
 }

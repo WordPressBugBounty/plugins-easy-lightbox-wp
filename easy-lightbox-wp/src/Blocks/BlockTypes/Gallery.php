@@ -201,7 +201,7 @@ class Gallery extends BlockBase {
 
 		$class_string = implode( ' ', $classes );
 		$wrapper      = function_exists( 'get_block_wrapper_attributes' )
-			? get_block_wrapper_attributes( array( 'class' => $class_string ) )
+			? self::strip_empty_alignment( get_block_wrapper_attributes( array( 'class' => $class_string ) ) )
 			: sprintf( 'class="%s"', esc_attr( $class_string ) );
 
 		/*
@@ -241,6 +241,38 @@ class Gallery extends BlockBase {
 			return sprintf( '<div %s %s>%s</div>%s', $id_attr, $wrapper, $markup, $debug );
 		}
 		return sprintf( '<div %s>%s</div>%s', $wrapper, $markup, $debug );
+	}
+
+	/**
+	 * Drop the bare `align` class core puts on the wrapper for alignment "None".
+	 *
+	 * The block defaults `align` to wide, so core's toolbar stores "None" as the
+	 * empty string rather than `undefined` (GalleryAttributesFactory::get_alignment_attribute()
+	 * has the reason). `wp_apply_alignment_support()` then formats any PRESENT value
+	 * as `align%s` — so the empty string reaches the front end as a class named
+	 * `align`, which the editor never renders and no theme defines, and the wrapper
+	 * no longer matched the canvas the author picked "None" in.
+	 *
+	 * Only the exact token goes. `alignwide`, `alignfull`, and author classes that
+	 * merely contain the word (`align-left`, `my-align`) are left alone, and a
+	 * wrapper without it comes back byte-identical.
+	 *
+	 * @param string $wrapper Attribute string from get_block_wrapper_attributes().
+	 * @return string
+	 */
+	public static function strip_empty_alignment( string $wrapper ): string {
+		return (string) preg_replace_callback(
+			'/(?<![\w-])class="([^"]*)"/',
+			static function ( array $matches ): string {
+				$tokens = preg_split( '/\s+/', trim( $matches[1] ), -1, PREG_SPLIT_NO_EMPTY );
+				if ( ! in_array( 'align', $tokens, true ) ) {
+					return $matches[0];
+				}
+				return 'class="' . implode( ' ', array_diff( $tokens, array( 'align' ) ) ) . '"';
+			},
+			$wrapper,
+			1
+		);
 	}
 
 	/**

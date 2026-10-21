@@ -14,7 +14,7 @@
  */
 import { __ } from '@wordpress/i18n';
 import { paginationStyle } from '@shaped-gallery/lib/style';
-import { resolveResponsive } from '@shaped-gallery/lib/responsive';
+import { firstWindowSize } from '@shaped-gallery/lib/ajax-window';
 
 /**
  * @param {Object} props
@@ -25,11 +25,10 @@ import { resolveResponsive } from '@shaped-gallery/lib/responsive';
 export default function PaginationPreview( { attributes, device } ) {
 	const { items = [], ajaxPagination = {} } = attributes;
 
-	// Page size is the desktop showPerView on every device (the SSR renderer
-	// resolves it the same way); the bar only shows once there is more than one
-	// page — the same `total > per_view` gate, so editor ⇄ frontend agree.
-	const pageSize = parseInt( resolveResponsive( ajaxPagination.showPerView || {}, 'desktop' ), 10 ) || 15;
-	if ( ! ajaxPagination.enable || items.length <= pageSize ) {
+	// The bar only shows once there is more than one page — the same `total >
+	// per_view` gate the SSR renderer uses, read from the same first window the
+	// canvas draws, so editor ⇄ frontend agree.
+	if ( firstWindowSize( attributes ) >= items.length ) {
 		return null;
 	}
 

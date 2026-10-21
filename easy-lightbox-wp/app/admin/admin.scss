@@ -415,3 +415,22 @@ body.wp-admin {
 .sp-shaped-gallery-dash-toaster {
 	z-index: 100000;
 }
+
+/*
+ * Core's floating layers are portalled to the end of <body>, outside the shared
+ * Modal: a Tooltip at 1000002, a Popover at 1000000. The Modal sits at 9999999 to
+ * clear page-builder chrome (app/components/modal), so a help bubble opened from
+ * inside a module drawer (the info icon beside Item Counter) painted BEHIND the
+ * panel and never showed. While a modal is open, both layers go one step above it,
+ * so nothing depends on DOM order. Here, not in the Modal's own sheet: that one
+ * also ships to the block editor (Ready Patterns), where raising every popover
+ * would lift the block toolbar over the backdrop. A tooltip or popover outside the
+ * modal cannot open through the backdrop, so on the dashboard raising them all is
+ * safe.
+ */
+body:has(.sp-shaped-gallery-modal) {
+	.components-popover,
+	.components-tooltip {
+		z-index: 10000000;
+	}
+}

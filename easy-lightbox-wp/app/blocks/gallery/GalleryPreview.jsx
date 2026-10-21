@@ -11,6 +11,7 @@
 import { useRef } from "@wordpress/element";
 import { __ } from "@wordpress/i18n";
 import { resolveResponsive } from "@shaped-gallery/lib/layout-math";
+import { resolveResponsiveNumber } from "@shaped-gallery/lib/responsive";
 import {
 	geometryStyle,
 	effectiveRowHeight,
@@ -35,8 +36,10 @@ export default function GalleryPreview({ attributes }) {
 	const containerRef = useRef(null);
 	const device = useDeviceType();
 
-	const gh = resolveResponsive(horizontalGap, device) || 20;
-	const gv = resolveResponsive(verticalGap, device) || 20;
+	// Resolved exactly as the frontend runtime resolves them, so a 0 gap stays 0
+	// rather than falling through to the default (§18).
+	const gh = resolveResponsiveNumber(horizontalGap, device, 20);
+	const gv = resolveResponsiveNumber(verticalGap, device, 20);
 	const cols = resolveResponsive(columns, device) || 4;
 
 	// Draw each attachment at the gallery's Image Resolution, as the renderer does.

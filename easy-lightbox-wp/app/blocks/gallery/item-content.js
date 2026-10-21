@@ -69,7 +69,9 @@ export function descriptionFor( item = {}, content = {} ) {
 	if ( ! content.imageDescription ) {
 		return '';
 	}
-	const source = 'description' === content.imageDescriptionSource ? item.description : item.caption;
+	// Description is the default source (GalleryAttributesFactory), so only an explicit
+	// `caption` reads the attachment caption — an absent key resolves as it does in PHP.
+	const source = 'caption' === content.imageDescriptionSource ? item.caption : item.description;
 	const value = limitDescription( String( source ?? '' ), content.descriptionLimit );
 	return value.trim() ? value : '';
 }

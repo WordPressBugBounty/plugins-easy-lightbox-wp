@@ -1,11 +1,13 @@
 /**
- * Image & Video runtime — the two behaviours from the Image & Video Settings
- * panel that CSS alone cannot express:
+ * Image & Video runtime — the behaviours from the Image & Video Settings panel
+ * that CSS alone cannot express:
  *
  * - **Image Preloader:** reveal each tile's media once it has actually loaded, by
  *   marking the figure `.is-loaded` (the stylesheet owns the placeholder itself).
  * - **Video Play Mode → Inline:** swap a click-to-play poster for a real playing
  *   `<video>` in the tile.
+ * - **Video Play Mode → Popup:** play that same player in the video popup
+ *   (`./video-popup`) instead — its own player, not the lightbox.
  *
  * Everything is delegated on the gallery container and re-armed on
  * `sp-shaped-gallery:page-loaded`, so Ajax-appended tiles are covered without this
@@ -15,6 +17,7 @@
  */
 
 import { isEmbedProvider, embedUrl } from './embeds';
+import { openVideoPopup } from './video-popup';
 
 /**
  * Media elements inside a figure that the preloader waits on.
@@ -81,20 +84,23 @@ function armPreloader( box ) {
  * Build the player element for a click-to-play tile.
  *
  * A provider embed's URL is an iframe player, so it gets an `<iframe>` (with the
- * provider's autoplay parameter — the click IS the intent to play); a media file
- * gets a `<video>` seeded with the poster already on screen, so playback starts
- * with no extra request. Either way the element keeps `.sp-shaped-gallery__img`, so
- * the per-item styling (filter, opacity, radius) continues to apply.
+ * provider's autoplay parameter when autoplay is wanted); a media file gets a
+ * `<video>` seeded with the poster already on screen, so playback starts with no
+ * extra request. Either way the element keeps `.sp-shaped-gallery__img`, so the
+ * per-item styling (filter, opacity, radius) continues to apply in the tile.
  *
  * @param {Document}          doc      Owning document.
  * @param {string}            src      File or embed URL (`data-video-src`).
  * @param {string}            provider Provider id (`data-video-provider`).
  * @param {?HTMLImageElement} poster   The poster image being replaced, if any.
+ * @param {boolean}           autoplay Whether the player starts on its own — always
+ *                                     in the tile, since the click IS the intent to
+ *                                     play; the gallery's AutoPlay in the popup.
  * @return {?HTMLElement} Player element, or null when an embed's URL is not a safe player.
  */
-function buildPlayer( doc, src, provider, poster ) {
+function buildPlayer( doc, src, provider, poster, autoplay = true ) {
 	if ( isEmbedProvider( provider ) ) {
-		const url = embedUrl( src, provider, true );
+		const url = embedUrl( src, provider, autoplay );
 		if ( ! url ) {
 			return null;
 		}
@@ -112,7 +118,7 @@ function buildPlayer( doc, src, provider, poster ) {
 	video.className = 'sp-shaped-gallery__img';
 	video.src = src;
 	video.controls = true;
-	video.autoplay = true;
+	video.autoplay = autoplay;
 	video.playsInline = true;
 	if ( poster && poster.currentSrc ) {
 		video.poster = poster.currentSrc;
@@ -158,16 +164,62 @@ function playInline( trigger ) {
 }
 
 /**
- * Wire the inline-video click handler for a gallery.
+ * Open a click-to-play tile's video in the popup.
+ *
+ * The same player Inline would swap into the tile, so the two modes frame every
+ * provider identically. The tile itself is left as it is — closing the popup
+ * returns to the poster, ready to play again.
+ *
+ * @param {HTMLElement} box     Gallery container.
+ * @param {HTMLElement} trigger The `.sp-shaped-gallery__play` button.
+ * @return {void}
+ */
+function playInPopup( box, trigger ) {
+	const figure = trigger.closest( '.sp-shaped-gallery__item' );
+	const src = figure ? figure.dataset.videoSrc : '';
+	if ( ! figure || ! src ) {
+		return;
+	}
+
+	const provider = figure.dataset.videoProvider || '';
+	const player = buildPlayer(
+		figure.ownerDocument,
+		src,
+		provider,
+		trigger.querySelector( 'img' ),
+		// AutoPlay is on unless the renderer emitted the opt-out.
+		'0' !== box.dataset.videoAutoplay
+	);
+	if ( ! player ) {
+		// An embed URL that failed the allow-list: nothing to open.
+		return;
+	}
+
+	openVideoPopup( box, trigger, player, provider );
+}
+
+/**
+ * Wire the click-to-play handler for a gallery: the play button swaps a player
+ * into the tile, or opens it in the popup, per Video Play Mode.
+ *
+ * Delegated, so a tile appended by Load More / Infinity Scroll plays the same way
+ * as one that was server-rendered, with no rebinding.
  *
  * @param {HTMLElement} box Gallery container.
  * @return {void}
  */
-function bindInlineVideo( box ) {
+function bindVideo( box ) {
+	const popup = 'popup' === box.dataset.video;
+
 	box.addEventListener( 'click', ( event ) => {
 		const trigger = event.target.closest( '.sp-shaped-gallery__play' );
-		if ( trigger && box.contains( trigger ) ) {
-			event.preventDefault();
+		if ( ! trigger || ! box.contains( trigger ) ) {
+			return;
+		}
+		event.preventDefault();
+		if ( popup ) {
+			playInPopup( box, trigger );
+		} else {
 			playInline( trigger );
 		}
 	} );
@@ -184,7 +236,7 @@ function bindInlineVideo( box ) {
  */
 export function initMedia( box ) {
 	const preloader = box.classList.contains( 'sp-shaped-gallery--preloader' );
-	const inlineVideo = 'inline' === box.dataset.video;
+	const video = 'inline' === box.dataset.video || 'popup' === box.dataset.video;
 
 	if ( preloader ) {
 		// The placeholder only hides media once JS is running (see style.scss), so
@@ -192,12 +244,12 @@ export function initMedia( box ) {
 		box.classList.add( 'is-js' );
 		armPreloader( box );
 	}
-	if ( inlineVideo ) {
-		bindInlineVideo( box );
+	if ( video ) {
+		bindVideo( box );
 	}
 
 	// Ajax-appended tiles arrive later; only the preloader needs per-element work
-	// (inline video is delegated on the container).
+	// (video playback is delegated on the container).
 	if ( preloader ) {
 		box.addEventListener( 'sp-shaped-gallery:page-loaded', () => armPreloader( box ) );
 	}

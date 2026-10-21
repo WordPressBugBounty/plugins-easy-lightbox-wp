@@ -13,10 +13,10 @@
  * translated to this plugin's own prefix.
  *
  * The tier pills follow the same rule as a facet group: they are drawn only when
- * there is something to choose between. A build whose catalogue carries no
- * premium rows (`PatternLibrary::SHOW_LOCKED_PATTERNS`) would otherwise show an
- * All / Free / Pro row in which two pills select the identical list and the third
- * selects nothing — three controls for one outcome.
+ * there is something to choose between. A catalogue with no premium rows (a
+ * provider that publishes none) would otherwise show an All / Free / Pro row in
+ * which two pills select the identical list and the third selects nothing —
+ * three controls for one outcome.
  */
 import { __ } from '@wordpress/i18n';
 import { memo } from '@wordpress/element';

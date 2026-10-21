@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: ShapedGallery 1.2.1\n"
+"Project-Id-Version: ShapedGallery 1.2.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/easy-lightbox-wp\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-14T11:43:36+00:00\n"
+"POT-Creation-Date: 2026-10-21T13:10:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: easy-lightbox-wp\n"
@@ -72,7 +72,7 @@ msgstr ""
 
 #. translators: %d: discount percentage for new customers, e.g. 75.
 #: src/Admin/Admin.php:218
-#: app/components/pro/ProNotice.jsx:88
+#: app/components/pro/ProNotice.jsx:92
 #, php-format,js-format
 msgid "Up to %d%% off"
 msgstr ""
@@ -103,7 +103,7 @@ msgstr ""
 #: app/admin/routes.js:32
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:252
 #: app/blocks/gallery/panels/ContentSettings.jsx:346
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:266
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:270
 msgid "Settings"
 msgstr ""
 
@@ -199,7 +199,7 @@ msgstr ""
 #: src/Admin/DashboardConfig.php:247
 #: app/admin/pages/ManageGalleries/GalleryTable.jsx:110
 #: app/media-manager/edit-gallery/GallerySidebar.jsx:25
-#: app/media-manager/MediaSidebar.jsx:80
+#: app/media-manager/MediaSidebar.jsx:82
 msgid "Actions"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgstr ""
 #. translators: %s: module name, e.g. "Lightbox".
 #. translators: %s: module name, e.g. "Watermark".
 #: src/Admin/DashboardConfig.php:429
-#: src/Admin/DashboardConfig.php:485
+#: src/Admin/DashboardConfig.php:489
 #, php-format
 msgid "%s documentation"
 msgstr ""
@@ -468,343 +468,352 @@ msgstr ""
 msgid "Secure images with right-click blocks, drag prevention."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:493
+#: src/Admin/DashboardConfig.php:476
+msgid "Lazy Load"
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:477
+msgid "Load images only when needed to boost page speed and create smoother browsing experiences."
+msgstr ""
+
+#: src/Admin/DashboardConfig.php:497
 msgid "Unlock Powerful Features with Pro!"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:494
+#: src/Admin/DashboardConfig.php:498
 msgid "Protect your work and brand every image with the Pro modules."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:495
+#: src/Admin/DashboardConfig.php:499
 #: app/components/pro/ProBadge.jsx:39
 msgid "PRO"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:496
+#: src/Admin/DashboardConfig.php:500
 #: src/Admin/Menu.php:141
 #: src/Admin/Menu.php:142
 #: app/components/pro/ProCardBadge.jsx:48
-#: app/components/pro/ProNotice.jsx:133
+#: app/components/pro/ProNotice.jsx:137
+#: app/ready-patterns/PreviewDrawer.jsx:290
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:529
+#: src/Admin/DashboardConfig.php:533
 #: app/admin/pages/Settings/modulePanels/ModulePanel.jsx:107
 #: app/admin/pages/Settings/SettingsActions.jsx:55
 msgid "Save Changes"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:530
+#: src/Admin/DashboardConfig.php:534
 #: app/admin/pages/Settings/modulePanels/ModulePanel.jsx:97
 #: app/admin/pages/Settings/SettingsActions.jsx:64
 msgid "Reset Changes"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:533
+#: src/Admin/DashboardConfig.php:537
 msgid "General Setting"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:537
+#: src/Admin/DashboardConfig.php:541
 msgid "Close When Click Outside"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:541
+#: src/Admin/DashboardConfig.php:545
 msgid "Item Counter"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:542
+#: src/Admin/DashboardConfig.php:546
 msgid "Show the position of the current image, for example 3 / 12."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:548
-#: app/components/pro/ProNotice.jsx:108
+#: src/Admin/DashboardConfig.php:552
+#: app/components/pro/ProNotice.jsx:112
 #: app/components/pro/ProPanel.jsx:30
 msgid "Unlock Pro Features!"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:549
+#: src/Admin/DashboardConfig.php:553
 msgid "Get 20+ lightbox options with ShapedGallery Pro, including:"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:551
+#: src/Admin/DashboardConfig.php:555
 msgid "Light & Dark Themes"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:552
+#: src/Admin/DashboardConfig.php:556
 msgid "Slider AutoPlay & Loop"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:553
+#: src/Admin/DashboardConfig.php:557
 msgid "Transition Effects"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:554
+#: src/Admin/DashboardConfig.php:558
 #: app/blocks/gallery/panels/ClickActionSettings.jsx:150
 msgid "Image Title & Caption"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:555
+#: src/Admin/DashboardConfig.php:559
 #: app/blocks/gallery/panels/ClickActionSettings.jsx:151
 msgid "Lightbox Toolbar (zoom, share, download)"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:556
+#: src/Admin/DashboardConfig.php:560
 #: app/blocks/gallery/panels/ClickActionSettings.jsx:152
 msgid "Thumbnail Navigation"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:557
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:275
+#: src/Admin/DashboardConfig.php:561
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:280
 msgid "Right Click Protection"
 msgstr ""
 
 #. translators: 1: plugin name. 2: page builder name, e.g. "Elementor".
-#: src/Admin/DashboardConfig.php:599
+#: src/Admin/DashboardConfig.php:603
 #, php-format
 msgid "It allows using %1$s galleries in %2$s via the gallery shortcode."
 msgstr ""
 
 #. translators: %s: page builder name, e.g. "Elementor".
-#: src/Admin/DashboardConfig.php:608
+#: src/Admin/DashboardConfig.php:612
 #, php-format
 msgid "%s integration documentation"
 msgstr ""
 
 #. translators: Keep the <strong> tags around the lead-in.
-#: src/Admin/DashboardConfig.php:697
+#: src/Admin/DashboardConfig.php:765
 msgid "<strong>Exclusive early-bird</strong> Pro access is open"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:847
+#: src/Admin/DashboardConfig.php:915
 #: app/admin/pages/GettingStarted/index.jsx:41
 msgid "Build Beautiful Galleries in Minutes"
 msgstr ""
 
 #. translators: %s: plugin name.
-#: src/Admin/DashboardConfig.php:850
+#: src/Admin/DashboardConfig.php:918
 #, php-format
 msgid "Add the %s block to any page, drop in your images, and pick a layout — no shortcode needed."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:853
+#: src/Admin/DashboardConfig.php:921
 #: app/admin/pages/GettingStarted/index.jsx:54
 msgid "Create New Gallery"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:855
+#: src/Admin/DashboardConfig.php:923
 #: app/admin/pages/GettingStarted/index.jsx:66
 msgid "Use Ready Patterns"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:864
+#: src/Admin/DashboardConfig.php:932
 msgid "A grid of sample gallery photos"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:879
+#: src/Admin/DashboardConfig.php:947
 msgid "Made with"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:880
+#: src/Admin/DashboardConfig.php:948
 msgid "by the"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:881
+#: src/Admin/DashboardConfig.php:949
 msgid "ShapedPlugin LLC Team"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:883
+#: src/Admin/DashboardConfig.php:951
 msgid "Get Connected with"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:942
+#: src/Admin/DashboardConfig.php:1010
 msgid "Help Center"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:946
+#: src/Admin/DashboardConfig.php:1014
 msgid "What's New"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:951
+#: src/Admin/DashboardConfig.php:1019
 #: app/blocks/gallery/panels/GalleryInfo.jsx:92
 msgid "Documentation"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:956
+#: src/Admin/DashboardConfig.php:1024
 msgid "Technical Support"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:961
+#: src/Admin/DashboardConfig.php:1029
 msgid "Video Tutorials"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:966
+#: src/Admin/DashboardConfig.php:1034
 msgid "Request a Feature"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:971
+#: src/Admin/DashboardConfig.php:1039
 msgid "Blog: Latest News"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:976
+#: src/Admin/DashboardConfig.php:1044
 msgid "Join Community"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:998
+#: src/Admin/DashboardConfig.php:1066
 msgid "Beautiful Gallery Showcase Solution for WordPress by"
 msgstr ""
 
 #. translators: %s: plugin name.
-#: src/Admin/DashboardConfig.php:1001
+#: src/Admin/DashboardConfig.php:1069
 #, php-format
 msgid "%s Team"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1006
+#: src/Admin/DashboardConfig.php:1074
 msgid "At "
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1007
+#: src/Admin/DashboardConfig.php:1075
 msgid "ShapedPlugin LLC"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1008
+#: src/Admin/DashboardConfig.php:1076
 msgid ", back in 2016, while building WordPress websites for clients and partners, we struggled to find a simple, flexible, and reliable way to showcase clients, partners, sponsors, and affiliates’ logos elegantly. Existing solutions lacked the design quality, usability, and customization options we needed—so we decided to build our own."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1012
+#: src/Admin/DashboardConfig.php:1080
 msgid " offers a simple yet powerful way to showcase images through carousels, grids, lists, category filters, and sleek layouts. It helps you build trust, enhance credibility, and display social proof with ease—we’re sure you’ll enjoy using it."
 msgstr ""
 
 #. translators: %s: plugin name.
-#: src/Admin/DashboardConfig.php:1018
+#: src/Admin/DashboardConfig.php:1086
 #, php-format
 msgid "Explore %s"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1024
+#: src/Admin/DashboardConfig.php:1092
 msgid "More About Us"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1035
+#: src/Admin/DashboardConfig.php:1103
 msgid "The ShapedPlugin LLC team"
 msgstr ""
 
 #. translators: %s: plugin name.
-#: src/Admin/DashboardConfig.php:1038
+#: src/Admin/DashboardConfig.php:1106
 #, php-format
 msgid "The Creative Minds Behind the %s Plugin"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1042
+#: src/Admin/DashboardConfig.php:1110
 msgid "Your Website Deserves More Than Typical - Go Premium Today!"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1043
+#: src/Admin/DashboardConfig.php:1111
 msgid "Unlock powerful plugins built to boost performance, elevate design, and grow your business."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1064
+#: src/Admin/DashboardConfig.php:1132
 msgid "WP Carousel"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1065
+#: src/Admin/DashboardConfig.php:1133
 msgid "The most powerful and user-friendly multi-purpose carousel, slider, & gallery plugin for WordPress."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1071
+#: src/Admin/DashboardConfig.php:1139
 msgid "Easy Accordion"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1072
+#: src/Admin/DashboardConfig.php:1140
 msgid "Minimize customer support by offering comprehensive FAQs and increasing conversions."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1078
+#: src/Admin/DashboardConfig.php:1146
 msgid "Real Testimonials"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1079
+#: src/Admin/DashboardConfig.php:1147
 msgid "Simply collect, manage, and display testimonials on your website and boost conversions."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1085
+#: src/Admin/DashboardConfig.php:1153
 msgid "Smart Post"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1086
+#: src/Admin/DashboardConfig.php:1154
 msgid "Filter and display posts (any post types), pages, taxonomy, custom taxonomy, and custom field, in beautiful layouts."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1092
+#: src/Admin/DashboardConfig.php:1160
 msgid "Smart Team"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1093
+#: src/Admin/DashboardConfig.php:1161
 msgid "Simply collect, manage, and display your team members on your website."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1099
+#: src/Admin/DashboardConfig.php:1167
 msgid "Location Weather"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1100
+#: src/Admin/DashboardConfig.php:1168
 msgid "Add customizable, real-time weather forecasts with multi-day views and current conditions to your WordPress site."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1106
+#: src/Admin/DashboardConfig.php:1174
 msgid "Smart Tabs"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1107
+#: src/Admin/DashboardConfig.php:1175
 msgid "Best WooCommerce custom product tabs & WordPress tabs builder plugin to create responsive tabs."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1113
+#: src/Admin/DashboardConfig.php:1181
 msgid "Reno Product Gallery"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1114
+#: src/Admin/DashboardConfig.php:1182
 msgid "Product gallery slider and additional variation images gallery for WooCommerce and boost your sales."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1120
+#: src/Admin/DashboardConfig.php:1188
 msgid "Reno Product Slider"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1121
+#: src/Admin/DashboardConfig.php:1189
 msgid "Boost sales by interactive product Slider, Grid, and Table in your WooCommerce website or store."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1127
+#: src/Admin/DashboardConfig.php:1195
 msgid "Reno Product Category"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1128
+#: src/Admin/DashboardConfig.php:1196
 msgid "Display by filtering the list of categories aesthetically and boosting sales."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1133
+#: src/Admin/DashboardConfig.php:1201
 msgid "Smart Swatch"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1134
+#: src/Admin/DashboardConfig.php:1202
 msgid "Smart Swatches is a best product variation swatches for WooCommerce to boost your store sales."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1140
+#: src/Admin/DashboardConfig.php:1208
 msgid "Styble"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1141
+#: src/Admin/DashboardConfig.php:1209
 msgid "Enhance web design with fast, modern Gutenberg blocks like accordions, buttons, info boxes, and tabs—no coding needed."
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1170
+#: src/Admin/DashboardConfig.php:1238
 msgid "Support"
 msgstr ""
 
-#: src/Admin/DashboardConfig.php:1171
+#: src/Admin/DashboardConfig.php:1239
 msgid "Chat with support"
 msgstr ""
 
@@ -887,6 +896,14 @@ msgstr ""
 msgid "%1$d / %2$d"
 msgstr ""
 
+#: src/Blocks/BlocksInit.php:197
+msgid "Video player"
+msgstr ""
+
+#: src/Blocks/BlocksInit.php:198
+msgid "Close video"
+msgstr ""
+
 #: src/Core/PostType.php:100
 msgid "Sorry, you are not allowed to browse galleries."
 msgstr ""
@@ -907,7 +924,7 @@ msgstr ""
 #: app/media-manager/edit-gallery/EditGalleryModal.jsx:131
 #: app/media-manager/edit-gallery/GallerySidebar.jsx:36
 #: app/media-manager/MediaModal.jsx:317
-#: app/media-manager/MediaSidebar.jsx:22
+#: app/media-manager/MediaSidebar.jsx:24
 msgid "Edit Gallery"
 msgstr ""
 
@@ -1032,37 +1049,37 @@ msgstr ""
 msgid "This gallery is empty, unavailable, or has been deleted."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:308
+#: src/Patterns/PatternLibrary.php:282
 msgid "A pattern id is required."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:332
+#: src/Patterns/PatternLibrary.php:306
 msgid "That pattern could not be checked. Refresh the library and try again."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:342
+#: src/Patterns/PatternLibrary.php:316
 msgid "That pattern is not available in this version of ShapedGallery."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:350
+#: src/Patterns/PatternLibrary.php:324
 msgid "That pattern is available in ShapedGallery Pro."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:366
+#: src/Patterns/PatternLibrary.php:340
 msgid "That pattern could not be imported."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:490
+#: src/Patterns/PatternLibrary.php:464
 msgid "The pattern library could not be reached. Please try again."
 msgstr ""
 
 #. translators: %d: HTTP status code.
-#: src/Patterns/PatternLibrary.php:501
+#: src/Patterns/PatternLibrary.php:475
 #, php-format
 msgid "The pattern library answered with an error (HTTP %d)."
 msgstr ""
 
-#: src/Patterns/PatternLibrary.php:513
+#: src/Patterns/PatternLibrary.php:487
 msgid "The pattern library returned an unreadable response."
 msgstr ""
 
@@ -1075,29 +1092,29 @@ msgstr ""
 msgid "Add images and videos from your WordPress Media Library."
 msgstr ""
 
-#: src/Render/LayoutRenderer.php:249
-#: app/blocks/gallery/PaginationPreview.jsx:38
+#: src/Render/LayoutRenderer.php:247
+#: app/blocks/gallery/PaginationPreview.jsx:37
 msgid "Gallery pagination"
 msgstr ""
 
-#: src/Render/LayoutRenderer.php:253
-#: app/blocks/gallery/PaginationPreview.jsx:44
+#: src/Render/LayoutRenderer.php:251
+#: app/blocks/gallery/PaginationPreview.jsx:43
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:96
 msgid "Load More"
 msgstr ""
 
-#: src/Render/LayoutRenderer.php:254
+#: src/Render/LayoutRenderer.php:252
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:103
 msgid "No more images available"
 msgstr ""
 
 #. translators: %s: video title.
-#: src/Render/LayoutRenderer.php:475
+#: src/Render/LayoutRenderer.php:477
 #, php-format
 msgid "Play video: %s"
 msgstr ""
 
-#: src/Render/LayoutRenderer.php:476
+#: src/Render/LayoutRenderer.php:478
 msgid "Play video"
 msgstr ""
 
@@ -1155,7 +1172,7 @@ msgid "You are not allowed to browse the pattern library."
 msgstr ""
 
 #: app/admin/components/ExternalLink.jsx:47
-#: app/components/pro/ProNotice.jsx:58
+#: app/components/pro/ProNotice.jsx:62
 msgid "(opens in a new tab)"
 msgstr ""
 
@@ -1173,12 +1190,12 @@ msgid "Version %s"
 msgstr ""
 
 #. translators: %d: discount percentage for new customers, e.g. 75. Keep the <small> tags around "up to" and the <strong> tags around the discount.
-#: app/admin/components/OfferBar.jsx:63
+#: app/admin/components/OfferBar.jsx:62
 #, js-format
 msgid "<small>up to</small> <strong>%d%% off</strong> lifetime offer"
 msgstr ""
 
-#: app/admin/components/OfferBar.jsx:71
+#: app/admin/components/OfferBar.jsx:70
 msgid "Get it now"
 msgstr ""
 
@@ -1216,6 +1233,7 @@ msgid "Page %1$d of %2$d (%3$d galleries)"
 msgstr ""
 
 #: app/admin/pages/ManageGalleries/GalleryTable.jsx:154
+#: app/ready-patterns/PreviewDrawer.jsx:404
 msgid "Next"
 msgstr ""
 
@@ -1294,13 +1312,13 @@ msgstr ""
 
 #: app/blocks/gallery/edit.jsx:89
 #: app/components/responsive/index.jsx:19
-#: app/ready-patterns/PreviewDrawer.jsx:72
+#: app/ready-patterns/PreviewDrawer.jsx:76
 msgid "Desktop"
 msgstr ""
 
 #: app/blocks/gallery/edit.jsx:90
 #: app/components/responsive/index.jsx:20
-#: app/ready-patterns/PreviewDrawer.jsx:67
+#: app/ready-patterns/PreviewDrawer.jsx:71
 msgid "Tablet"
 msgstr ""
 
@@ -1316,7 +1334,7 @@ msgstr ""
 #: app/media-manager/edit-gallery/GallerySidebar.jsx:38
 #: app/media-manager/MediaModal.jsx:293
 #: app/media-manager/MediaModal.jsx:318
-#: app/media-manager/MediaSidebar.jsx:23
+#: app/media-manager/MediaSidebar.jsx:25
 msgid "Add to Gallery"
 msgstr ""
 
@@ -1343,8 +1361,8 @@ msgstr ""
 msgid "Hidden on %s"
 msgstr ""
 
-#: app/blocks/gallery/EditableGalleryPreview.jsx:311
-#: app/blocks/gallery/GalleryPreview.jsx:62
+#: app/blocks/gallery/EditableGalleryPreview.jsx:329
+#: app/blocks/gallery/GalleryPreview.jsx:65
 msgid "No images yet."
 msgstr ""
 
@@ -1352,33 +1370,33 @@ msgstr ""
 msgid "Showcase your Images, Videos beautifully and keep visitors engaged."
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:65
+#: app/blocks/gallery/Inspector.jsx:70
 msgid "Layout Settings"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:75
+#: app/blocks/gallery/Inspector.jsx:80
 msgid "Horizontal Gap"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:88
+#: app/blocks/gallery/Inspector.jsx:93
 msgid "Vertical Gap"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:102
+#: app/blocks/gallery/Inspector.jsx:107
 msgid "Order"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:107
+#: app/blocks/gallery/Inspector.jsx:112
 #: app/components/boxShadow/index.jsx:209
 #: app/components/selectField/index.jsx:48
 msgid "Default"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:108
+#: app/blocks/gallery/Inspector.jsx:113
 msgid "Random"
 msgstr ""
 
-#: app/blocks/gallery/Inspector.jsx:114
+#: app/blocks/gallery/Inspector.jsx:119
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:248
 msgid "Ajax Pagination"
 msgstr ""
@@ -1390,7 +1408,7 @@ msgstr ""
 
 #: app/blocks/gallery/panels/AdvancedSettings.jsx:68
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:227
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:242
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:246
 msgid "Margin"
 msgstr ""
 
@@ -1472,18 +1490,18 @@ msgid "Alignment"
 msgstr ""
 
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:159
-#: app/components/typography/index.jsx:173
-#: app/components/typography/index.jsx:228
+#: app/components/typography/index.jsx:174
+#: app/components/typography/index.jsx:253
 msgid "Typography"
 msgstr ""
 
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:175
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:204
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:208
 msgid "Normal"
 msgstr ""
 
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:176
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:205
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:209
 #: app/components/boxShadow/index.jsx:210
 msgid "Hover"
 msgstr ""
@@ -1510,7 +1528,7 @@ msgstr ""
 
 #: app/blocks/gallery/panels/AjaxPaginationSettings.jsx:208
 #: app/blocks/gallery/panels/ContentSettings.jsx:312
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:218
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:222
 msgid "Border Radius"
 msgstr ""
 
@@ -1684,75 +1702,79 @@ msgstr ""
 msgid "You can use this shortcode anywhere."
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:85
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:89
 msgid "Resolution"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:90
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:94
 msgid "Thumbnail"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:91
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:95
 msgid "Medium"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:92
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:96
 msgid "Large"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:93
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:97
 msgid "Full"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:101
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:105
 msgid "Image Preloader"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:109
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:113
 msgid "Video Play Mode"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:113
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:117
 msgid "Inline"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:114
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:118
 msgid "Popup"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:119
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:123
 msgid "AutoPlay"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:126
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:130
 msgid "Note: Autoplay may be affected by <a>Google’s autoplay policy</a> on Chrome."
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:146
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:150
 msgid "Play Icon Size"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:156
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:160
 msgid "Display Icon on Hover"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:210
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:214
 msgid "Image Border"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:262
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:266
 msgid "Image & Video Settings"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:274
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:278
+msgid "Aspect Ratio"
+msgstr ""
+
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:279
 msgid "Image Watermark"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:276
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:281
 msgid "Hover Animations"
 msgstr ""
 
-#: app/blocks/gallery/panels/ImageVideoSettings.jsx:277
+#: app/blocks/gallery/panels/ImageVideoSettings.jsx:282
 msgid "Image Filter & Overlay"
 msgstr ""
 
@@ -1928,7 +1950,7 @@ msgstr ""
 msgid "Upgrade"
 msgstr ""
 
-#: app/components/pro/ProNotice.jsx:144
+#: app/components/pro/ProNotice.jsx:148
 msgid "Upgrade to Pro!"
 msgstr ""
 
@@ -1950,7 +1972,7 @@ msgid "Reset to default"
 msgstr ""
 
 #: app/components/responsive/index.jsx:21
-#: app/ready-patterns/PreviewDrawer.jsx:70
+#: app/ready-patterns/PreviewDrawer.jsx:74
 msgid "Mobile"
 msgstr ""
 
@@ -1970,96 +1992,96 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
-#: app/components/typography/index.jsx:77
+#: app/components/typography/index.jsx:78
 msgid "Thin 100"
 msgstr ""
 
-#: app/components/typography/index.jsx:78
+#: app/components/typography/index.jsx:79
 msgid "Extra Light 200"
 msgstr ""
 
-#: app/components/typography/index.jsx:79
+#: app/components/typography/index.jsx:80
 msgid "Light 300"
 msgstr ""
 
-#: app/components/typography/index.jsx:80
+#: app/components/typography/index.jsx:81
 msgid "Regular 400"
 msgstr ""
 
-#: app/components/typography/index.jsx:81
+#: app/components/typography/index.jsx:82
 msgid "Medium 500"
 msgstr ""
 
-#: app/components/typography/index.jsx:82
+#: app/components/typography/index.jsx:83
 msgid "Semi Bold 600"
 msgstr ""
 
-#: app/components/typography/index.jsx:83
+#: app/components/typography/index.jsx:84
 msgid "Bold 700"
 msgstr ""
 
-#: app/components/typography/index.jsx:84
+#: app/components/typography/index.jsx:85
 msgid "Extra Bold 800"
 msgstr ""
 
-#: app/components/typography/index.jsx:85
+#: app/components/typography/index.jsx:86
 msgid "Black 900"
 msgstr ""
 
-#: app/components/typography/index.jsx:94
+#: app/components/typography/index.jsx:95
 msgid "Italic"
 msgstr ""
 
-#: app/components/typography/index.jsx:95
+#: app/components/typography/index.jsx:96
 msgid "Underline"
 msgstr ""
 
-#: app/components/typography/index.jsx:96
+#: app/components/typography/index.jsx:97
 msgid "Strikethrough"
 msgstr ""
 
-#: app/components/typography/index.jsx:97
+#: app/components/typography/index.jsx:98
 msgid "Uppercase"
 msgstr ""
 
-#: app/components/typography/index.jsx:98
+#: app/components/typography/index.jsx:99
 msgid "Lowercase"
 msgstr ""
 
-#: app/components/typography/index.jsx:99
+#: app/components/typography/index.jsx:100
 msgid "Capitalize"
 msgstr ""
 
-#: app/components/typography/index.jsx:154
-#: app/components/typography/index.jsx:272
+#: app/components/typography/index.jsx:155
+#: app/components/typography/index.jsx:295
 msgid "PX"
 msgstr ""
 
-#: app/components/typography/index.jsx:240
+#: app/components/typography/index.jsx:265
 msgid "Font Family"
 msgstr ""
 
-#: app/components/typography/index.jsx:254
+#: app/components/typography/index.jsx:277
 msgid "Font Style"
 msgstr ""
 
-#: app/components/typography/index.jsx:263
+#: app/components/typography/index.jsx:286
 msgid "Font Size"
 msgstr ""
 
-#: app/components/typography/index.jsx:275
+#: app/components/typography/index.jsx:298
 msgid "Line Height"
 msgstr ""
 
-#: app/components/typography/index.jsx:291
+#: app/components/typography/index.jsx:314
 msgid "Letter Spacing"
 msgstr ""
 
-#: app/components/typography/index.jsx:300
+#: app/components/typography/index.jsx:323
 msgid "Word Spacing"
 msgstr ""
 
-#: app/components/typography/index.jsx:312
+#: app/components/typography/index.jsx:335
 msgid "Text Format"
 msgstr ""
 
@@ -2462,13 +2484,13 @@ msgstr[1] ""
 
 #. translators: %s: media source name, e.g. "Vimeo".
 #. translators: %s: layout name, e.g. "Metro".
-#: app/media-manager/MediaSidebar.jsx:63
+#: app/media-manager/MediaSidebar.jsx:65
 #: app/picker/LayoutCard.jsx:103
 #, js-format
 msgid "%s — available in Pro (opens the upgrade page in a new tab)"
 msgstr ""
 
-#: app/media-manager/MediaSidebar.jsx:78
+#: app/media-manager/MediaSidebar.jsx:80
 msgid "Media sources"
 msgstr ""
 
@@ -2692,13 +2714,12 @@ msgstr[1] ""
 msgid "Dismiss"
 msgstr ""
 
-#: app/ready-patterns/LockedCta.jsx:30
+#: app/ready-patterns/LockedCta.jsx:37
 msgid "Pro only"
 msgstr ""
 
-#: app/ready-patterns/PatternCard.jsx:51
-#: app/ready-patterns/Sidebar.jsx:114
-msgid "Pro"
+#: app/ready-patterns/LockedCta.jsx:51
+msgid "Upgrade to Pro to use this pattern"
 msgstr ""
 
 #: app/ready-patterns/PatternCard.jsx:62
@@ -2718,12 +2739,12 @@ msgid "Get Pro"
 msgstr ""
 
 #: app/ready-patterns/PatternCard.jsx:95
-#: app/ready-patterns/PreviewDrawer.jsx:286
+#: app/ready-patterns/PreviewDrawer.jsx:301
 msgid "Inserting…"
 msgstr ""
 
 #: app/ready-patterns/PatternCard.jsx:96
-#: app/ready-patterns/PreviewDrawer.jsx:287
+#: app/ready-patterns/PreviewDrawer.jsx:302
 msgid "Insert"
 msgstr ""
 
@@ -2743,54 +2764,49 @@ msgstr ""
 msgid "Try a different layout, category or search term."
 msgstr ""
 
-#: app/ready-patterns/PreviewDrawer.jsx:192
-msgid "Back"
-msgstr ""
-
-#: app/ready-patterns/PreviewDrawer.jsx:209
-#: app/ready-patterns/PreviewDrawer.jsx:210
-msgid "Previous pattern"
-msgstr ""
-
-#: app/ready-patterns/PreviewDrawer.jsx:218
-#: app/ready-patterns/PreviewDrawer.jsx:219
-msgid "Next pattern"
-msgstr ""
-
-#. translators: 1: position of the previewed pattern, 2: number of patterns shown.
-#: app/ready-patterns/PreviewDrawer.jsx:233
-#, js-format
-msgid "%1$d of %2$d"
-msgstr ""
-
-#: app/ready-patterns/PreviewDrawer.jsx:245
+#: app/ready-patterns/PreviewDrawer.jsx:260
 msgid "Preview width"
 msgstr ""
 
-#: app/ready-patterns/PreviewDrawer.jsx:275
-msgid "Get Pro to use this pattern"
-msgstr ""
-
-#: app/ready-patterns/PreviewDrawer.jsx:299
-msgid "Close the pattern library"
+#: app/ready-patterns/PreviewDrawer.jsx:314
+#: app/ready-patterns/PreviewDrawer.jsx:315
+msgid "Close preview"
 msgstr ""
 
 #. translators: %s: pattern name.
-#: app/ready-patterns/PreviewDrawer.jsx:318
+#: app/ready-patterns/PreviewDrawer.jsx:335
 #, js-format
 msgid "Preview of %s"
 msgstr ""
 
-#: app/ready-patterns/PreviewDrawer.jsx:321
+#: app/ready-patterns/PreviewDrawer.jsx:338
 msgid "Pattern preview"
 msgstr ""
 
-#: app/ready-patterns/PreviewDrawer.jsx:338
+#: app/ready-patterns/PreviewDrawer.jsx:352
 msgid "No preview is available for this pattern."
 msgstr ""
 
-#: app/ready-patterns/PreviewDrawer.jsx:351
-msgid "Loading preview…"
+#. translators: 1: position of the previewed pattern, 2: number of patterns shown.
+#: app/ready-patterns/PreviewDrawer.jsx:376
+#, js-format
+msgid "Patterns %1$d of %2$d"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:385
+msgid "Browse patterns"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:390
+msgid "Previous pattern"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:395
+msgid "Prev"
+msgstr ""
+
+#: app/ready-patterns/PreviewDrawer.jsx:400
+msgid "Next pattern"
 msgstr ""
 
 #: app/ready-patterns/Sidebar.jsx:112
@@ -2799,6 +2815,10 @@ msgstr ""
 
 #: app/ready-patterns/Sidebar.jsx:113
 msgid "Free"
+msgstr ""
+
+#: app/ready-patterns/Sidebar.jsx:114
+msgid "Pro"
 msgstr ""
 
 #: app/ready-patterns/Sidebar.jsx:125
@@ -2863,14 +2883,14 @@ msgstr ""
 msgid "Refresh the pattern library"
 msgstr ""
 
-#: app/ready-patterns/usePatternLibrary.js:152
+#: app/ready-patterns/usePatternLibrary.js:158
 msgid "The pattern library could not be loaded."
 msgstr ""
 
-#: app/ready-patterns/usePatternLibrary.js:239
+#: app/ready-patterns/usePatternLibrary.js:245
 msgid "That pattern is empty."
 msgstr ""
 
-#: app/ready-patterns/usePatternLibrary.js:245
+#: app/ready-patterns/usePatternLibrary.js:251
 msgid "That pattern contained no blocks."
 msgstr ""

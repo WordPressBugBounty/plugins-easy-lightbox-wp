@@ -13,6 +13,7 @@ import { dispatch } from '@wordpress/data';
 import { useCallback, useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { ENDPOINTS } from './constants';
+import { curatedOrder } from './list';
 
 /**
  * Flatten the manifest's `{ layoutSlug: items[] }` map into one array.
@@ -22,6 +23,9 @@ import { ENDPOINTS } from './constants';
  * writes the same value into the row (and treats the group key as
  * authoritative), so this is a re-statement, not a second source of truth.
  *
+ * Concatenating the groups loses how they interleave, so the result is put
+ * back in the serving site's drag order by `curatedOrder()`.
+ *
  * @param {Object} groups Manifest `patterns` map.
  * @return {Array<Object>} Flat pattern list.
  */
@@ -30,14 +34,16 @@ function flatten( groups ) {
 		return [];
 	}
 
-	return Object.keys( groups ).reduce( ( all, slug ) => {
-		const rows = groups[ slug ];
-		if ( ! Array.isArray( rows ) ) {
+	return curatedOrder(
+		Object.keys( groups ).reduce( ( all, slug ) => {
+			const rows = groups[ slug ];
+			if ( ! Array.isArray( rows ) ) {
+				return all;
+			}
+			rows.forEach( ( row ) => all.push( { ...row, layout: row.layout || slug } ) );
 			return all;
-		}
-		rows.forEach( ( row ) => all.push( { ...row, layout: row.layout || slug } ) );
-		return all;
-	}, [] );
+		}, [] )
+	);
 }
 
 /**

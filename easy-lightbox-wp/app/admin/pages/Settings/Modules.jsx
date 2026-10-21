@@ -32,6 +32,7 @@ import { ModulePanel, hasModulePanel, useModuleToggles } from './modulePanels';
 import {
 	ImageCustomUrlModuleMark,
 	ImageProtectionModuleMark,
+	LazyLoadModuleMark,
 	LightboxModuleMark,
 	ReadyPatternsModuleMark,
 	WatermarkModuleMark,
@@ -61,6 +62,7 @@ const MODULES = {
 const PRO_MODULES = {
 	watermark: { Mark: WatermarkModuleMark },
 	'image-protection': { Mark: ImageProtectionModuleMark },
+	'lazy-load': { Mark: LazyLoadModuleMark },
 };
 
 const INITIAL_VALUES = Object.fromEntries(

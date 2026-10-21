@@ -4,7 +4,7 @@ Tags: image gallery, photo gallery, masonry gallery, video gallery, lightbox
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,7 @@ Every gallery is rendered on the server as clean HTML. Your images load with the
 ✅ **Visual layout picker** – See every gallery layout before you choose it, then switch layouts any time without re-adding images.
 ✅ **Media Library first** – Build galleries from the photos and videos you've already uploaded.
 ✅ **Ready Patterns** – Start from a professionally designed gallery with one click.
-✅ **Built-in lightbox** – A modern, mobile-friendly lightbox for images and videos.
+✅ **Built-in lightbox and video player** – A modern, mobile-friendly lightbox for your images, and videos that play right in the gallery or in their own popup.
 ✅ **Build once, use anywhere** – Every gallery gets a shortcode. Edit it once and it updates on every page.
 ✅ **Lightweight and fast** – Scripts load only where a gallery appears.
 ✅ **Works with your page builder** – Elementor, Divi, Bricks, Oxygen, Beaver Builder and WPBakery.
@@ -59,7 +59,7 @@ Mix photos and videos in the same gallery, or build a video gallery on its own. 
 * External videos by URL
 * YouTube videos
 
-Videos open in the same lightbox as your images, so visitors get one smooth viewing experience.
+Choose how videos play with **Video Play Mode**: right inside the gallery tile, or in a dedicated video popup with its own player. Either way, videos keep out of the image lightbox, so a slideshow of your photos is never interrupted by a clip.
 
 ### Built-in Lightbox Gallery
 
@@ -68,7 +68,6 @@ Let visitors view your photos full size without leaving the page. The lightbox i
 * Zoom and pan on desktop, pinch and swipe on phones and tablets
 * Image counter
 * Keyboard navigation with arrow keys, and Escape to close
-* Plays Media Library videos, external videos and YouTube
 * Loads only on pages where a gallery opens it
 
 ### Customize Your Gallery Design
@@ -114,6 +113,7 @@ Elementor is on by default. Turn on the others in **ShapedGallery → Settings �
 * Image and video galleries from the Media Library
 * External images and videos by URL, plus YouTube videos
 * Built-in lightbox with zoom, pinch, swipe and keyboard support
+* Video Play Mode: play videos inline in the tile or in a popup player
 * **Image Custom URL** – link any image to a page, product or external website
 * Ajax pagination with a customizable Load More button
 * Image titles and descriptions with typography controls
@@ -173,7 +173,7 @@ Yes. A page embeds a reference to the gallery, never a copy, so there is no re-s
 
 = Can I add videos? =
 
-Yes: videos from your Media Library, external videos by URL, and YouTube videos. They play in the same lightbox as your images.
+Yes: videos from your Media Library, external videos by URL, and YouTube videos. They play right in the gallery tile, or in a popup player if you set Video Play Mode to Popup.
 
 = Is it mobile-friendly? =
 
@@ -196,30 +196,57 @@ Elementor, Divi, WPBakery, Oxygen, Beaver Builder and Bricks each have a dedicat
 No. Existing `litebox` links, image sets and the automatic lightbox on WordPress's `[gallery]` shortcode keep working through a compatibility mode that is switched on automatically for upgraded sites. Nothing on your site changes until you choose to build a gallery.
 
 
-== Screenshots ==
-
-
 == Upgrade Notice ==
+
+= 1.2.2 =
+Adds a dedicated video popup player, a redesigned Ready Patterns preview and editor fixes.
+
+= 1.2.1 =
+Security hardening for video embeds — update recommended.
 
 = 1.2.0 =
 Easy Lightbox is now ShapedGallery: a full photo and video gallery builder, from the same team, on this same plugin listing. Your existing lightbox keeps working exactly as it does today — the `litebox` links, image sets and automatic WordPress gallery lightbox are all carried over, and nothing on your site changes until you choose to build a gallery. Requires WordPress 6.8 and PHP 8.1; sites below either are not offered this update and keep running 1.1.4.
 
+== Screenshots ==
+
+1. Choose from multiple gallery layouts: grid, masonry, justified, and more
+2. Auto Justified layout for clean, evenly aligned rows
+3. Masonry layout with flexible image heights
+4. Customize Media Panel
+5. Fullscreen lightbox with navigation
+6. Ready-made gallery patterns, insert in one click
+7. Save templates and reuse galleries in any page builder
+8. Elementor addon with a drag-and-drop gallery grid
+
 == Changelog ==
 
+= 1.2.2 - Oct 21, 2026 =
+* New: Video Popup plays videos in a focused, accessible player.
+* Improvement: Redesigned Ready Patterns preview for faster browsing.
+* Improvement: Settings panels open one at a time for a cleaner sidebar.
+* Improvement: Editor shows only the first page with Ajax Pagination, matching the frontend.
+* Improvement: Font Style shows only weights your font supports.
+* Improvement: Ready Patterns keep their curated order.
+* Change: Lightbox shows images only; videos follow Video Play Mode.
+* Change: Description Source defaults to the attachment description.
+* Fix: Zero gap was showing as 20px in the editor.
+* Fix: Masonry columns overflowing the editor.
+* Fix: Stray `align` class when Alignment is None.
+* Fix: Tooltips hidden behind module drawers.
+
 = 1.2.1 - Oct 15, 2026 =
-* Security: YouTube embed links are held to YouTube's own hosts before a gallery tile or the lightbox frames them.
-* New: The Upload tab shows each batch's progress and hands finished uploads to the Media Library.
-* New: Images and videos added by link get their own details panel.
-* New: Pro layouts, video sources and options are listed in the editor and dashboard, with links to upgrade.
-* Change: Image Title Source now defaults to the attachment caption, so a gallery that never set it shows captions instead of attachment titles.
-* Fix: An external link that stalls now times out instead of staying on "Adding…".
-* Fix: YouTube Shorts added by link are sized as portrait.
-* Fix: A missing font falls back to a matching generic family instead of the browser default.
-* Fix: The Order control's Random setting now shows on the editor canvas.
-* Fix: The details panel no longer shows an item from another media source.
-* Fix: The image under a Classic title or description keeps its rounded corners.
-* Fix: Opening a long dashboard page keeps the navigation in view.
-* Fix: The alt-text help links to the W3C guidance.
+* Security: YouTube embed URLs restricted to YouTube's own hosts.
+* New: Upload progress per batch in the Upload tab.
+* New: Details panel for images and videos added by link.
+* New: Pro layouts, video sources and options shown as locked previews.
+* Change: Title Source defaults to the attachment caption.
+* Fix: Stalled external links never timing out.
+* Fix: YouTube Shorts sized as landscape.
+* Fix: Missing fonts falling back to the browser default.
+* Fix: Random order not shown in the editor.
+* Fix: Details panel showing items from another source.
+* Fix: Rounded corners lost under Classic captions.
+* Fix: Dashboard navigation scrolling out of view.
 
 = 1.2.0 - Oct 06, 2026 =
 * New: Responsive justified, grid and masonry photo and video galleries from your Media Library, with a visual layout picker.

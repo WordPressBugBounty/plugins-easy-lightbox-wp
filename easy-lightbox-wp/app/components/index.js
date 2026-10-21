@@ -17,7 +17,7 @@
  */
 
 /* Sections & layout. */
-export { default as ChildPanelBody } from './childPanelBody';
+export { default as ChildPanelBody, PanelAccordion } from './childPanelBody';
 export { default as ComponentTopSection } from './componentTopSection';
 export { default as Divider } from './divider';
 
@@ -56,4 +56,4 @@ export { default as Modal } from './modal';
 export { default as SortableItem } from './sortableItem';
 
 /* Pro teasers — upgrade prompts and locked-control chrome (see ./pro). */
-export { ProBadge, ProCardBadge, ProTag, ProNotice, ProPanel, upgradeUrl, openUpgrade } from './pro';
+export { ProBadge, ProCardBadge, ProTag, ProNotice, ProPanel, upgradeUrl, openUpgrade, openMediaUpgrade } from './pro';

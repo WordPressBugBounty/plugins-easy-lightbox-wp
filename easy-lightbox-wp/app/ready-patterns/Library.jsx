@@ -57,7 +57,7 @@ export default function Library( { onClose, initialLayout = 'all' } ) {
 	const [ sort, setSort ] = useState( SORT.DEFAULT );
 	const [ columns, setColumns ] = useState( '3' );
 	/*
-	 * The preview holds an ID, not the row. The header's prev/next steps through
+	 * The preview holds an ID, not the row. The footer's Prev / Next steps through
 	 * the VISIBLE list, so the drawer's position has to be looked up in that list
 	 * anyway — and an id survives a Refresh replacing every object in the manifest,
 	 * which a captured row would not.
@@ -69,7 +69,7 @@ export default function Library( { onClose, initialLayout = 'all' } ) {
 
 	/*
 	 * One filtered, sorted list, computed here and handed to both consumers: the
-	 * grid draws it, and the preview header steps through it. Two passes would let
+	 * grid draws it, and the preview footer steps through it. Two passes would let
 	 * Next walk into a pattern the active facets exclude (§18).
 	 */
 	const visible = useMemo(
@@ -243,7 +243,6 @@ export default function Library( { onClose, initialLayout = 'all' } ) {
 					<PreviewDrawer
 						pattern={ preview }
 						onClose={ closePreview }
-						onCloseLibrary={ onClose }
 						onInsert={ handleInsert }
 						isInserting={ insertingId === preview.ID }
 						index={ previewIndex }

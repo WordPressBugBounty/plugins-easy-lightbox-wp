@@ -450,10 +450,10 @@ class DashboardConfig {
 	 * switch at all, so there is nothing to save — and `ModuleRegistry::sanitize()`
 	 * keeps only this build's own keys, so a crafted request cannot store one either.
 	 *
-	 * Only the two modules that are real features this build lacks. Pro's third,
-	 * Lazy Load, is a switch over something this build already does unconditionally
-	 * (`GalleryOptions::lazy_load_active()`), so advertising it would sell a Free user
-	 * what they already have.
+	 * Pro's three modules this build has no switch for, in Pro's own Modules order.
+	 * Lazy Load is among them although this build already defers every gallery image
+	 * (`GalleryOptions::lazy_load_active()`): what the card advertises is the SWITCH —
+	 * Pro lets a site turn deferral off — not the deferral itself.
 	 *
 	 * Copy is Pro's own (`shaped-gallery-pro/src/Admin/DashboardConfig.php`), so a
 	 * card reads exactly as the module the user gets after upgrading. The cards carry
@@ -471,6 +471,10 @@ class DashboardConfig {
 			'image-protection' => array(
 				__( 'Image Protection', 'easy-lightbox-wp' ),
 				__( 'Secure images with right-click blocks, drag prevention.', 'easy-lightbox-wp' ),
+			),
+			'lazy-load'        => array(
+				__( 'Lazy Load', 'easy-lightbox-wp' ),
+				__( 'Load images only when needed to boost page speed and create smoother browsing experiences.', 'easy-lightbox-wp' ),
 			),
 		);
 
@@ -494,7 +498,7 @@ class DashboardConfig {
 			'description'  => __( 'Protect your work and brand every image with the Pro modules.', 'easy-lightbox-wp' ),
 			'badge'        => __( 'PRO', 'easy-lightbox-wp' ),
 			'upgradeLabel' => __( 'Upgrade to Pro', 'easy-lightbox-wp' ),
-			'upgradeUrl'   => self::pro_url(),
+			'upgradeUrl'   => self::pro_url( self::PRO_FROM_MODULES ),
 			'items'        => $items,
 		);
 	}
@@ -628,7 +632,51 @@ class DashboardConfig {
 	}
 
 	/**
-	 * Where an upgrade prompt sends the user.
+	 * `utm_content` of an upgrade link from the block editor's canvas and modals:
+	 * locked layout cards (the layout picker's hover "Upgrade to Pro" and the
+	 * toolbar's Change Layout grid) and locked Ready Pattern cards.
+	 */
+	public const PRO_FROM_BLOCK = 'pro_block';
+
+	/**
+	 * `utm_content` of a locked Pro source tab (Vimeo, TikTok, Wistia) in the media
+	 * gallery modal's sidebar.
+	 */
+	public const PRO_FROM_MEDIA = 'media_gallery';
+
+	/**
+	 * `utm_content` of the "Upgrade to Pro" link inside the block inspector's panels:
+	 * the closing Pro note of a working panel and the card filling a locked one
+	 * (`ProNotice`, which `ProPanel` draws too).
+	 */
+	public const PRO_FROM_INSPECTOR = 'block_inspect';
+
+	/**
+	 * `utm_content` of the "Upgrade to Pro" row in the plugin's admin menu.
+	 */
+	public const PRO_FROM_MENU = 'plugin_menu';
+
+	/**
+	 * `utm_content` of the plugins screen's "Go Pro" action link — its own slug, so
+	 * a click from the plugin list is told apart from one in the admin menu.
+	 */
+	public const PRO_FROM_ACTION_LINK = 'action_link';
+
+	/**
+	 * `utm_content` of an upgrade link on Settings → Modules: the Pro modules banner,
+	 * and the Pro note in a module's gear panel (the Lightbox panel's today).
+	 */
+	public const PRO_FROM_MODULES = 'modules';
+
+	/**
+	 * `utm_content` of the dashboard's offer bar, the strip over every dashboard
+	 * screen — its own slug, so a click on the campaign is told apart from a click
+	 * on a teaser.
+	 */
+	public const PRO_FROM_OFFER_BAR = 'offer_banner';
+
+	/**
+	 * Where an upgrade prompt sends the user, tagged with where it was clicked.
 	 *
 	 * The pricing page, the destination WP Carousel Free's "Upgrade to Pro"
 	 * prompts use too: every surface that links here (locked layout cards and
@@ -638,15 +686,35 @@ class DashboardConfig {
 	 * already shows what Pro adds in place, which is what a comparison page
 	 * would have repeated.
 	 *
-	 * The ONE place the URL is spelled: the block and dashboard bundles read it
-	 * from the shared payload (`upgradeUrl`, `patternsUpgradeUrl`) and PHP calls
-	 * this method. Public for the same reason {@see self::block_docs_url()} is —
-	 * the block editor payload needs it outside the dashboard config.
+	 * The ONE place the URL is spelled, campaign parameters included: the block
+	 * and dashboard bundles read it from their payloads (`upgradeUrl`,
+	 * `patternsUpgradeUrl`, `mediaUpgradeUrl`, `noticeUrl`, `offerUrl`) and PHP
+	 * calls this method. Only `utm_content` varies, and only through a
+	 * `PRO_FROM_*` constant, so a surface cannot invent a slug the campaign
+	 * reports do not know. The placement is required rather than defaulted: an
+	 * untagged link is a click the reports silently lose, so forgetting it fails
+	 * loudly instead.
 	 *
+	 * `http_build_query()` rather than `add_query_arg()` keeps this pure, so the
+	 * verifier pins the exact URLs without a WordPress stub. The `&` separator is
+	 * explicit because the default follows `arg_separator.output`, which a host
+	 * can set to `&amp;`.
+	 *
+	 * Public for the same reason {@see self::block_docs_url()} is — the block
+	 * editor payload needs it outside the dashboard config.
+	 *
+	 * @param string $placement One of the `PRO_FROM_*` constants.
 	 * @return string
 	 */
-	public static function pro_url(): string {
-		return 'https://shapedgallery.com/pricing/';
+	public static function pro_url( string $placement ): string {
+		$campaign = array(
+			'utm_source'   => 'dashboard',
+			'utm_medium'   => 'shaped_gallery',
+			'utm_campaign' => 'promo',
+			'utm_content'  => $placement,
+		);
+
+		return 'https://shapedgallery.com/pricing/?' . http_build_query( $campaign, '', '&' );
 	}
 
 	/**

@@ -7,19 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit5cfac6b414c540fa64911d539d615501
 {
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
-            'ShapedPlugin\\ShapedGallery\\Tests\\' => 33,
             'ShapedPlugin\\ShapedGallery\\' => 27,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'ShapedPlugin\\ShapedGallery\\Tests\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/tests/php',
-        ),
-        'ShapedPlugin\\ShapedGallery\\' => 
+        'ShapedPlugin\\ShapedGallery\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -89,6 +84,7 @@ class ComposerStaticInit5cfac6b414c540fa64911d539d615501
         'ShapedPlugin\\ShapedGallery\\Render\\Css\\StyleContributor' => __DIR__ . '/../..' . '/src/Render/Css/StyleContributor.php',
         'ShapedPlugin\\ShapedGallery\\Render\\Css\\StyleEngine' => __DIR__ . '/../..' . '/src/Render/Css/StyleEngine.php',
         'ShapedPlugin\\ShapedGallery\\Render\\DuotoneFilter' => __DIR__ . '/../..' . '/src/Render/DuotoneFilter.php',
+        'ShapedPlugin\\ShapedGallery\\Render\\EmbedUrl' => __DIR__ . '/../..' . '/src/Render/EmbedUrl.php',
         'ShapedPlugin\\ShapedGallery\\Render\\ImageSizes' => __DIR__ . '/../..' . '/src/Render/ImageSizes.php',
         'ShapedPlugin\\ShapedGallery\\Render\\ItemOrder' => __DIR__ . '/../..' . '/src/Render/ItemOrder.php',
         'ShapedPlugin\\ShapedGallery\\Render\\LayoutRenderer' => __DIR__ . '/../..' . '/src/Render/LayoutRenderer.php',

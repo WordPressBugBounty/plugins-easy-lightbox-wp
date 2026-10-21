@@ -172,7 +172,7 @@ class Admin {
 		// stylesheet of ours; the colour is the shared Pro accent.
 		$links['go_pro'] = sprintf(
 			'<a href="%1$s" target="_blank" rel="noopener noreferrer" style="color:%2$s;font-weight:700;">%3$s%4$s</a>',
-			esc_url( DashboardConfig::pro_url() ),
+			esc_url( DashboardConfig::pro_url( DashboardConfig::PRO_FROM_ACTION_LINK ) ),
 			esc_attr( DashboardConfig::PRO_ACCENT ),
 			esc_html__( 'Go Pro', 'easy-lightbox-wp' ),
 			self::offer_badge( DashboardConfig::pro_offer() )

@@ -69,6 +69,7 @@ return array(
     'ShapedPlugin\\ShapedGallery\\Render\\Css\\StyleContributor' => $baseDir . '/src/Render/Css/StyleContributor.php',
     'ShapedPlugin\\ShapedGallery\\Render\\Css\\StyleEngine' => $baseDir . '/src/Render/Css/StyleEngine.php',
     'ShapedPlugin\\ShapedGallery\\Render\\DuotoneFilter' => $baseDir . '/src/Render/DuotoneFilter.php',
+    'ShapedPlugin\\ShapedGallery\\Render\\EmbedUrl' => $baseDir . '/src/Render/EmbedUrl.php',
     'ShapedPlugin\\ShapedGallery\\Render\\ImageSizes' => $baseDir . '/src/Render/ImageSizes.php',
     'ShapedPlugin\\ShapedGallery\\Render\\ItemOrder' => $baseDir . '/src/Render/ItemOrder.php',
     'ShapedPlugin\\ShapedGallery\\Render\\LayoutRenderer' => $baseDir . '/src/Render/LayoutRenderer.php',

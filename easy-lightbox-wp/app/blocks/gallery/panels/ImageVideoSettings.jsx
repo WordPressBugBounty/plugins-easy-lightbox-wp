@@ -22,10 +22,14 @@
  * What Pro adds to this panel is a closing note under both tabs (`ProNotice`
  * with a feature list), not locked controls among the working ones: disabled rows
  * in a panel the user is actively editing are noise. The note reads and writes
- * nothing — this build has no watermark pipeline, protection runtime, hover
- * animation, filter or overlay styling, and declares none of their keys. The list
- * is what Pro's own panel (`shaped-gallery-pro/.../ImageVideoSettings.jsx`)
- * actually does.
+ * nothing — this build has no aspect-ratio sizing, watermark pipeline, protection
+ * runtime, hover animation, filter or overlay styling, and declares none of their
+ * keys. The list follows Pro's own panel (`shaped-gallery-pro/.../ImageVideoSettings.jsx`),
+ * in its order. Aspect Ratio leads it on every layout this build renders, Justified
+ * and Masonry included, although of these three Pro's control sizes Grid only (Pro's
+ * `GalleryOptions::ASPECT_RATIO_LAYOUTS`; the other two are built from each image's
+ * own ratio). That is a deliberate call for this build's teaser, not an oversight —
+ * Pro's own panel is unchanged.
  */
 import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
@@ -271,6 +275,7 @@ export default function ImageVideoSettings( { attributes, setAttributes } ) {
 			<ProNotice
 				showOffer
 				features={ [
+					__( 'Aspect Ratio', 'easy-lightbox-wp' ),
 					__( 'Image Watermark', 'easy-lightbox-wp' ),
 					__( 'Right Click Protection', 'easy-lightbox-wp' ),
 					__( 'Hover Animations', 'easy-lightbox-wp' ),

@@ -8,9 +8,27 @@
  * failure WP Carousel Free's teaser UI has, with the same pricing link hard-coded in
  * several files.
  *
+ * Each bundle's copy carries its own campaign tag (`utm_content`), so a click is
+ * reported by where it happened: the block editor's teasers, the dashboard's, the
+ * media gallery's locked source tabs (`mediaUpgradeUrl`), the Pro note's link
+ * (`noticeUrl`, its own key — the inspector's on the block payload, the Lightbox
+ * panel's on the dashboard's) and the dashboard's offer bar (`offerUrl`) apart
+ * from all of them.
+ *
  * Empty when the payload failed to print. Callers degrade to a link-less label then
  * rather than an `href=""` that reloads the editor.
  */
+
+/**
+ * A URL from the shared payload, or '' when none was published.
+ *
+ * @param {string} key Payload key.
+ * @return {string} URL.
+ */
+function payloadUrl( key ) {
+	const data = window.shaped_gallery_data || window.shaped_gallery_admin || {};
+	return typeof data[ key ] === 'string' ? data[ key ] : '';
+}
 
 /**
  * The upgrade URL, or '' when none was published.
@@ -18,8 +36,36 @@
  * @return {string} URL.
  */
 export function upgradeUrl() {
-	const data = window.shaped_gallery_data || window.shaped_gallery_admin || {};
-	return typeof data.upgradeUrl === 'string' ? data.upgradeUrl : '';
+	return payloadUrl( 'upgradeUrl' );
+}
+
+/**
+ * The media gallery's locked source tabs' upgrade URL, or '' when none was
+ * published.
+ *
+ * @return {string} URL.
+ */
+export function mediaUpgradeUrl() {
+	return payloadUrl( 'mediaUpgradeUrl' );
+}
+
+/**
+ * The Pro note's upgrade URL (`ProNotice`), or '' when none was published.
+ *
+ * @return {string} URL.
+ */
+export function noticeUrl() {
+	return payloadUrl( 'noticeUrl' );
+}
+
+/**
+ * The dashboard offer bar's upgrade URL, or '' when none was published — only the
+ * dashboard payload carries it.
+ *
+ * @return {string} URL.
+ */
+export function offerUrl() {
+	return payloadUrl( 'offerUrl' );
 }
 
 /** What `currentOffer()` returns when there is no offer to name. */
@@ -75,14 +121,34 @@ export function currentOffer( now = Date.now() ) {
 }
 
 /**
- * Open the upgrade page in a new tab — never in this one, so an unsaved post or an
- * unsaved settings draft is not navigated away from.
+ * Open an upgrade URL in a new tab — never in this one, so an unsaved post or an
+ * unsaved settings draft is not navigated away from. Nothing when it is empty.
+ *
+ * @param {string} url URL.
+ * @return {void}
+ */
+function openInNewTab( url ) {
+	if ( url ) {
+		window.open( url, '_blank', 'noopener,noreferrer' );
+	}
+}
+
+/**
+ * Open the upgrade page in a new tab. Takes no argument on purpose: it is passed
+ * straight as an `onClick`, which hands it the event.
  *
  * @return {void}
  */
 export function openUpgrade() {
-	const url = upgradeUrl();
-	if ( url ) {
-		window.open( url, '_blank', 'noopener,noreferrer' );
-	}
+	openInNewTab( upgradeUrl() );
+}
+
+/**
+ * Open the upgrade page in a new tab from a media gallery source tab, under that
+ * surface's own campaign tag.
+ *
+ * @return {void}
+ */
+export function openMediaUpgrade() {
+	openInNewTab( mediaUpgradeUrl() );
 }

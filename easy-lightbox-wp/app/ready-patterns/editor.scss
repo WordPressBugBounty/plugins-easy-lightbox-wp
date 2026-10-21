@@ -8,10 +8,15 @@
  * derived from the shared brand variable instead, so the accent is spelled out in
  * exactly one place across the plugin (§18).
  *
- * The one part that is NOT the reference's is the preview header, which follows
- * the Figma TopBar spec instead: a 72px bar of Back + title + pager on the left,
- * bottom-flush width tabs centred, and Insert + close on the right. Where the
- * spec's colour would fail §14 the reason is noted at the rule.
+ * The one part that is NOT that reference's is the preview drawer, which follows
+ * WP Carousel Free's pattern preview instead
+ * (`wp-carousel-free/blocks/blocks/shared/ready-patterns/ready-patterns.scss`): it
+ * docks inside the library panel, its header is title / bottom-flush width tabs /
+ * Insert + close, and a footer under the stage carries the pager. Its LOOK is the
+ * live library's preview (shapedgallery.com/patterns) — the 66px header in a 10%
+ * brand wash, the navy heading and close, the unpadded stage, the neutral pager —
+ * so the editor's preview reads as the site's. Where either reference's colour
+ * would fail §14 the reason is noted at the rule.
  *
  * Everything is scoped under `.sp-shaped-patterns`, the class handed to the shared
  * `Modal` panel, except the two mount-point rules at the end (the editor-header
@@ -32,25 +37,29 @@ $rp-accent-22: $sp-shaped-gallery-brand-22;
 /*
  * The locked CTA reads as a different KIND of action from Insert, so it does not
  * share the accent — a second accent button beside the first would look like the
- * primary path.
+ * primary path. It wears the upgrade orange instead (declared, with its contrast
+ * caveat, in styles/_brand.scss).
  */
-$rp-locked: #1e1e1e;
+$rp-locked: $sp-shaped-gallery-upgrade;
+$rp-locked-hover: $sp-shaped-gallery-upgrade-deep;
 $rp-line: #e2e8f0;
 $rp-field: #e0e0e0;
 $rp-ink: #1e293b;
 $rp-ink-soft: #334155;
 $rp-muted: #64748b;
+/* The preview drawer's header wash and heading ink — the live library's
+   `--sg-primary-fill` and `--sg-heading`, both already steps of this brand. */
+$rp-accent-10: $sp-shaped-gallery-brand-10;
+$rp-heading: $sp-shaped-gallery-brand-ink;
 
 /* ===================== Modal shell ===================== */
 
 /*
  * The shared `Modal` centres its panel with a transform. That is replaced here
- * with a plain inset, and the reason is structural rather than cosmetic: a
- * transformed element becomes the containing block for every `position: fixed`
- * descendant, which would pin the preview drawer to this panel instead of to the
- * viewport. Insetting by the reference's 32px backdrop padding produces the same
- * box AND leaves the drawer free to cover the whole screen, as the reference's
- * does.
+ * with a plain inset by the reference's 32px backdrop padding, which produces the
+ * same box without a transform. The panel stays `position: fixed` either way, and
+ * that is what the preview drawer relies on: it is an absolute overlay docked
+ * inside this panel, so the panel is its containing block.
  */
 .sp-shaped-gallery-modal.sp-shaped-patterns {
 	position: fixed;
@@ -574,23 +583,6 @@ $rp-muted: #64748b;
 		background: #eef4f4;
 	}
 
-	/* Sits inside the thumbnail's 20px frame, above the hover scrim — the
-	   reference ships no free tier, so this badge has no counterpart there. */
-	&__badge-pro {
-		position: absolute;
-		top: 28px;
-		left: 28px;
-		z-index: 2;
-		padding: 2px 8px;
-		border-radius: 999px;
-		background: $rp-accent;
-		color: #fff;
-		font-size: 10px;
-		font-weight: 600;
-		letter-spacing: 0.03em;
-		text-transform: uppercase;
-	}
-
 	&__preview-link {
 		position: absolute;
 		inset: 20px;
@@ -676,13 +668,13 @@ $rp-muted: #64748b;
 		justify-content: center;
 		flex-shrink: 0;
 		gap: 6px;
-		height: 32px;
-		padding: 4px 12px;
+		height: 30px;
+		padding: 2px 8px;
 		border: 0;
 		border-radius: 4px;
 		background: $rp-accent;
 		color: #fff;
-		font-size: 15px;
+		font-size: 14px;
 		font-weight: 500;
 		cursor: pointer;
 
@@ -716,18 +708,29 @@ $rp-muted: #64748b;
 		 * user nowhere to go), so it needs the anchor resets the button never did:
 		 * no underline, and the colours restated on :hover/:focus because the
 		 * admin's own link styling would otherwise win them back.
+		 *
+		 * One face for the card's "Get Pro" and the preview's "Upgrade to Pro", so
+		 * the library sells the upgrade in one colour wherever it asks, with the
+		 * label and the icon both white.
 		 */
 		&.is-locked {
 			background: $rp-locked;
 			color: #fff;
+			font-weight: 500;
 			text-decoration: none;
 
 			&:hover,
 			&:hover:not(:disabled),
 			&:focus {
-				background: $rp-locked;
+				background: $rp-locked-hover;
 				color: #fff;
 				text-decoration: none;
+			}
+
+			/* The no-URL fallback is a disabled button; it keeps its resting fill. */
+			&:disabled,
+			&:disabled:hover {
+				background: $rp-locked;
 			}
 		}
 	}
@@ -785,10 +788,18 @@ $rp-muted: #64748b;
 
 	/* ===================== Preview drawer ===================== */
 
+	/*
+	 * The preview opens INSIDE the library panel, not over the viewport. The panel
+	 * is `position: fixed`, so it is the containing block for this absolute overlay:
+	 * the dimmed sheet covers the library only, the drawer docks to the panel's
+	 * right edge at the panel's own height, and the panel's rounded, clipped corners
+	 * frame both. z-index 5 lifts it over the Modal's own close button (z-index 1),
+	 * which would otherwise show through the header as a second X.
+	 */
 	&__drawer-backdrop {
-		position: fixed;
+		position: absolute;
 		inset: 0;
-		z-index: 100001;
+		z-index: 5;
 		display: flex;
 		align-items: stretch;
 		justify-content: flex-end;
@@ -804,221 +815,145 @@ $rp-muted: #64748b;
 	}
 
 	/*
-	 * Header: the Figma spec's 72px TopBar. Three groups — position on the left,
-	 * the width tabs centred, the actions on the right — and the middle one is
-	 * ABSOLUTE rather than a third flex child, because centring it between two
-	 * groups of unequal width (a title that ellipsises against a fixed Insert)
-	 * would drift the tabs off centre as the title changed.
+	 * Header: the live library's — a 66px bar in the 10% brand wash, with no rule and
+	 * no shadow, so the white active tab runs straight into the white stage. Three
+	 * groups: title, width tabs, actions. The outer two are `flex: 1 1 0`, so they
+	 * always take equal shares of what the tabs leave, which keeps the tabs centred
+	 * however long the title is and whichever action (Insert or Upgrade) the right
+	 * group holds.
 	 */
 	&__drawer-header {
-		position: relative;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		flex: 0 0 auto;
 		gap: 16px;
-		height: 72px;
-		padding: 0 32px;
-		background: $rp-accent-08;
-		border-bottom: 1px solid $rp-accent-22;
-		box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	&__drawer-header-left {
-		display: flex;
-		align-items: center;
-		/* Only the title may shrink; Back and the pager keep their size. */
-		min-width: 0;
-		gap: 12px;
-	}
-
-	/* Back leaves the PREVIEW. The X in the right-hand group leaves the LIBRARY —
-	   two destinations, so two controls (see PreviewDrawer.jsx). */
-	&__drawer-back {
-		display: inline-flex;
-		align-items: center;
-		flex-shrink: 0;
-		gap: 4px;
-		padding: 0;
-		border: 0;
-		background: none;
-		color: $rp-muted;
-		font-size: 14px;
-		font-weight: 500;
-		line-height: 20px;
-		cursor: pointer;
-		transition: color 0.15s ease;
-
-		&:hover {
-			color: $rp-accent-hover;
-		}
+		height: 66px;
+		padding: 0 18px;
+		background: $rp-accent-10;
 	}
 
 	&__drawer-title {
+		flex: 1 1 0;
 		min-width: 0;
 		margin: 0;
-		font-size: 18px;
+		font-size: 15px;
 		font-weight: 600;
-		line-height: 20px;
-		color: #2f2f2f;
+		line-height: 21px;
+		color: $rp-heading;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	&__drawer-nav {
-		display: flex;
-		align-items: center;
-		flex-shrink: 0;
-		gap: 8px;
-	}
-
-	/* One 64x32 pager drawn as two buttons: the shared edge belongs to the first,
-	   so the second drops its left border rather than doubling it. */
-	&__drawer-nav-group {
-		display: flex;
-	}
-
-	&__drawer-nav-btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		width: 32px;
-		height: 32px;
-		padding: 0;
-		border: 1px solid #c9c7c7;
-		background: #fff;
-		color: $rp-muted;
-		cursor: pointer;
-		transition: color 0.15s ease, background 0.15s ease;
-
-		&:first-child {
-			border-radius: 4px 0 0 4px;
-		}
-
-		&:last-child {
-			border-left: 0;
-			border-radius: 0 4px 4px 0;
-		}
-
-		&:hover {
-			background: $rp-accent-08;
-			color: $rp-accent-hover;
-		}
-
-		svg {
-			display: block;
-			width: 16px;
-			height: 16px;
-		}
-	}
-
-	/* The spec's #aeadad is 2.3:1 against this wash — under the 4.5:1 floor for
-	   text (§14), and this string is the only thing that says where you are. The
-	   muted ink is the same weight and size at 4.8:1. */
-	&__drawer-nav-count {
-		flex-shrink: 0;
-		font-size: 14px;
-		font-weight: 500;
-		color: $rp-muted;
-	}
-
-	/* Icon-only width switcher, bottom-flush: the selected width is the only
-	   outlined chip, and it opens downward into the stage. */
+	/* Bottom-aligned, so the tabs meet the header's lower edge. */
 	&__drawer-devices {
-		position: absolute;
-		bottom: -1px;
-		left: 50%;
+		align-self: flex-end;
 		display: flex;
-		transform: translateX(-50%);
+		flex-shrink: 0;
 	}
 
+	/*
+	 * Icon-only width switcher drawn as tabs. The selected width is a white tab
+	 * with no outline: the header draws no rule, so white on white is all it takes
+	 * for the tab and the stage below to read as one surface. The icons are
+	 * graphics, held to 3:1 rather than the text floor — the brand clears it on the
+	 * wash and on white alike (§14).
+	 */
 	&__drawer-device {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		box-sizing: border-box;
 		width: 56px;
-		height: 48px;
-		border: 1px solid transparent;
-		border-radius: 4px 4px 0 0;
+		height: 46px;
+		padding: 0;
+		border: 0;
+		border-radius: 8px 8px 0 0;
 		background: transparent;
-		color: $rp-muted;
+		color: $rp-ink-soft;
 		cursor: pointer;
-		transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+		transition: color 0.3s ease, background-color 0.3s ease;
 
 		&:hover {
-			background: rgba(255, 255, 255, 0.6);
-			color: $rp-ink-soft;
+			color: $rp-accent;
 		}
 
-		/* Active reads as a tab: white, outlined on three sides, and its bottom
-		   edge painted white over the header's own rule so the tab and the stage
-		   below it read as one surface. */
+		&:not(.is-active):hover {
+			background: rgba(255, 255, 255, 0.45);
+		}
+
 		&.is-active {
-			border-color: $rp-accent;
-			border-bottom-color: #fff;
 			background: #fff;
 			color: $rp-accent;
+		}
+
+		/* Inset, because the tab is flush with the header's lower edge: an outline
+		   drawn outside it would spill into the stage. */
+		&:focus-visible {
+			outline: 2px solid $rp-accent;
+			outline-offset: -2px;
 		}
 	}
 
 	&__drawer-header-right {
 		display: flex;
 		align-items: center;
-		flex-shrink: 0;
-		/* The spec's spacing: Insert is the primary action and the X is destructive
-		   of the whole session, so they are deliberately not neighbours. */
-		gap: 40px;
+		justify-content: flex-end;
+		flex: 1 1 0;
+		min-width: 0;
+		gap: 16px;
 
-		/* Insert (and the locked CTA that replaces it) is the header's own size —
-		   taller and heavier than the same button on a card. */
+		/* Insert (and the Upgrade link that replaces it) is sized to this bar —
+		   heavier than the same button on a card, but no taller than the header's
+		   proportions carry. */
 		.sp-shaped-patterns__insert-btn {
-			height: 44px;
-			padding: 0 38px;
+			height: 36px;
+			padding: 0 16px;
 			border-radius: 4px;
-			font-size: 15px;
+			font-size: 14px;
 			font-weight: 600;
 		}
 	}
 
+	/* A filled navy square, brand on hover, as the live library draws it. The
+	   white cross is a graphic: 15:1 on the navy, 3.6:1 on the brand (§14). */
 	&__drawer-close {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		flex-shrink: 0;
-		width: 40px;
-		height: 40px;
+		width: 32px;
+		height: 32px;
 		padding: 0;
-		border: 1px solid #ccc;
+		border: 0;
 		border-radius: 4px;
-		background: #fff;
-		color: #2f2f2f;
+		background: $rp-heading;
+		color: #fff;
 		cursor: pointer;
-		transition: background 0.15s ease, border-color 0.15s ease;
+		transition: background-color 0.3s ease;
 
-		&:hover {
-			background: #f1f5f9;
-			border-color: #c3ccd8;
+		&:hover,
+		&:focus-visible {
+			background: $rp-accent;
 		}
 	}
 
+	/* No padding: the framed page brings its own, as it does on the live library. */
 	&__drawer-body {
 		display: flex;
 		flex: 1;
 		min-height: 0;
-		padding: 24px;
 		background: #fff;
 	}
 
+	/* Unframed: the pattern is the only thing in the box, edge to edge. Its size is
+	   whatever the drawer leaves (PreviewDrawer.jsx sizes the frame to it). */
 	&__drawer-stage {
 		position: relative;
 		flex: 1;
 		min-width: 0;
-		height: 560px;
-		padding: 30px 0 30px 13px;
-		border: 1px solid $rp-line;
-		border-radius: 8px;
+		min-height: 0;
 		background: #fff;
 		overflow: hidden;
 	}
@@ -1027,7 +962,9 @@ $rp-muted: #64748b;
 		display: block;
 		margin: auto;
 		border: 0;
-		/* Scaling is a pure CSS transform on a fixed-width frame — no measurement pass. */
+		/* Desktop fills the stage; tablet and mobile sit centred at their own width
+		   (`margin: auto`), scaled from the top-left corner only on a stage too narrow
+		   to hold them. */
 		transform-origin: top left;
 		opacity: 1;
 		transition: opacity 0.2s ease;
@@ -1038,31 +975,25 @@ $rp-muted: #64748b;
 		}
 	}
 
-	/* Preloader shown over the stage until the preview iframe fires `load`. */
+	/* Preloader over the stage until the preview iframe fires `load` — a spinner on
+	   a dark veil of the heading navy, as the live library draws it. */
 	&__drawer-loader {
 		position: absolute;
 		inset: 0;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 12px;
-		background: rgba(255, 255, 255, 0.7);
+		background: rgba($rp-heading, 0.83);
 		pointer-events: none;
 	}
 
 	&__drawer-loader-spinner {
-		width: 32px;
-		height: 32px;
-		border: 3px solid $rp-line;
+		width: 40px;
+		height: 40px;
+		border: 4px solid #f3f3f3;
 		border-top-color: $rp-accent;
 		border-radius: 50%;
-		animation: sp-shaped-patterns-spin 0.8s linear infinite;
-	}
-
-	&__drawer-loader-text {
-		font-size: 13px;
-		color: $rp-muted;
+		animation: sp-shaped-patterns-spin 1s linear infinite;
 	}
 
 	&__drawer-thumb {
@@ -1078,6 +1009,69 @@ $rp-muted: #64748b;
 			max-width: 100%;
 			max-height: 100%;
 			object-fit: contain;
+		}
+	}
+
+	/* Pattern stepper, pinned under the stage: white, one hairline above it, and the
+	   live library's quiet neutral pager rather than an accent-outlined one. */
+	&__drawer-footer {
+		display: flex;
+		flex-shrink: 0;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 12px 20px;
+		background: #fff;
+		border-top: 1px solid $rp-line;
+	}
+
+	/* Tabular figures, so "Patterns 9 of 82" → "10 of 82" does not shuffle. */
+	&__drawer-footer-count {
+		font-size: 14px;
+		font-variant-numeric: tabular-nums;
+		color: $rp-ink-soft;
+	}
+
+	&__drawer-footer-nav {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	&__drawer-page {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		height: 34px;
+		padding: 0 14px;
+		border: 1px solid $rp-line;
+		border-radius: 6px;
+		background: #fff;
+		color: $rp-heading;
+		font-size: 13px;
+		font-weight: 600;
+		cursor: pointer;
+		transition: border-color 0.3s ease, color 0.3s ease;
+
+		svg {
+			display: block;
+		}
+
+		/* The live library turns the label its brand blue here; this is the AA-safe
+		   step of ours, since the brand itself is 3.6:1 as text on white (§14). */
+		&:hover:not([aria-disabled="true"]),
+		&:focus-visible {
+			border-color: $rp-accent-hover;
+			color: $rp-accent-hover;
+		}
+
+		/* A dead end fades. `aria-disabled` rather than `disabled` keeps it focusable
+		   — see PreviewDrawer.jsx — and an inactive control is exempt from the
+		   contrast floor (§14). */
+		&[aria-disabled="true"] {
+			opacity: 0.45;
+			cursor: default;
 		}
 	}
 

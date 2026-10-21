@@ -202,27 +202,28 @@ export const LockIcon = () => (
 	</svg>
 );
 
-/* ---- Preview-header navigation ------------------------------------------- */
+/* ---- Preview-footer navigation ------------------------------------------- */
 
 /**
- * @return {JSX.Element} Small chevron, drawn beside the preview header's Back
- *                       link. Stroked rather than filled: at 10px a filled
- *                       chevron loses its point to hinting.
+ * @return {JSX.Element} Small chevron, drawn beside the preview footer's Prev
+ *                       label at the live library's 8x12. Stroked rather than
+ *                       filled: at this size a filled chevron loses its point to
+ *                       hinting.
  */
 export const ChevronLeftIcon = () => (
 	<svg
-		width="10"
-		height="10"
-		viewBox="0 0 10 9.4"
+		width="8"
+		height="12"
+		viewBox="0 0 8 12"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 		aria-hidden="true"
 		focusable="false"
 	>
 		<path
-			d="M9 8.7L5 4.7L9 0.7"
+			d="M6.5 1.5L2 6L6.5 10.5"
 			stroke="currentColor"
-			strokeWidth="1.4"
+			strokeWidth="1.6"
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		/>
@@ -230,45 +231,25 @@ export const ChevronLeftIcon = () => (
 );
 
 /**
- * @return {JSX.Element} Long left arrow — the preview header's Previous pattern.
+ * @return {JSX.Element} The Prev chevron mirrored — drawn beside the preview
+ *                       footer's Next label.
  */
-export const ArrowLeftIcon = () => (
+export const ChevronRightIcon = () => (
 	<svg
-		width="16"
-		height="16"
-		viewBox="0 0 16 16"
+		width="8"
+		height="12"
+		viewBox="0 0 8 12"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 		aria-hidden="true"
 		focusable="false"
 	>
 		<path
-			fillRule="evenodd"
-			clipRule="evenodd"
-			d="M1.22539 8.4007L1.22026 8.39559C1.20684 8.3822 1.19171 8.36568 1.17973 8.35097C1.17153 8.34092 1.16375 8.33064 1.15637 8.32016L1.14972 8.31051L1.14324 8.30069C1.09544 8.22621 1.06493 8.1392 1.05725 8.04613L1.05665 8.03813L1.0562 8.03067L1.05578 8.02193L1.05549 8.01239L1.05536 7.99805C1.05536 7.98705 1.05536 7.98013 1.05615 7.96851C1.05892 7.93188 1.06587 7.88691 1.07578 7.85057C1.07748 7.84434 1.07995 7.83631 1.08184 7.83032C1.09036 7.80643 1.1028 7.77569 1.11457 7.75165C1.13549 7.71002 1.16124 7.67065 1.19021 7.63706C1.19899 7.6269 1.2082 7.61699 1.21784 7.60735L6.21719 2.60735C6.43399 2.39056 6.78619 2.39059 7.003 2.60735C7.21981 2.82416 7.21981 3.17635 7.003 3.39316L2.95205 7.44411H14.388C14.6948 7.44411 14.944 7.69336 14.944 8.0001C14.9439 8.30674 14.6947 8.55544 14.388 8.55544H2.95174L7.00365 12.6073C7.22034 12.8242 7.21912 13.177 7.00235 13.3938C6.8943 13.5007 6.75237 13.5553 6.61042 13.5553C6.46847 13.5552 6.32523 13.5001 6.21719 13.3932L1.22539 8.4007Z"
-			fill="currentColor"
-		/>
-	</svg>
-);
-
-/**
- * @return {JSX.Element} Long right arrow — the preview header's Next pattern.
- */
-export const ArrowRightIcon = () => (
-	<svg
-		width="16"
-		height="16"
-		viewBox="0 0 16 16"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		aria-hidden="true"
-		focusable="false"
-	>
-		<path
-			fillRule="evenodd"
-			clipRule="evenodd"
-			d="M14.774 8.4007L14.7791 8.39559C14.7925 8.3822 14.8077 8.36568 14.8197 8.35097C14.8279 8.34092 14.8356 8.33064 14.843 8.32016L14.8497 8.31051L14.8561 8.30069C14.9039 8.22621 14.9345 8.1392 14.9421 8.04613L14.9427 8.03813L14.9432 8.03067L14.9436 8.02193L14.9439 8.01239L14.944 7.99805C14.944 7.98705 14.944 7.98013 14.9432 7.96851C14.9405 7.93188 14.9335 7.88691 14.9236 7.85057C14.9219 7.84434 14.9194 7.83631 14.9175 7.83032C14.909 7.80643 14.8966 7.77569 14.8848 7.75165C14.8639 7.71002 14.8381 7.67065 14.8092 7.63706C14.8004 7.6269 14.7912 7.61699 14.7815 7.60735L14.7751 7.60092L9.78219 2.60735C9.5654 2.39056 9.2132 2.39059 8.99638 2.60735C8.77958 2.82416 8.77958 3.17635 8.99638 3.39316L13.0473 7.44411H1.61135C1.30461 7.44411 1.05536 7.69336 1.05536 8.0001C1.05548 8.30674 1.30468 8.55544 1.61135 8.55544H13.0476L8.99573 12.6073C8.77904 12.8242 8.78027 13.177 8.99703 13.3938C9.10509 13.5007 9.24702 13.5553 9.38896 13.5553C9.53092 13.5552 9.67415 13.5001 9.78219 13.3932L14.774 8.4007Z"
-			fill="currentColor"
+			d="M1.5 1.5L6 6L1.5 10.5"
+			stroke="currentColor"
+			strokeWidth="1.6"
+			strokeLinecap="round"
+			strokeLinejoin="round"
 		/>
 	</svg>
 );

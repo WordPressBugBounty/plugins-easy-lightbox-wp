@@ -131,7 +131,7 @@ class GalleryAttributesFactory {
 					'imageTitleSource'       => 'caption',
 					'imageTitleTag'          => 'h4',
 					'imageDescription'       => false,
-					'imageDescriptionSource' => 'caption',
+					'imageDescriptionSource' => 'description',
 					'descriptionLimit'       => Attributes::responsive( 4, 4, 4, 'lines' ),
 					'displayStyle'           => 'classic',
 					'position'               => 'bottom',

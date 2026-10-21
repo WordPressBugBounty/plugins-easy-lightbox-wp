@@ -85,6 +85,8 @@ $sp-shaped-gallery-brand-deep: #055e92;
  *   02  shortcode-field fill                      was #fffbfd
  *   04  list zebra stripe                         was #fff6fc
  *   08  patterns header wash / list header + card edge   was #fdecf7 / #ffebf7
+ *   10  patterns preview header — the live library's (shapedgallery.com/patterns)
+ *       `--sg-primary-fill` #e6f4fe, which is this brand at 10% over white
  *   12  active-facet fill                         was #fde3f2
  *   22  header rule / marker band                 was #fbcbe8 / #ffd1fa
  *   28  soft brand hairline                       was #fabde1
@@ -95,6 +97,7 @@ $sp-shaped-gallery-brand-deep: #055e92;
 $sp-shaped-gallery-brand-02: rgba($sp-shaped-gallery-brand, 0.02);
 $sp-shaped-gallery-brand-04: rgba($sp-shaped-gallery-brand, 0.04);
 $sp-shaped-gallery-brand-08: rgba($sp-shaped-gallery-brand, 0.08);
+$sp-shaped-gallery-brand-10: rgba($sp-shaped-gallery-brand, 0.1);
 $sp-shaped-gallery-brand-12: rgba($sp-shaped-gallery-brand, 0.12);
 $sp-shaped-gallery-brand-22: rgba($sp-shaped-gallery-brand, 0.22);
 $sp-shaped-gallery-brand-28: rgba($sp-shaped-gallery-brand, 0.28);
@@ -136,6 +139,19 @@ $sp-shaped-gallery-pro-deep: #0a6e08;
 /* Chip surface and hairline. Under text, only with `pro-deep` (or `pro`) on it. */
 $sp-shaped-gallery-pro-surface: #effff5;
 $sp-shaped-gallery-pro-border: #93dcac;
+
+/*
+ * Upgrade orange — the Ready Patterns library's locked-pattern CTA, and ONLY that
+ * (the card's "Get Pro" and the preview's "Upgrade to Pro"). The same #ea7e11 WP
+ * Carousel Free's pattern library sells its upgrade in, chosen so the two
+ * ShapedPlugin libraries read alike.
+ *
+ * KNOWN §14 SHORTFALL, kept deliberately: the white label is 2.8:1 on `upgrade`
+ * and 3.6:1 on `upgrade-deep`, under the 4.5:1 text floor. The Pro ramp above is
+ * the AA-safe alternative if that trade is ever revisited.
+ */
+$sp-shaped-gallery-upgrade: #ea7e11;
+$sp-shaped-gallery-upgrade-deep: #cf6c0b;
 
 /*
  * Offer ramp — the dashboard offer bar (`admin/components/OfferBar.jsx`), and

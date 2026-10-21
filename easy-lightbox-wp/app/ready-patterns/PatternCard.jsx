@@ -7,6 +7,10 @@
  * under the title would push every card in the grid taller than its thumbnail
  * frame implies. The pattern's layout is already the sidebar's primary facet, so
  * nothing is lost by not restating it on each card.
+ *
+ * A premium pattern carries no PRO pill on its thumbnail: the locked CTA in the
+ * footer already says "Get Pro", and two marks for the one fact read as clutter
+ * rather than emphasis.
  */
 import { __ } from '@wordpress/i18n';
 import { memo } from '@wordpress/element';
@@ -45,10 +49,6 @@ function PatternCard( {
 					<img src={ pattern.image } alt={ name } loading="lazy" decoding="async" />
 				) : (
 					<span className="sp-shaped-patterns__card-thumb-placeholder" />
-				) }
-
-				{ pattern.pro && (
-					<span className="sp-shaped-patterns__badge-pro">{ __( 'Pro', 'easy-lightbox-wp' ) }</span>
 				) }
 
 				{ /* The overlay is a real button so it is reachable by keyboard; the

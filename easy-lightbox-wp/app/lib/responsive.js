@@ -47,6 +47,34 @@ export function resolveResponsive( value, device ) {
 }
 
 /**
+ * Resolve a responsive numeric bundle to an integer for a device: the device
+ * slot, else desktop, else `fallback`.
+ *
+ * The one numeric resolution both sides of a measured layout use — the frontend
+ * runtime through `pickResponsive()` below, the editor previews directly with
+ * their active device. "Not a number" is the only reason to fall back, so a 0 is
+ * kept: the previews used to write `resolveResponsive( gap ) || 20`, which turned
+ * a gap the author set to 0 into 20px in the canvas while the frontend laid the
+ * same gallery out with none, and a justified gallery packed different rows on
+ * each side (§18). `parseInt`, like the runtime always has, so both truncate a
+ * fractional value the same way.
+ *
+ * @param {{desktop:*,tablet:*,mobile:*}|*} value    Responsive bundle.
+ * @param {('desktop'|'tablet'|'mobile')}   device   Active device.
+ * @param {number}                          fallback Value when no slot is numeric.
+ * @return {number} Resolved integer.
+ */
+export function resolveResponsiveNumber( value, device, fallback ) {
+	const bundle = value && typeof value === 'object' ? value : {};
+	const n = parseInt( bundle[ device ], 10 );
+	if ( Number.isFinite( n ) ) {
+		return n;
+	}
+	const d = parseInt( bundle.desktop, 10 );
+	return Number.isFinite( d ) ? d : fallback;
+}
+
+/**
  * Resolve a responsive `data-*` JSON string ({desktop,tablet,mobile}) to a
  * numeric value for the current viewport, falling back to desktop then a scalar
  * default. Used by the frontend runtime to read the container's data-* geometry.
@@ -62,10 +90,5 @@ export function pickResponsive( json, fallback ) {
 	} catch ( e ) {
 		// keep empty → falls through to fallback
 	}
-	const n = parseInt( obj[ deviceKey() ], 10 );
-	if ( Number.isFinite( n ) ) {
-		return n;
-	}
-	const d = parseInt( obj.desktop, 10 );
-	return Number.isFinite( d ) ? d : fallback;
+	return resolveResponsiveNumber( obj, deviceKey(), fallback );
 }

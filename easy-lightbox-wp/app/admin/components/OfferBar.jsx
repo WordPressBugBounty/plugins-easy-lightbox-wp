@@ -26,7 +26,7 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { createInterpolateElement } from '@wordpress/element';
-import { upgradeUrl } from '@shaped-gallery/components/pro/upgrade';
+import { offerUrl } from '@shaped-gallery/components/pro/upgrade';
 import useCurrentOffer from '@shaped-gallery/components/pro/useCurrentOffer';
 import ExternalLink from './ExternalLink';
 
@@ -35,7 +35,7 @@ import ExternalLink from './ExternalLink';
  */
 export default function OfferBar() {
 	const { percent, lead } = useCurrentOffer();
-	const url = upgradeUrl();
+	const url = offerUrl();
 
 	if ( ! percent || ! url ) {
 		return null;

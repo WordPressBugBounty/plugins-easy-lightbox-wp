@@ -1,7 +1,7 @@
 /**
  * Provider embed players — the single source of iframe knowledge, shared by the
- * lightbox (app/frontend/shaped-layout.js) and inline tile playback
- * (app/frontend/media.js).
+ * lightbox (app/frontend/shaped-layout.js), inline tile playback
+ * (app/frontend/media.js) and the video popup (app/frontend/video-popup.js).
  *
  * A provider embed's `full` URL is an iframe player, not a media file, so it can
  * never be a `<video src>`. Keeping the per-provider config here (rather than in
@@ -25,8 +25,8 @@ const LANDSCAPE_FRAME = 'width:min(90vw, calc(85vh * 16 / 9));aspect-ratio:16/9'
  *                it becomes an `<iframe src>` (see safeEmbedUrl()). Mirrors
  *                `EmbedUrl::HOSTS` (src/Render/EmbedUrl.php); both are pinned to one
  *                case table by `embeds.test.js` and `verify-embed-url.php`.
- * - `frame`    — inline style sizing the LIGHTBOX iframe. It is width-driven with
- *                `aspect-ratio` deriving the height: the lightbox
+ * - `frame`    — inline style sizing the LIGHTBOX and VIDEO POPUP iframe. It is
+ *                width-driven with `aspect-ratio` deriving the height: each
  *                stage is a flex row, and a flex item's main size (width) is
  *                resolved BEFORE its cross size, so a height-driven frame would let
  *                the iframe fall back to its 300px intrinsic replaced-element width

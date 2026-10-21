@@ -14,6 +14,30 @@
 import { SORT } from './constants';
 
 /**
+ * Put a flattened manifest back in the serving site's drag order.
+ *
+ * The manifest arrives grouped by layout, and flattening concatenates the
+ * groups — so without this every pattern of the first layout shows before any
+ * of the next, whatever order the team dragged them into. Each row's `order`
+ * is its position across the whole catalogue. A row without one (an older
+ * provider, or a junk value hardened to 0) keeps its place relative to the
+ * other unpositioned rows and falls in behind the positioned ones; the sort is
+ * stable, so a manifest with no positions at all comes back untouched.
+ *
+ * @param {Array<Object>} rows Flattened patterns.
+ * @return {Array<Object>} Sorted copy.
+ */
+export function curatedOrder( rows ) {
+	const rank = ( row ) => ( 0 < row.order ? row.order : Infinity );
+
+	return [ ...( rows || [] ) ].sort( ( a, b ) => {
+		const ra = rank( a );
+		const rb = rank( b );
+		return ra === rb ? 0 : ra - rb;
+	} );
+}
+
+/**
  * Sort a list without mutating the caller's array.
  *
  * @param {Array<Object>} items Patterns.
@@ -92,21 +116,28 @@ export function visiblePatterns( patterns, query = {} ) {
 }
 
 /**
- * Step an index through a list, wrapping at both ends.
+ * Step an index through a list, stopping at both ends.
  *
- * Wrapping rather than disabling: a disabled Next at the last pattern takes the
- * focus with it (the browser drops focus off a control that becomes disabled),
- * which breaks the drawer's keyboard loop for the one user who needs it most.
- * Wrapping keeps both controls alive and dead-ends nowhere.
+ * Stopping rather than wrapping, as the reference preview (WP Carousel Free's)
+ * does: the drawer's footer reads "Patterns n of m", and a Next that jumps from
+ * m back to 1 makes that count lie about where the list ends.
+ *
+ * This used to wrap because a `disabled` Next at the last pattern takes the focus
+ * with it — the browser drops focus off a control that becomes disabled, breaking
+ * the keyboard loop for the one user who needs it most. The drawer now marks a
+ * dead end with `aria-disabled` instead, which keeps the control focusable, so
+ * that reason no longer forces a wrap.
  *
  * @param {number} index Current index.
  * @param {number} delta Step, usually -1 or 1.
  * @param {number} total List length.
- * @return {number} The new index, or -1 when there is nothing to step through.
+ * @return {number} The new index, or -1 when the step would leave the list or
+ *                  there is nothing to step through.
  */
 export function stepIndex( index, delta, total ) {
 	if ( ! total || 0 > index ) {
 		return -1;
 	}
-	return ( ( ( index + delta ) % total ) + total ) % total;
+	const next = index + delta;
+	return 0 <= next && next < total ? next : -1;
 }

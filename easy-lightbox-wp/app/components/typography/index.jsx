@@ -41,6 +41,7 @@ import { memo, Fragment } from '@wordpress/element';
 import { NumberControl } from '@shaped-gallery/lib/wp-components';
 import { useDeviceType } from '@shaped-gallery/hooks';
 import { ItalicIcon, UnderlineIcon, StrikethroughIcon } from '@shaped-gallery/icons';
+import { supportedWeights, nearestWeight } from '@shaped-gallery/lib/font-weights';
 import SelectField from '../selectField';
 import SPRangeControl from '../rangeControl';
 import SpPopover from '../popover';
@@ -72,7 +73,7 @@ const FONT_FAMILIES = [
 	'Oswald',
 ];
 
-/** Font-weight options shared by every family. */
+/** Every font-weight option; each family offers the subset it has (`supportedWeights()`). */
 const FONT_WEIGHTS = [
 	{ label: __( 'Thin 100', 'easy-lightbox-wp' ), value: '100' },
 	{ label: __( 'Extra Light 200', 'easy-lightbox-wp' ), value: '200' },
@@ -206,6 +207,30 @@ function Typography( {
 		? { label: typography.family, value: typography.family }
 		: familyOptions[ 0 ];
 
+	// Font Style lists only the weights the family has. A stored weight it lacks
+	// (saved before this filter, or under another family) shows as the weight the
+	// browser actually draws, so the select never names an option it doesn't offer.
+	const weights = supportedWeights( typography.family );
+	const weightItems = weights ? FONT_WEIGHTS.filter( ( { value } ) => weights.includes( value ) ) : FONT_WEIGHTS;
+	const weightValue = nearestWeight( typography.fontWeight || '400', weights );
+
+	/**
+	 * Switch family, snapping a chosen weight the new family lacks to the one it
+	 * draws instead — what renders is unchanged, and the stored value stays one
+	 * the Font Style select can show. An unset weight stays unset.
+	 *
+	 * @param {{ value: string }} next Selected family option.
+	 * @return {void}
+	 */
+	const changeFamily = ( next ) => {
+		const family = 'Default' === next.value ? '' : next.value;
+		const patch = { family };
+		if ( typography.fontWeight ) {
+			patch.fontWeight = nearestWeight( typography.fontWeight, supportedWeights( family ) );
+		}
+		setTypography( patch );
+	};
+
 	/**
 	 * Toggle a typography key (clicking the active value clears it) — shared by
 	 * the decoration toggles ('style' | 'decoration') and the text-transform
@@ -245,15 +270,13 @@ function Typography( {
 									classNamePrefix="sp-shaped-gallery-font-family-select"
 									options={ familyOptions }
 									value={ activeFamily }
-									onChange={ ( next ) =>
-										setTypography( { family: next.value === 'Default' ? '' : next.value } )
-									}
+									onChange={ changeFamily }
 								/>
 							</div>
 							<SelectField
 								label={ __( 'Font Style', 'easy-lightbox-wp' ) }
-								value={ typography.fontWeight || '400' }
-								items={ FONT_WEIGHTS }
+								value={ weightValue }
+								items={ weightItems }
 								onChange={ ( fontWeight ) => setTypography( { fontWeight } ) }
 							/>
 						</div>

@@ -11,7 +11,7 @@
  * Plugin Name:       ShapedGallery
  * Plugin URI:        https://shapedgallery.com/
  * Description:       Create responsive image, photo and video galleries with justified, grid and masonry layouts, one-click Ready Patterns and a built-in lightbox.
- * Version:           1.2.1
+ * Version:           1.2.2
  * Requires at least: 6.8
  * Requires PHP:      8.1
  * Author:            ShapedPlugin
@@ -139,7 +139,7 @@ if ( shaped_gallery_premium_is_active() ) {
  */
 
 // Plugin constants.
-define( 'SHAPED_GALLERY_VERSION', '1.2.1' );
+define( 'SHAPED_GALLERY_VERSION', '1.2.2' );
 define( 'SHAPED_GALLERY_FILE', __FILE__ );
 define( 'SHAPED_GALLERY_BASENAME', plugin_basename( __FILE__ ) );
 define( 'SHAPED_GALLERY_PATH', plugin_dir_path( __FILE__ ) );

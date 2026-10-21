@@ -29,12 +29,16 @@
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { VisuallyHidden } from '@wordpress/components';
-import { upgradeUrl } from './upgrade';
+import { noticeUrl } from './upgrade';
 import useCurrentOffer from './useCurrentOffer';
 import './editor.scss';
 
 /**
  * The upgrade link, or its bare text when no URL was published.
+ *
+ * Its own payload key (`noticeUrl`), not the teasers' `upgradeUrl`: a click on an
+ * inspector panel's note is counted apart from one on a locked card, and the
+ * dashboard payload re-tags the same key for the Lightbox panel's note.
  *
  * @param {Object} props
  * @param {string} props.className Class.
@@ -43,7 +47,7 @@ import './editor.scss';
  * @return {JSX.Element} Link.
  */
 function UpgradeLink( { className, badge = null, children } ) {
-	const url = upgradeUrl();
+	const url = noticeUrl();
 
 	if ( ! url ) {
 		return <span className={ className }>{ children }</span>;
